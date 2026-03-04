@@ -6,20 +6,20 @@
 
 ## 16.1 Why FEEL Is Unusually Testable
 
-Most business logic buried in application code is hard to test. You need to construct objects, mock services, manage state, and trace through control flow to understand what a method does. FEEL is fundamentally different:
+Testing business logic in application code is painful. You construct objects, mock services, manage state, and trace control flow just to figure out what a method actually does. FEEL throws all of that away:
 
 1. **Every expression is a pure function.** Given the same inputs, it always produces the same output. No side effects, no hidden state, no database calls.
 2. **Decision tables enumerate their own cases.** Each row is a rule with explicit input conditions and expected output — the table *is* the specification.
 3. **The type system is small and finite.** FEEL has a handful of types (number, string, boolean, date, time, duration, list, context, range, null). You can enumerate boundary cases exhaustively.
 4. **Null propagation is deterministic.** Every operator and function has defined null behaviour — typically returning null. You do not need to guess what happens with missing data.
 
-These properties make FEEL code not just testable, but **analysable** — you can derive comprehensive test coverage directly from the structure of the expressions themselves.
+These properties make FEEL not just testable, but **mechanically analysable** -- you can derive comprehensive test coverage straight from the structure of the expressions themselves, no guesswork required.
 
 ---
 
 ## 16.2 Deriving Tests from Decision Tables
 
-A decision table with hit policy U (Unique) is the simplest case: each rule defines a mutually exclusive partition of the input space. Complete coverage means testing every rule at least once.
+A decision table with hit policy U (Unique) is the easiest thing you will ever test: each rule carves out a mutually exclusive slice of the input space, and complete coverage means hitting every rule at least once.
 
 ### Worked Example: Shipping Decision
 
@@ -33,7 +33,7 @@ A decision table with hit policy U (Unique) is the simplest case: each rule defi
 
 **Step 1: One test per rule (rule coverage).**
 
-Each rule defines exactly what inputs it expects. Read the table — it tells you what to test:
+Each rule spells out exactly what inputs it expects. Just read the table -- it is writing your test cases for you:
 
 | Test | Order Total | Customer Tier | Zone | Expected Output |
 |------|------------|---------------|------|----------------|
@@ -47,7 +47,7 @@ Five rules, five tests. **100% rule coverage** — derived mechanically from the
 
 **Step 2: Boundary tests.**
 
-Each numeric threshold creates a boundary. The table uses `> 100`, `> 50`, and `<= 50`. Test at the boundaries:
+Every numeric threshold is a potential off-by-one bug. The table uses `> 100`, `> 50`, and `<= 50`. Poke at those boundaries:
 
 | Test | Order Total | Customer Tier | Zone | Expected Output |
 |------|------------|---------------|------|----------------|
@@ -56,7 +56,7 @@ Each numeric threshold creates a boundary. The table uses `> 100`, `> 50`, and `
 | T8 | 50 | "Silver" | "A" | ? (does NOT match Rule 2) |
 | T9 | 50.01 | "Silver" | "A" | "STANDARD" |
 
-Boundary tests often reveal gaps or ambiguities in the specification. If `Order Total = 100` and `Customer Tier = "Gold"`, no rule matches — is that intended? This is a **completeness** issue, and the test exposed it.
+Boundary tests are where specs fall apart. If `Order Total = 100` and `Customer Tier = "Gold"`, no rule matches -- is that intentional? You just found a **completeness** gap, and you found it before production did.
 
 **Step 3: Null and missing input tests.**
 
@@ -67,23 +67,23 @@ What if `Customer Tier` is null? What if `Zone` is missing?
 | T10 | 150 | null | "A" | null (no rule matches) |
 | T11 | 75 | "Silver" | null | null (no rule matches) |
 
-These tests verify that missing data is handled safely — the table returns null rather than an arbitrary match.
+These tests verify that missing data does not silently produce a wrong answer -- the table returns null rather than matching an arbitrary rule.
 
 ### The Key Insight
 
-You did not need to read code, trace logic, or guess at edge cases. **The decision table told you what to test.** Each row is a test case. Each boundary is a boundary test. Each input that could be null is a null test. The total number of tests is small and bounded: `rules + boundaries + null variants`.
+Notice what you did *not* do: you did not read code, trace logic, or brainstorm edge cases. **The decision table told you what to test.** Each row is a test case. Each boundary is a boundary test. Each nullable input is a null test. Total test count: `rules + boundaries + null variants` -- small, bounded, and mechanical.
 
-This is why FEEL is unusually testable — the structure of the decision *is* the structure of the test suite.
+The structure of the decision *is* the structure of the test suite.
 
 ---
 
 ## 16.3 Deriving Tests from FEEL Expressions
 
-FEEL expressions that are not in a decision table require a different approach. But because FEEL is an expression language with no side effects, you can still derive tests systematically.
+Not everything lives in a decision table. Standalone FEEL expressions need a different approach -- but because FEEL has no side effects, you can still derive tests systematically from the expression's structure.
 
 ### Technique: Condition/Decision Coverage
 
-Every `if/then/else` in a FEEL expression creates a decision point. Every comparison creates a condition. List them, test both sides.
+Every `if/then/else` is a decision point. Every comparison is a condition. List them all, then write tests that hit both sides of each one.
 
 **Expression:**
 
@@ -126,25 +126,25 @@ Every `if/then/else` in a FEEL expression creates a decision point. Every compar
 | T8 | 18 | 30000 | 800 | 500000 (boundary: minimum eligible) |
 | T9 | null | 50000 | 800 | 0 (null age → eligible is null → false path) |
 
-Nine tests cover every path, every boundary, and the null case. The tests were derived from the expression structure, not invented from imagination.
+Nine tests. Every path covered. Every boundary poked. The null case handled. And you derived all of them from the expression's structure, not from imagination.
 
 ### Why This Works
 
-FEEL expressions have a property that imperative code does not: **the entire computation is visible in the expression itself.** There are no hidden branches, no exception handlers, no early returns, no mutable state that might change between lines. Every `if` is visible. Every comparison is visible. Every possible null source is visible.
+FEEL expressions have a property that imperative code does not: **the entire computation is right there in front of you.** No hidden branches. No exception handlers. No early returns. No mutable state shifting between lines. Every `if` is visible. Every comparison is visible. Every possible null source is visible.
 
-This means you can achieve **comprehensive coverage** — every path through the expression is tested — with a number of test cases that is proportional to the number of decision points, not exponential. In the example above, the expression has 7 conditions and 4 paths. Nine tests achieve full coverage. An equivalent Java method with the same logic would typically require more tests because of constructor paths, null pointer possibilities, exception handling, and interaction with mutable state.
+The payoff: you achieve **comprehensive coverage** with a number of test cases proportional to the number of decision points, not exponential. The expression above has 7 conditions and 4 paths. Nine tests cover everything. An equivalent Java method with the same logic would typically need more tests -- constructor paths, null pointer possibilities, exception handling, mutable state interactions -- all of which FEEL simply does not have.
 
 ---
 
 ## 16.4 Completeness and Consistency Analysis
 
-Decision tables can be analysed statically — before running any tests — for two properties:
+Here is something you rarely get in software: you can catch bugs in decision tables *without running a single test*. Static analysis checks two properties:
 
 ### Completeness: Are All Input Combinations Covered?
 
-A decision table is **complete** if every possible combination of input values matches at least one rule. If the table is incomplete, some inputs will produce no output (null for single-hit policies, empty list for collect policies).
+A decision table is **complete** if every possible combination of input values matches at least one rule. Incomplete tables silently return null (for single-hit policies) or an empty list (for collect policies) -- and those silent failures are production bugs waiting to happen.
 
-**How to check:** For each input column, list the partitions (the distinct conditions). Count the combinations. Verify that every combination is covered by at least one rule.
+**How to check:** List the partitions (distinct conditions) in each input column. Count the combinations. Verify that every combination is covered by at least one rule.
 
 **Example (incomplete):**
 
@@ -158,7 +158,7 @@ What if `Status = "Cancelled"`? No rule matches. The table is incomplete for the
 
 ### Consistency: Do Rules Conflict?
 
-With hit policy U, no two rules should match the same input. If they do, the engine signals an error.
+With hit policy U, no two rules should ever match the same input. If they do, the engine throws an error -- and you have a logic bug.
 
 **Example (inconsistent):**
 
@@ -167,7 +167,7 @@ With hit policy U, no two rules should match the same input. If they do, the eng
 | 1 | >= 18 | >= 50000 | "Approve" |
 | 2 | >= 21 | >= 30000 | "Approve" |
 
-An applicant with `Age = 25, Income = 60000` matches both rules. The input ranges overlap. Fix by making the conditions mutually exclusive:
+An applicant with `Age = 25, Income = 60000` matches both rules -- the input ranges overlap. Fix it by making the conditions mutually exclusive:
 
 | U | Age | Income | Decision |
 |---|-----|--------|----------|
@@ -176,14 +176,14 @@ An applicant with `Age = 25, Income = 60000` matches both rules. The input range
 
 ### Static Analysis as a Test
 
-Completeness and consistency checks can be automated. Some DMN engines and modelling tools (Trisotech, Camunda Modeler) perform these checks at design time. You can also write a simple script:
+The best part: you can automate these checks. Some DMN tools (Trisotech, Camunda Modeler) perform them at design time. You can also build your own checker with a straightforward script:
 
 1. Extract the input conditions from the decision table.
 2. Enumerate the boundary partitions.
 3. For each combination, count how many rules match.
 4. Flag: 0 matches = incomplete. 2+ matches (with hit policy U) = inconsistent.
 
-This is a test that requires **zero test data** — it analyses the structure of the decision itself.
+This is a test that requires **zero test data** -- you are analysing the decision's structure, not its runtime behaviour.
 
 ---
 
@@ -191,7 +191,7 @@ This is a test that requires **zero test data** — it analyses the structure of
 
 ### 16.5.1 Unit Testing FEEL Expressions
 
-Treat each FEEL expression as a function. Provide input contexts, assert expected outputs.
+Each FEEL expression is a function: feed it a context, assert the output. No mocks, no setup, no teardown.
 
 **Java (feel-scala):**
 
@@ -229,7 +229,7 @@ testCases.forEach(({ inputs, expected }) => {
 
 ### 16.5.2 Table-Driven Testing
 
-For decision tables, generate tests directly from the table rows:
+Decision tables practically write their own tests. Generate one test case per rule:
 
 ```java
 @Test
@@ -252,7 +252,7 @@ void testAllRulesInShippingTable() {
 
 ### 16.5.3 Regression Testing with Golden Files
 
-Save the expected output of a decision as a JSON file. On each test run, compare the actual output against the golden file.
+Golden files are snapshot tests for decisions. Save the expected output as JSON, then diff against it on every run:
 
 ```
 tests/
@@ -263,11 +263,11 @@ tests/
     test-002-expected.json → { "Shipping Method": "STANDARD" }
 ```
 
-When a business rule changes, update the golden files. The diff shows exactly what changed in the decision's behaviour.
+When a business rule changes, update the golden files. The diff in your pull request shows *exactly* what changed in the decision's behaviour -- a reviewer's dream.
 
 ### 16.5.4 Property-Based Testing
 
-Instead of testing specific values, test properties that should always hold:
+Stop testing specific values. Instead, assert *invariants* that should hold for all inputs -- and let the framework throw thousands of random cases at your decision:
 
 ```java
 @Property
@@ -291,11 +291,11 @@ void eligibleApplicantsGetNonZeroLoan(@ForAll @IntRange(min=18, max=100) int age
 }
 ```
 
-Property-based testing is especially powerful for FEEL because the pure-function nature guarantees that the test is deterministic — the same inputs always produce the same result.
+Property-based testing and FEEL are a natural fit. Because every FEEL expression is a pure function, the tests are inherently deterministic -- no flaky tests, ever.
 
 ### 16.5.5 DMN TCK Format
 
-The DMN Technology Compatibility Kit defines a standard XML format for test cases:
+If you want tests that run on *any* DMN engine without modification, use the DMN Technology Compatibility Kit format:
 
 ```xml
 <testCases xmlns="http://www.omg.org/spec/DMN/20160901/testcase">
@@ -323,31 +323,31 @@ Benefits:
 
 ### Rule Coverage
 
-Percentage of decision table rules exercised by at least one test case.
+The percentage of decision table rules exercised by at least one test case.
 
-**Target: 100%.** Every rule should be tested. Since each rule is a distinct business case, untested rules mean untested business logic.
+**Target: 100%.** No exceptions. Every rule is a distinct business case, and an untested rule is an untested business decision running in production.
 
 ### Condition Coverage
 
-Percentage of conditions (comparisons, boolean sub-expressions) that have been tested with both true and false inputs.
+The percentage of conditions (comparisons, boolean sub-expressions) tested with both true and false inputs.
 
-**Target: 100%.** For FEEL expressions with `if/then/else` chains, ensure every condition has been both satisfied and not satisfied.
+**Target: 100%.** Every `if/then/else` branch should be taken in both directions. If you have not tested the `else`, you do not know what it does.
 
 ### Boundary Coverage
 
-Percentage of numeric and temporal boundaries tested with values at, just above, and just below the threshold.
+The percentage of numeric and temporal boundaries tested with values at, just above, and just below the threshold.
 
-**Target: All boundaries.** This is where off-by-one errors hide. `>= 18` should be tested with 17, 18, and 19.
+**Target: All boundaries.** Off-by-one errors live here. `>= 18` demands tests with 17, 18, and 19 -- anything less is gambling.
 
 ### Null Coverage
 
-Percentage of inputs tested with null values.
+The percentage of inputs tested with null values.
 
-**Target: All nullable inputs.** For each input that could plausibly be null, verify that the expression handles it gracefully (typically by returning null or a default).
+**Target: All nullable inputs.** For every input that could plausibly arrive as null, verify that the expression handles it gracefully -- typically by returning null or a safe default, not by producing a wrong answer.
 
 ### How to Measure
 
-Most DMN engines do not provide built-in coverage tools. But because decision tables are structured data, you can build simple coverage checkers:
+Most DMN engines ship without built-in coverage tools. But decision tables are structured data, so building your own checker is straightforward:
 
 1. Parse the decision table (from DMN XML or a tabular format).
 2. For each test case, determine which rule(s) matched.
@@ -372,7 +372,7 @@ Most DMN engines do not provide built-in coverage tools. But because decision ta
 
 **1. Decompose into a context:**
 
-Instead of debugging a complex one-liner, break it into named steps:
+When a complex one-liner gives you the wrong answer, break it into named steps so you can inspect each piece:
 
 ```
 // Hard to debug:
@@ -397,15 +397,15 @@ Now you can inspect `line totals` and `subtotal` independently.
 }
 ```
 
-If the assertion fails, the engine logs the message. This is invaluable during development.
+When an assertion fails, the engine logs your message. Think of it as `console.assert()` for business rules.
 
 **3. Test in the playground:**
 
-Every major engine has a playground or REPL. Use it to test sub-expressions with known inputs before assembling the full expression.
+Every major engine ships with a playground or REPL. Use it to test sub-expressions with known inputs *before* you wire everything together.
 
 **4. Compare engines:**
 
-If an expression produces unexpected results, test it in a second engine. If the results differ, you have found an engine-specific behaviour — check Appendix D.
+If an expression produces unexpected results, test it in a second engine. If the results differ, congratulations -- you have found an engine-specific behaviour. Check Appendix D for the known divergences.
 
 ---
 
@@ -451,7 +451,7 @@ If an expression produces unexpected results, test it in a second engine. If the
 
 ## What Comes Next
 
-With testing mastered, you have the tools to write FEEL expressions confidently in production. Return to the appendices for quick reference material, cross-language comparisons, and engine compatibility details.
+You now have everything you need to write FEEL expressions with confidence and ship them to production backed by real tests. The appendices are your ongoing toolkit: quick reference cards, cross-language comparisons, and engine compatibility details for when things get weird.
 
 ---
 

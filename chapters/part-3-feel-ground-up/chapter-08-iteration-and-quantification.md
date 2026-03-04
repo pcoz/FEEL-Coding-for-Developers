@@ -4,6 +4,10 @@
 
 ---
 
+There are no `while` loops in FEEL. No mutation, no loop counters, no off-by-one bugs. Instead, FEEL gives you `for` *expressions* that transform collections and always produce a value. If you have used `.map()` in JavaScript or list comprehensions in Python, you already have the right mental model.
+
+---
+
 ## 8.1 The `for` Expression
 
 ### Basic Syntax
@@ -12,7 +16,7 @@
 for x in collection return expression
 ```
 
-This iterates over `collection`, binds each element to `x`, evaluates `expression`, and collects the results into a new list.
+Read it aloud: "for each `x` in the collection, return this expression." The engine iterates, evaluates, and collects every result into a new list.
 
 ```
 for x in [1, 2, 3] return x * 2
@@ -33,7 +37,7 @@ for item in Order.Items return item.Quantity * item.Unit Price
 
 ### Range Iteration
 
-Instead of a list, the iteration context can be a numeric or date range:
+You do not need a list to iterate -- a numeric or date range works just as well:
 
 ```
 for i in 1..5 return i ** 2
@@ -48,12 +52,14 @@ for d in @"2024-01-01"..@"2024-01-07" return d
 
 ### Multiple Iteration Contexts (Cartesian Product)
 
+Add a second variable and you get a nested loop -- a Cartesian product of all combinations:
+
 ```
 for x in [1, 2], y in [10, 20] return x + y
 // [11, 21, 12, 22]
 ```
 
-The iteration order is **inner-first**: `y` varies fastest.
+The rightmost variable varies fastest (like a nested `for` in any other language):
 
 ```
 Iteration 1: x=1, y=10 → 11
@@ -66,7 +72,7 @@ Iteration 4: x=2, y=20 → 22
 
 > **ENGINE NOTE:** The `partial` variable is a **Camunda feel-scala extension**, not part of the DMN specification. Apache KIE and other engines may not support it. If portability is a concern, use explicit accumulation patterns instead.
 
-Inside a `for` expression, the implicit variable `partial` contains the results of all *previous* iterations. This enables running computations:
+Inside a `for` expression, the implicit variable `partial` holds a list of all results computed *so far*. Think of it as a running accumulator that grows with each iteration -- it lets you write things like running totals and recursive sequences:
 
 ```
 for i in 0..5 return if i = 0 then 1 else i * partial[-1]
@@ -117,7 +123,7 @@ Result: `line totals` = `[50.00, 50.00, 50.00]`, `subtotal` = `150.00`
 
 ## 8.2 Quantified Expressions
 
-Quantifiers ask "does any/every element satisfy a condition?"
+Sometimes you do not need to transform a list -- you just need to ask a yes-or-no question about it. *Does any item exceed the budget? Are all documents signed?* That is what quantifiers are for.
 
 ### `some ... satisfies` (Existential Quantifier)
 
@@ -141,7 +147,7 @@ every x in [2, 4, 5, 8] satisfies even(x)
 
 ### Multiple Variables
 
-Like `for`, quantifiers support multiple iteration contexts:
+Just like `for`, quantifiers support multiple iteration variables. The engine tests the condition against every combination:
 
 ```
 some x in [1, 2], y in [3, 4] satisfies x + y = 5
@@ -160,13 +166,13 @@ every x in [1, 2], y in [3, 4] satisfies x + y > 2
 
 ### Edge Cases
 
-When the collection is empty:
+Empty collections can trip you up if you are not expecting them:
 ```
 some x in [] satisfies true      // false (no element exists to satisfy)
 every x in [] satisfies false    // true  (vacuously true)
 ```
 
-This follows standard logic: "some" over an empty set is false; "every" over an empty set is true.
+The `some` result is intuitive -- there is nothing in the list, so nothing can satisfy the condition. The `every` result surprises many developers: "every item in an empty list satisfies *any* condition" is `true` because there are zero counterexamples. This is standard logic (vacuous truth), and it matches the behavior of JavaScript's `[].every(...)` and Python's `all([])`.
 
 ### Worked Example 8.3 — Validation Checks
 
@@ -194,7 +200,7 @@ This follows standard logic: "some" over an empty set is false; "every" over an 
 
 ## 8.3 Combining Iteration, Filtering, and Aggregation
 
-The real power of FEEL emerges when you combine `for`, filters, quantifiers, and aggregate functions.
+Individually, `for`, filters, and quantifiers are useful. Together, they let you write business logic that reads like a specification. The following worked examples show how these pieces snap together in realistic scenarios.
 
 ### Worked Example 8.4 — Order Summary with Tax
 
@@ -228,7 +234,7 @@ The real power of FEEL emerges when you combine `for`, filters, quantifiers, and
 
 ### Worked Example 8.6 — Date Sequence Generation
 
-Generate all Mondays in a given month:
+Need all the Mondays in March 2024? Combine date range iteration with filtering:
 
 ```
 {
@@ -273,7 +279,7 @@ Generate all Mondays in a given month:
 
 ## What Comes Next
 
-Chapter 9 covers functions — both user-defined functions and the complete FEEL built-in function library.
+You can now transform, query, and validate any collection. Chapter 9 takes the next step: defining your own reusable functions and exploring FEEL's built-in function library.
 
 ---
 

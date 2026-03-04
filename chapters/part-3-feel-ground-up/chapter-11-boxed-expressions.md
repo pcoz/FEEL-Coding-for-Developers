@@ -6,13 +6,15 @@
 
 ## 11.1 What Are Boxed Expressions?
 
-In DMN, all decision logic is represented as **boxed expressions** — visual, structured representations of FEEL expressions. The "box" is a graphical frame that:
+Every FEEL expression you've written so far has a visual counterpart in DMN called a **boxed expression** -- a graphical frame that wraps your logic so that both developers and business stakeholders can read it.
 
-1. Names the expression (the name box at the top).
-2. Shows the expression's structure (the body).
-3. Makes the logic reviewable by non-developers.
+Each box does three things:
 
-Boxed expressions are defined recursively: a boxed expression can contain other boxed expressions. The top-level boxed expression is always named after the DRG element (decision, BKM) it belongs to.
+1. Names the expression (the header at the top).
+2. Shows its structure (the body).
+3. Makes the logic reviewable without reading code.
+
+Boxed expressions nest: a box can contain other boxes. The top-level box is always named after the DRG element (decision, BKM) it belongs to.
 
 ---
 
@@ -20,7 +22,7 @@ Boxed expressions are defined recursively: a boxed expression can contain other 
 
 ### 11.2.1 Boxed Literal Expression
 
-The simplest form: a named FEEL expression.
+The simplest box: just a named FEEL expression. One box, one formula, done.
 
 ```
 ┌────────────────────────────────┐
@@ -34,7 +36,7 @@ FEEL equivalent: `Amount * Rate / 12`
 
 ### 11.2.2 Boxed Context
 
-A sequence of named entries, evaluated top to bottom.
+This is the workhorse. A boxed context is a sequence of named entries, evaluated top to bottom -- each entry can reference the ones above it.
 
 ```
 ┌────────────────────────────────────┐
@@ -59,11 +61,11 @@ FEEL equivalent:
 }
 ```
 
-The final entry (without a key) is the result of the context.
+If the final entry has no key, its value becomes the result of the entire context -- a handy way to compute intermediate values and then return just the answer.
 
 ### 11.2.3 Boxed List
 
-A list of expressions.
+Exactly what it sounds like: a visual list of expressions, each in its own row.
 
 ```
 ┌──────────────────┐
@@ -79,7 +81,7 @@ FEEL equivalent: `[Age Factor, Income Factor, History Factor]`
 
 ### 11.2.4 Relation
 
-A tabular representation of a list of same-shape contexts. Think of it as a table of data (not a decision table — no hit policy, no conditions).
+A compact table of data rows that all share the same columns. Think spreadsheet, not decision table -- there's no hit policy and no condition logic. It's pure data.
 
 ```
 ┌────────────────────────────────────┐
@@ -104,7 +106,7 @@ FEEL equivalent:
 
 ### 11.2.5 Boxed Function Definition
 
-Defines a reusable function with named parameters and a body.
+The visual version of `function(params) body`. You see the parameters in the header and the implementation in the body -- perfect for BKMs (Business Knowledge Models) that get reused across decisions.
 
 ```
 ┌────────────────────────────────┐
@@ -124,7 +126,7 @@ Defines a reusable function with named parameters and a body.
 
 ### 11.2.6 Boxed Invocation
 
-Calls a Business Knowledge Model (BKM) with named arguments.
+A structured way to call a BKM with named arguments. The header names the function being called; the rows map parameter names to values. No positional guessing.
 
 ```
 ┌────────────────────────────────────┐
@@ -138,7 +140,7 @@ Calls a Business Knowledge Model (BKM) with named arguments.
 └─────────────────┴──────────────────┘
 ```
 
-This calls the `Installment Calculation` BKM with three named arguments.
+This calls the `Installment Calculation` BKM with three named arguments. You can read the binding table top-to-bottom and immediately see what data feeds the function.
 
 ### 11.2.7 Decision Table
 
@@ -146,7 +148,7 @@ Already covered in depth in Chapter 10. The most common boxed expression type.
 
 ### 11.2.8 Boxed Conditional
 
-An if/then/else rendered as a box.
+Your familiar `if/then/else`, but laid out so each branch gets its own labeled row.
 
 ```
 ┌────────────────────────────────────┐
@@ -183,7 +185,7 @@ An if/then/else rendered as a box.
 
 ## 11.3 Composing Boxed Expressions
 
-The power of boxed expressions is composition. A context entry can contain a decision table. A decision table cell can contain an invocation. An invocation argument can be a literal expression.
+Here's where boxed expressions earn their keep: they compose. You can nest any box inside any other box. A context entry can contain a decision table. A decision table cell can contain an invocation. An invocation argument can be a literal expression. It's boxes all the way down.
 
 ### Worked Example 11.1 — Full Loan Affordability
 
@@ -203,7 +205,7 @@ The power of boxed expressions is composition. A context entry can contain a dec
 
 This invokes the `Affordability Calculation` BKM, which is itself a boxed function containing a boxed context, which contains a boxed invocation of the `Credit Contingency Factor` decision table.
 
-Three levels of nesting — each independently testable, each independently reviewable.
+Three levels of nesting -- and that's the whole point. Each level is independently testable, independently reviewable, and independently reusable. A business analyst can inspect the affordability context without understanding the credit model inside it.
 
 ---
 
@@ -226,7 +228,7 @@ Three levels of nesting — each independently testable, each independently revi
 
 ## What Comes Next
 
-Part IV begins with Chapter 12: Patterns and Recipes — practical, copy-paste solutions for common business logic scenarios.
+You now know every boxed expression type in the DMN spec. Part IV puts it all together: Chapter 12 is Patterns and Recipes -- practical, copy-paste solutions for the business logic problems you'll actually encounter.
 
 ---
 

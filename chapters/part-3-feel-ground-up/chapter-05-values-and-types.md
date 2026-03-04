@@ -4,9 +4,9 @@
 
 ---
 
-FEEL has a small, carefully chosen set of data types. Unlike general-purpose languages that distinguish between integers, floats, longs, and doubles, FEEL keeps things simple. There is one number type. There is one string type. Dates and durations are first-class citizens, not afterthoughts.
+FEEL has a small, carefully chosen set of data types. Unlike general-purpose languages that distinguish between integers, floats, longs, and doubles, FEEL keeps things simple. One number type. One string type. Dates and durations are first-class citizens, not afterthoughts bolted on through libraries.
 
-This chapter covers every FEEL data type, its literal syntax, and the operations defined on it.
+Master these types and you will know what every FEEL expression can produce.
 
 ---
 
@@ -25,15 +25,15 @@ This chapter covers every FEEL data type, its literal syntax, and the operations
 
 ### Precision
 
-FEEL numbers are based on **IEEE 754-2008 Decimal128**: 34 decimal digits of precision. This is not a floating-point type in the way JavaScript's `number` is. There are no binary rounding surprises:
+FEEL numbers use **IEEE 754-2008 Decimal128** -- 34 decimal digits of precision. If you have ever been bitten by JavaScript's floating-point quirks, you will appreciate this. There are no binary rounding surprises:
 
 ```
 0.1 + 0.2 = 0.3    // true in FEEL (not 0.30000000000000004)
 ```
 
-There is no separate integer type. `42` and `42.0` are the same value: `42 = 42.0` evaluates to `true`.
+There is no separate integer type -- `42` and `42.0` are the same value, and `42 = 42.0` evaluates to `true`.
 
-There is no `NaN`, no `Infinity`, no `-0`. When a numeric operation cannot produce a valid result, it produces `null`.
+There is no `NaN`, no `Infinity`, no `-0`. If a numeric operation cannot produce a valid result, you get `null` instead of a special sentinel that silently poisons downstream math.
 
 ### Rosetta Stone
 
@@ -46,7 +46,7 @@ There is no `NaN`, no `Infinity`, no `-0`. When a numeric operation cannot produ
 
 ### Rounding Functions
 
-FEEL provides explicit rounding for financial applications:
+Money demands precise rounding, and FEEL delivers:
 
 ```
 decimal(1/3, 2)              // 0.33 — round to 2 decimal places (half-even)
@@ -88,7 +88,7 @@ Result: `daily interest` is `1.2328767123287671...`, `rounded` is `1.23`.
 "unicode: \u00E9"       // é
 ```
 
-Strings are enclosed in double quotes. Single quotes are not string delimiters.
+Strings are always enclosed in double quotes. Single quotes are **not** string delimiters -- forget everything PHP taught you.
 
 ### Escape Sequences
 
@@ -158,7 +158,7 @@ There is no literal for the third truth value — it is `null`, the absence of a
 
 ### The Three-Valued Truth Tables
 
-FEEL uses **ternary logic**, like SQL. This is the single most important thing to understand about FEEL's type system:
+FEEL uses **ternary logic**, like SQL. If you take only one thing from this chapter, make it this: `true`, `false`, and `null` are all possible outcomes of a boolean operation.
 
 **Conjunction (`and`):**
 
@@ -202,7 +202,7 @@ In an `if condition then A else B` expression:
 - If `condition` is `true` → the result is `A`.
 - If `condition` is `false` **or** `null` → the result is `B`.
 
-This means null conditions always take the `else` branch. This is a safety feature — FEEL never acts on uncertain data.
+So null conditions always take the `else` branch. Think of it as FEEL saying, "I don't know if this is true, so I'm not going to act on it." FEEL never acts on uncertain data.
 
 ### Rosetta Stone
 
@@ -239,11 +239,11 @@ Without the null guards, `null >= 18` would produce `null`, which would propagat
 
 ## 5.4 Dates, Times, and Durations
 
-FEEL treats temporal values as first-class citizens. There are five temporal types.
+If you have ever wrestled with `java.util.Date`, JavaScript's `Date`, or Python's `datetime` module, you know how painful time handling can be. FEEL gives you five clean temporal types with built-in arithmetic -- no libraries required.
 
 ### 5.4.1 Date
 
-A calendar date (year, month, day) without time or timezone.
+A pure calendar date -- year, month, day -- with no time or timezone attached.
 
 ```
 @"2024-03-15"                    // at-literal (preferred, DMN 1.3+)
@@ -261,7 +261,7 @@ Properties:
 
 ### 5.4.2 Time
 
-A time of day, optionally with timezone.
+A time of day, optionally pinned to a timezone.
 
 ```
 @"14:30:00"                          // local time
@@ -275,7 +275,7 @@ Properties: `hour`, `minute`, `second`, `time offset`, `timezone`.
 
 ### 5.4.3 Date and Time
 
-A combined date and time.
+The full package -- a date and a time in a single value.
 
 ```
 @"2024-03-15T14:30:00"               // local
@@ -289,7 +289,7 @@ Properties: all date properties + all time properties.
 
 ### 5.4.4 Days and Time Duration
 
-A duration expressed in days, hours, minutes, and seconds.
+A span of time measured in days, hours, minutes, and seconds -- the kind of duration where every unit has a fixed, unambiguous length.
 
 ```
 @"P2D"                    // 2 days
@@ -303,7 +303,7 @@ Properties: `days`, `hours`, `minutes`, `seconds`.
 
 ### 5.4.5 Years and Months Duration
 
-A duration expressed in years and months.
+A span of time measured in years and months -- calendar-relative units whose actual length varies.
 
 ```
 @"P1Y"                    // 1 year
@@ -317,7 +317,7 @@ Properties: `years`, `months`.
 
 ### Why Two Duration Types?
 
-Years and months have variable lengths (28–31 days, 365–366 days). Days and hours have fixed lengths. These two kinds of duration cannot be mixed because `@"P1M"` is not a fixed number of days. FEEL keeps them separate to prevent ambiguity.
+You might wonder why FEEL doesn't just have one duration type. The answer: "one month" is not a fixed number of days. January has 31, February has 28 (or 29), and so on. Days and hours, on the other hand, always have exact, fixed lengths. Mixing these two kinds of duration would introduce the same calendar ambiguity bugs that plague other languages. FEEL keeps them separate so you never accidentally add "1 month" and get an undefined number of days.
 
 ### Temporal Arithmetic
 
@@ -368,7 +368,7 @@ Years and months have variable lengths (28–31 days, 365–366 days). Days and 
 
 ## 5.5 The null Value
 
-`null` is FEEL's universal sentinel for "no value", "missing data", and "error occurred."
+`null` pulls triple duty in FEEL: it means "no value," "missing data," and "something went wrong." One sentinel to rule them all.
 
 ### Null Is Not Zero, Not Empty, Not False
 
@@ -384,7 +384,7 @@ null != null     // false
 
 ### Null Propagation
 
-Almost every operation on `null` produces `null`:
+`null` is contagious -- almost every operation that touches `null` produces `null`:
 
 ```
 null + 1         // null
@@ -441,7 +441,7 @@ A calculation that must handle missing inputs gracefully:
 
 ## 5.6 Type Checking with `instance of`
 
-FEEL supports runtime type checking:
+Sometimes you need to ask "what kind of thing is this?" at runtime. FEEL gives you `instance of`:
 
 ```
 42 instance of number                      // true
@@ -458,7 +458,7 @@ The type lattice has `Any` at the top (all values conform) and `Null` at the bot
 
 ### Practical Use
 
-Type checking is useful when inputs may arrive in unexpected types (e.g., from external systems or JSON payloads):
+This comes in handy when your inputs arrive from external systems or JSON payloads and you cannot trust the types:
 
 ```
 if Score instance of number then
@@ -507,7 +507,7 @@ else
 
 ## What Comes Next
 
-Chapter 6 teaches you to combine these atomic values into expressions: arithmetic, comparisons, conditionals, and the special sub-language of unary tests used inside decision tables.
+Now that you know the atoms, Chapter 6 shows you how to combine them into expressions: arithmetic, comparisons, conditionals, and the special sub-language of unary tests that powers decision tables.
 
 ---
 

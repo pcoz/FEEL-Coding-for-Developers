@@ -4,6 +4,10 @@
 
 ---
 
+Single values only get you so far. The moment you need to represent a shopping cart, an employee roster, or a date range, you need compound structures. FEEL gives you three: lists for ordered sequences, contexts for named key-value structures, and ranges for intervals. All three are immutable, and all three compose cleanly.
+
+---
+
 ## 7.1 Lists
 
 ### Creating Lists
@@ -54,7 +58,7 @@ Lists are **ordered**, **immutable**, and **1-based**.
 
 ### Filtering Lists
 
-FEEL's list filter is one of its most powerful features. Place a boolean expression inside square brackets:
+This is where FEEL starts to feel like a query language. Drop a boolean expression inside square brackets and you get back only the elements that match -- no `.filter()` method, no lambda syntax, just a predicate in brackets:
 
 ```
 [1, 2, 3, 4, 5][item > 3]                    // [4, 5]
@@ -128,7 +132,7 @@ count(Employees[years >= 5])
 
 ## 7.2 Contexts
 
-A context is an ordered collection of key-value pairs. It is FEEL's equivalent of a JavaScript object, a Python dictionary, or a JSON object — but with one critical difference: **entries are evaluated sequentially and can reference earlier entries.**
+A context looks like a JavaScript object or a Python dictionary -- key-value pairs wrapped in curly braces. But there is one critical difference that changes everything: **entries are evaluated top-to-bottom, and each entry can reference the ones above it.** That makes a context less like a data container and more like a tiny spreadsheet.
 
 ### Creating Contexts
 
@@ -158,7 +162,7 @@ get value(person, "name")       // "Alice" (dynamic access)
 
 ### Sequential Evaluation — The Power Feature
 
-Unlike JSON objects, FEEL context entries are evaluated **in order**, and each entry can reference entries that appear before it:
+This is the feature that makes FEEL contexts so useful for business logic. Unlike JSON objects, entries are evaluated **in order**, and each entry can reference entries that appear before it -- so you can build up a complex calculation one named step at a time:
 
 ```
 {
@@ -227,7 +231,7 @@ Each step is named. A business analyst can read each line and verify it against 
 
 ## 7.3 Ranges
 
-Ranges (intervals) are first-class values in FEEL. They represent a bounded or unbounded set of values.
+Most languages make you write `x >= 5 && x <= 10` and hope you got the boundary conditions right. FEEL gives you ranges as first-class values -- you can create them, store them, pass them around, and test membership against them.
 
 ### Creating Ranges
 
@@ -254,6 +258,8 @@ Ranges (intervals) are first-class values in FEEL. They represent a bounded or u
 
 ### Ranges Work with Many Types
 
+Ranges are not limited to numbers. Any type that supports ordering -- dates, strings, durations -- can define a range:
+
 ```
 @"2024-01-01" in [@"2023-01-01"..@"2024-12-31"]    // true (date range)
 "banana" in ["apple".."cherry"]                       // true (string range, lexicographic)
@@ -262,7 +268,7 @@ Ranges (intervals) are first-class values in FEEL. They represent a bounded or u
 
 ### Range Functions (Allen's Interval Relations)
 
-FEEL provides a complete set of interval relation functions:
+Need to know if two time windows overlap? Whether one schedule slot is entirely before another? FEEL provides a complete set of interval relation functions based on Allen's interval algebra:
 
 | Function | Tests whether... |
 |----------|-----------------|
@@ -325,7 +331,7 @@ Result: `conflicts with meeting` = `true` (10:00–10:30 overlaps), `conflicts w
 
 ## What Comes Next
 
-Chapter 8 introduces iteration (`for ... return`) and quantification (`some ... satisfies`, `every ... satisfies`) — FEEL's tools for looping over collections.
+You now have lists, contexts, and ranges. But how do you *iterate* over them? Chapter 8 introduces `for ... return` (FEEL's map), `some ... satisfies` (FEEL's "any"), and `every ... satisfies` (FEEL's "all").
 
 ---
 

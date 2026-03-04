@@ -12,7 +12,7 @@
 function(x, y) x + y
 ```
 
-This creates a function value. To use it, assign it to a name via a context entry:
+That's it -- no `def`, no `fn`, no arrow syntax. Just the keyword `function`, the parameters, and the body. To actually call it, give it a name via a context entry:
 
 ```
 {
@@ -24,17 +24,17 @@ This creates a function value. To use it, assign it to a name via a context entr
 
 ### Typed Parameters
 
-You can optionally specify parameter types:
+Want guardrails? You can declare parameter types:
 
 ```
 function(x: number, y: number) x + y
 ```
 
-If an argument does not conform to the declared type, the invocation returns `null`.
+Pass the wrong type and the call returns `null` -- no exception, no crash, just `null`.
 
 ### Lexical Closure
 
-Function bodies can reference names from the enclosing scope:
+FEEL functions capture their surrounding scope, just like closures in JavaScript or Python:
 
 ```
 {
@@ -45,13 +45,13 @@ Function bodies can reference names from the enclosing scope:
 // result = 120
 ```
 
-The function "closes over" `tax rate` — it remembers the value even if evaluated later in a different scope.
+The function "closes over" `tax rate` -- it remembers the value even if evaluated later in a different scope. If you've used closures in any other language, this works exactly the way you'd expect.
 
 ### Recursive Functions
 
 > **ENGINE NOTE:** Whether a context entry name is in scope within its own definition body is engine-dependent. Camunda's feel-scala supports self-referencing context entries; other engines may not. The DMN specification supports recursion via BKMs (Business Knowledge Models) but the scoping of context entry self-references is ambiguous. Test in your target engine.
 
-Named functions in a context can call themselves:
+Yes, FEEL can do recursion. A named function in a context can call itself:
 
 ```
 {
@@ -82,7 +82,7 @@ Named functions in a context can call themselves:
 
 ## 9.2 Positional vs Named Parameters
 
-All FEEL functions (built-in and user-defined) support two calling conventions:
+Every FEEL function -- built-in or user-defined -- supports two calling styles:
 
 **Positional:** Arguments are matched by position.
 ```
@@ -94,13 +94,13 @@ substring("hello world", 7, 5)    // "world"
 substring(string: "hello world", start position: 7, length: 5)    // "world"
 ```
 
-Named parameters are self-documenting and especially useful for functions with many parameters or optional parameters. Unsupplied named parameters default to `null`.
+Named parameters make your intent obvious at the call site, and they shine when a function has many parameters or optional ones. Any parameter you leave out defaults to `null`.
 
 ---
 
 ## 9.3 The Built-in Function Library
 
-FEEL includes a comprehensive library of built-in functions. This section provides a complete reference with examples, organised by category.
+FEEL ships with roughly 70 built-in functions you'd otherwise have to write yourself. Below is the complete reference, organised by category -- bookmark this section.
 
 ### 9.3.1 Conversion Functions
 
@@ -240,7 +240,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 
 ## 9.4 External Functions
 
-FEEL can invoke functions defined in Java, PMML, and ONNX:
+When FEEL's built-in library isn't enough, you can reach outside the sandbox. FEEL supports calling external functions written in Java, predictive models in PMML, and machine learning models in ONNX:
 
 ### Java
 
@@ -313,7 +313,7 @@ FEEL can invoke functions defined in Java, PMML, and ONNX:
 
 ## What Comes Next
 
-Chapter 10 covers decision tables in depth — hit policies, multi-output tables, completeness, and advanced patterns.
+Functions are FEEL's way of packaging reusable logic. But for rule-heavy logic with many conditions, you want something more structured. Chapter 10 dives into decision tables -- hit policies, multi-output tables, completeness checking, and the patterns that make them powerful.
 
 ---
 

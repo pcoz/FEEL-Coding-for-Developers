@@ -4,7 +4,7 @@
 
 ---
 
-This chapter provides ready-to-use patterns for common business logic tasks. Each pattern includes the problem statement, the FEEL solution, and an explanation of why it works.
+Every pattern here solves a real problem you will hit in production. Grab what you need, adapt the code, and move on.
 
 ---
 
@@ -25,7 +25,7 @@ if Customer.Email != null then Customer.Email else "no-reply@example.com"
 
 ### Pattern: Coalesce (First Non-Null)
 
-FEEL does not have a built-in `coalesce`. Build one:
+FEEL has no built-in `coalesce`, but you can fake one in two lines:
 
 ```
 {
@@ -67,7 +67,7 @@ Order.Customer.Name
 }
 ```
 
-If `Age` is negative, `assert` halts evaluation with the error message rather than silently producing wrong results.
+If `Age` is negative, `assert` halts evaluation with your error message instead of silently producing garbage.
 
 ---
 
@@ -153,7 +153,7 @@ Handle December:
 
 ### Pattern: Business Days Approximation
 
-Count weekdays between two dates (excluding weekends, not holidays):
+Need the number of weekdays between two dates? (This excludes weekends but not holidays.)
 ```
 {
   all days: for d in Start Date..End Date return d,
@@ -183,7 +183,7 @@ Count weekdays between two dates (excluding weekends, not holidays):
 
 ### Pattern: Group By (Simulated)
 
-FEEL has no built-in `group by`. Simulate it:
+FEEL has no built-in `group by`, but you can simulate it with `distinct values` and a `for` loop:
 
 ```
 {
@@ -256,7 +256,7 @@ for i in 1..count(Keys) return {
 
 ### Pattern: Classification with Fallback
 
-Use a default output value or a catch-all rule with `-`:
+Add a catch-all rule with `-` so unmatched inputs get a sensible default:
 
 | U | Score | Category |
 |---|-------|----------|
@@ -269,7 +269,7 @@ If you want a default for `null` input, add: rule 5 with input `-` and output `"
 
 ### Pattern: Lookup Table (Relation + Filter)
 
-For large lookup tables, use a relation instead of a decision table:
+When a decision table would be 50 rows of key-value pairs, a relation + filter is cleaner:
 
 ```
 {
@@ -330,13 +330,13 @@ For large lookup tables, use a relation instead of a decision table:
 
 ## Summary
 
-This chapter is a reference you will return to. When you encounter a business logic task, check here first — the pattern you need is likely already solved.
+Bookmark this chapter. The next time you stare at a business logic task wondering how to express it in FEEL, flip back here -- odds are good somebody already solved it.
 
 ---
 
 ## What Comes Next
 
-Chapter 13 covers FEEL in real systems — how to embed FEEL in Camunda, Apache KIE, and other engines, and how to test FEEL expressions in CI/CD pipelines.
+Patterns are only useful if you can run them somewhere. Chapter 13 shows you how to embed FEEL in Camunda, Apache KIE, and other engines -- and how to test your expressions in CI/CD pipelines.
 
 ---
 

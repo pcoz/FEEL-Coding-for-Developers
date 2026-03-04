@@ -32,7 +32,7 @@ The cost of this chaos is enormous:
 
 ### Worked Example 1.1 — The Pricing Spreadsheet
 
-Consider a fictional e-commerce company, ShopFast, that offers discounts based on customer tier, order size, and promotional campaigns. Here is how the discount logic actually exists in their systems:
+Meet ShopFast, a fictional e-commerce company that offers discounts based on customer tier, order size, and promotional campaigns. Here is how their discount logic actually lives in the wild:
 
 **In the "Pricing Rules" Excel file (maintained by the marketing team):**
 
@@ -68,9 +68,9 @@ This is not a hypothetical scenario. This is Tuesday at most enterprises.
 
 ## 1.2 Decision Management: A Discipline
 
-The problem described above was recognised decades ago. The solution is a discipline called **decision management**: the practice of identifying, modelling, automating, and governing business decisions as first-class artefacts, separate from the processes and applications that use them.
+None of this is new. People have been fighting this battle for decades, and the discipline that emerged has a name: **decision management** — the practice of identifying, modelling, automating, and governing business decisions as first-class artefacts, separate from the processes and applications that use them. It is to business logic what version control is to source code: once you have it, you cannot imagine going back.
 
-### A Brief History
+### A Brief History (of Getting This Wrong, Then Right)
 
 | Era | Approach | Limitation |
 |-----|----------|------------|
@@ -80,27 +80,27 @@ The problem described above was recognised decades ago. The solution is a discip
 | **2010s** | Standards emerge: DMN 1.0 (2015), DMN 1.1 (2016) | Early versions limited (no full expression language) |
 | **2020s** | DMN matures: 1.3 (2021), 1.4 (2023), 1.5 (2024), 1.6 (2024 beta) | Current state: a robust, multi-vendor standard |
 
-The key insight behind decision management is **separation of concerns**: separate *what* to decide from *how* to execute. The business logic — the rules, the tables, the formulas — should be expressed in a notation that both business analysts and developers can read, test, and maintain. The execution — how those rules are invoked, scaled, and integrated into applications — is the concern of the runtime platform.
+The key insight is one you already know as a developer: **separation of concerns**. Separate *what* to decide from *how* to execute. The business logic — the rules, the tables, the formulas — should live in a notation that both business analysts and developers can read, test, and maintain. The execution — how those rules get invoked, scaled, and integrated into your applications — is the concern of the runtime platform. Think of it like SQL: you declare *what* data you want, and the database engine figures out *how* to get it.
 
 ### Who Standardises This?
 
-The **Object Management Group (OMG)** is an international, non-profit technology standards consortium — the same body that produced UML, CORBA, and BPMN. The OMG develops and **maintains** the DMN and FEEL specifications through a formal standards process involving multiple vendors, academics, and practitioners.
+If you have ever used UML, BPMN, or (heaven help you) CORBA, you have encountered the **Object Management Group (OMG)** — an international, non-profit standards consortium. The OMG owns the DMN and FEEL specifications, developing them through a formal process involving multiple vendors, academics, and practitioners.
 
-In 2015, the OMG published version 1.0 of **Decision Model and Notation (DMN)**. The specification has been actively maintained and evolved through versions 1.1 (2016), 1.2 (2019), 1.3 (2021), 1.4 (2023), 1.5 (2024), and the current 1.6 beta (2024). Each revision refines the type system, adds built-in functions, and tightens the specification of FEEL's semantics.
+The OMG published **Decision Model and Notation (DMN)** version 1.0 in 2015, and the spec has been evolving steadily: 1.1 (2016), 1.2 (2019), 1.3 (2021), 1.4 (2023), 1.5 (2024), and the current 1.6 beta (2024). Each revision refines the type system, adds built-in functions, and tightens FEEL's semantics.
 
-DMN provides:
+So what does DMN actually give you? Three things:
 
 1. A graphical notation for decision requirements (who needs what to decide what).
 2. A tabular notation for decision logic (decision tables).
 3. An expression language for everything that does not fit in a table.
 
-That expression language is **FEEL**. Like DMN itself, FEEL is maintained by the OMG — it is not owned by any single vendor. This means that FEEL expressions are portable across conformant engines from different vendors: a decision table written against one CL3 engine should produce the same results on another.
+That expression language is **FEEL**. And because FEEL is maintained by the OMG — not owned by any single vendor — your FEEL expressions are portable. A decision table written against one CL3 engine should produce the same results on another. No vendor lock-in. That is the promise, anyway. (Reality is messier, as we will see in section 1.5.)
 
 ---
 
 ## 1.3 DMN in 60 Seconds
 
-Before we dive into FEEL, you need the 30,000-foot view of DMN. Think of DMN as a three-layer cake:
+FEEL does not exist in a vacuum — it lives inside DMN. Here is the 30,000-foot view. Think of DMN as a three-layer cake:
 
 ### Layer 1: Decision Requirements
 
@@ -116,11 +116,11 @@ The DRD does not contain any logic — it just shows the structure.
 
 ### Layer 2: Decision Logic
 
-Each decision in the DRD has associated logic, expressed as a **boxed expression** (so called because each expression is rendered inside a rectangular box in the DMN visual notation). The most common form is a **decision table**: a grid of conditions and conclusions. But boxed expressions also include contexts (step-by-step calculations), invocations (function calls), lists, conditionals, and more.
+Each decision node in the DRD has logic behind it, expressed as a **boxed expression** (literally: each expression is rendered inside a rectangular box in the DMN visual notation). The most common form is a **decision table** — a grid of conditions and conclusions, like a truth table that your business analyst can actually read. But boxed expressions also include contexts (step-by-step calculations), invocations (function calls), lists, conditionals, and more.
 
 ### Layer 3: Expression Language
 
-Inside every box — every decision table cell, every context entry, every condition — there are **FEEL expressions**. FEEL is the language inside the boxes.
+Inside every box — every decision table cell, every context entry, every condition — there are **FEEL expressions**. FEEL is the language inside the boxes. If DMN is the spreadsheet, FEEL is the formula language.
 
 You cannot understand DMN without FEEL. And FEEL without DMN is an expression language without a home. This book focuses on FEEL, but always in the context of the decisions it serves.
 
@@ -139,7 +139,7 @@ Neither audience gets everything they want. Analysts might wish it were even sim
 
 ### What Kind of Language Is FEEL?
 
-FEEL is an **expression language** — not a programming language. This distinction matters:
+FEEL is an **expression language**, not a programming language. If that sounds like a minor distinction, look at what it actually means in practice:
 
 | Programming Language | Expression Language (FEEL) |
 |---------------------|--------------------------|
@@ -153,7 +153,7 @@ FEEL is an **expression language** — not a programming language. This distinct
 
 ### Design Choices That Will Surprise You
 
-If you are coming from JavaScript, Python, Java, or C#, FEEL will feel unfamiliar in several ways. This is not a bug — these choices are deliberate:
+Coming from JavaScript, Python, Java, or C#? FEEL will trip you up. That is by design — every one of these surprises exists for a reason:
 
 | Surprise | Why? |
 |----------|------|
@@ -164,11 +164,11 @@ If you are coming from JavaScript, Python, Java, or C#, FEEL will feel unfamilia
 | **No exceptions**: errors produce `null` | Simpler mental model — but harder to debug. |
 | **No type coercion**: `"1" + 1` is `null`, not `"11"` or `2` | Explicit is better than implicit (for a rule language). |
 
-Each of these will be covered in depth in later chapters. For now, just know that the unfamiliarity is intentional, and there is a rationale behind every choice.
+Each of these gets a full treatment in later chapters. For now, just resist the urge to call them design flaws. The unfamiliarity is intentional — FEEL is optimised for a different audience than the languages you are used to.
 
 ### What FEEL Looks Like
 
-Here are some FEEL expressions to give you a taste. Do not worry about understanding every detail — each construct will be explained fully in later chapters.
+Best way to get a feel for FEEL (sorry) is to see it. Do not worry about understanding every detail yet — just notice how readable it is.
 
 **A simple condition:**
 ```
@@ -208,7 +208,7 @@ If these look more like English than code — that is the point.
 
 ## 1.5 The FEEL Ecosystem
 
-FEEL is a standard, not a product. Multiple vendors and open-source projects implement it. Knowing the landscape will help you choose tools and understand why the same expression might behave slightly differently across engines.
+FEEL is a standard, not a product — which means multiple vendors and open-source projects implement it, each with their own quirks. You need to know the landscape, because the same expression can behave differently depending on which engine runs it.
 
 ### Engines and Implementations
 
@@ -225,7 +225,7 @@ FEEL is a standard, not a product. Multiple vendors and open-source projects imp
 
 ### Conformance Levels
 
-The DMN specification defines three conformance levels:
+Not all engines implement the same subset of FEEL. The DMN specification defines three conformance levels:
 
 - **CL1**: Decision tables with simple literal expressions. No FEEL beyond basic values.
 - **CL2**: Decision tables with S-FEEL (Simple FEEL) — a restricted subset with arithmetic, comparisons, and simple values.
@@ -235,7 +235,7 @@ This book targets **CL3**. If you are building anything beyond trivial decision 
 
 ### Playgrounds and Tools
 
-You do not need to install anything to start experimenting with FEEL:
+Good news: you can start writing FEEL right now, in your browser, without installing anything:
 
 | Tool | What it is |
 |------|-----------|
@@ -246,15 +246,15 @@ You do not need to install anything to start experimenting with FEEL:
 
 ### The DMN Technology Compatibility Kit (TCK)
 
-The DMN TCK is a suite of test cases that verify whether an engine correctly implements the specification. It is hosted at `github.com/dmn-tck/tck`. When evaluating engines, check their TCK pass rate — it is the most objective measure of conformance.
+How do you know if an engine actually implements the spec correctly? The DMN TCK — a suite of test cases hosted at `github.com/dmn-tck/tck` — is your answer. When evaluating engines, check their TCK pass rate. It is the closest thing you have to an objective conformance score.
 
 ---
 
 ## 1.6 Who This Book Is For
 
-This book is written for **working software developers** — people who write code for a living in languages like Java, JavaScript, Python, C#, or similar. You do not need prior experience with DMN, decision management, or business rules engines.
+You are a **working software developer**. You write code for a living in Java, JavaScript, Python, C#, or something similar. You do not need prior experience with DMN, decision management, or business rules engines — this book assumes none.
 
-You **will** benefit from this book if you:
+This book is for you if you:
 
 - Build enterprise applications that contain business logic (pricing, eligibility, risk assessment, routing, compliance).
 - Want to separate business rules from application code — and understand why that matters.
@@ -262,7 +262,7 @@ You **will** benefit from this book if you:
 - Are a technical architect evaluating whether DMN and FEEL are the right fit for your organisation.
 - Are a business analyst with programming experience who wants to write and maintain FEEL expressions directly.
 
-You will **not** benefit from this book if you are looking for a general introduction to BPMN, a guide to a specific vendor's product, or a book on machine learning. This book is narrowly focused on one thing: teaching you to read, write, and think in FEEL.
+This is **not** a general introduction to BPMN, a guide to a specific vendor's product, or a book on machine learning. It is narrowly focused on one thing: teaching you to read, write, and think in FEEL.
 
 ---
 
@@ -270,7 +270,7 @@ You will **not** benefit from this book if you are looking for a general introdu
 
 ### Structure
 
-This book is organised in five parts, progressing from easy to hard:
+Five parts, progressing from foundations to the deep end:
 
 1. **Part I** (this chapter) explains *why* FEEL exists and what the ecosystem looks like.
 2. **Part II** introduces the nature of business rules and business logic, teaches you to *think in decisions* — how to decompose business logic into analytical primitives, and how separating rules from process flow enables clean state-machine architectures.
@@ -280,35 +280,35 @@ This book is organised in five parts, progressing from easy to hard:
 
 ### Conventions
 
-Throughout the book, you will encounter several recurring elements:
+A few recurring elements you will see throughout the book:
 
 **FEEL expressions** are shown in code blocks:
 ```
 sum(Order.Items.Price)
 ```
 
-**Rosetta Stone boxes** compare FEEL to JavaScript, Python, and SQL, so you can map unfamiliar constructs to ones you already know:
+**Rosetta Stone boxes** map FEEL constructs to JavaScript, Python, and SQL — so you can translate the unfamiliar into the familiar:
 
 | FEEL | JavaScript | Python | SQL |
 |------|-----------|--------|-----|
 | `list[1]` | `list[0]` | `list[0]` | First row |
 | `count(list)` | `list.length` | `len(list)` | `COUNT(*)` |
 
-**Gotcha boxes** highlight common traps that catch developers:
+**Gotcha boxes** warn you about traps before you fall into them:
 
 > **GOTCHA:** `"1" + 1` evaluates to `null` in FEEL — not `"11"` (JavaScript) or `2` (Python). FEEL does not perform implicit type coercion. Use `string(1)` or `number("1")` to convert explicitly.
 
-**Engine Note boxes** flag behavioural differences between implementations:
+**Engine Note boxes** flag places where implementations disagree:
 
 > **ENGINE NOTE (Camunda vs KIE):** Camunda's feel-scala allows `date and time` values without a timezone. KIE's Drools engine may normalise these to UTC. Test your expressions in the target engine.
 
 ### Reference Engine
 
-The examples in this book are tested against **Camunda 8** (feel-scala) as the primary reference engine. Where Drools/KIE or Trisotech behave differently, this is noted. The companion repository contains all examples as executable `.feel` and `.dmn` files.
+Every example in this book is tested against **Camunda 8** (feel-scala) as the primary reference engine. Where Drools/KIE or Trisotech behave differently, you will see an Engine Note. The companion repository contains all examples as executable `.feel` and `.dmn` files, so you can run them yourself.
 
 ### Exercises
 
-Every chapter (from Chapter 4 onward) ends with exercises. Solutions are in Appendix B. The exercises follow the same progressive structure as the chapters — start with the first few, and attempt the later ones only after you are comfortable with the material.
+From Chapter 4 onward, every chapter ends with exercises (solutions in Appendix B). They are progressive — the early ones reinforce the basics, the later ones push you. Do them in order.
 
 ---
 
@@ -326,7 +326,7 @@ Every chapter (from Chapter 4 onward) ends with exercises. Solutions are in Appe
 
 ## What Comes Next
 
-In Chapter 2, we will explore the nature of business rules and business logic — what they are, why they matter, and how they fit into the broader landscape of decision management. This foundation will prepare you for the analytical techniques and FEEL expressions that follow.
+Now that you know *why* FEEL exists, Chapter 2 digs into the raw material it works with: business rules and business logic. What are they, really? How do you decompose them? And how does thinking in decisions change the way you architect systems?
 
 ---
 

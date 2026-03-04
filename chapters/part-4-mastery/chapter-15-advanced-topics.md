@@ -6,12 +6,12 @@
 
 ## 15.1 The Type Lattice
 
-FEEL types are organised as a **lattice** — a partially ordered structure with:
+FEEL's types form a **lattice** -- a hierarchy where every type has a well-defined place:
 
-- **Any** at the top: every value conforms to `Any`.
-- **Null** at the bottom: `null` conforms to every type.
-- Primitive types in the middle: `number`, `string`, `boolean`, `date`, `time`, `date and time`, `days and time duration`, `years and months duration`.
-- Parameterised types: `list<T>`, `range<T>`, `context<k1:T1, ...>`, `function<T1,...> -> R`.
+- **Any** sits at the top: every value conforms to `Any`.
+- **Null** sits at the bottom: `null` conforms to every type. (This is why you can pass `null` anywhere without a type error.)
+- Primitive types live in the middle: `number`, `string`, `boolean`, `date`, `time`, `date and time`, `days and time duration`, `years and months duration`.
+- Parameterised types add structure: `list<T>`, `range<T>`, `context<k1:T1, ...>`, `function<T1,...> -> R`.
 
 ```
                         Any
@@ -26,7 +26,7 @@ FEEL types are organised as a **lattice** — a partially ordered structure with
 
 ### Type Equivalence (T ≡ S)
 
-Two types are equivalent if they are interchangeable in all contexts:
+Two types are equivalent when you can swap one for the other and nothing breaks:
 
 - Primitive types: `number ≡ number` (same name = equivalent).
 - Lists: `list<T> ≡ list<S>` iff `T ≡ S`.
@@ -36,7 +36,7 @@ Two types are equivalent if they are interchangeable in all contexts:
 
 ### Type Conformance (T <: S)
 
-Conformance means "T can be used where S is expected":
+Conformance answers a practical question: "Can I pass a value of type T where the engine expects type S?"
 
 - Every type conforms to `Any`.
 - `Null` conforms to every type.
@@ -44,22 +44,22 @@ Conformance means "T can be used where S is expected":
 - A context conforms to another if it has **at least** the same keys with conforming types (extra keys are OK — structural subtyping).
 - Functions are **contravariant** in parameters and **covariant** in return type: `(S1,...) → U <: (T1,...) → V` iff `Ti <: Si` and `U <: V`.
 
-### Practical Impact
+### Why You Should Care
 
-Type conformance determines:
-- Whether a function argument is accepted.
+Type conformance is not academic trivia -- it controls three things you hit constantly:
+- Whether a function argument is accepted or silently becomes `null`.
 - Whether a decision output matches its declared type.
-- Whether implicit conversions apply.
+- Whether one of FEEL's implicit conversions kicks in (see the next section).
 
 ---
 
 ## 15.2 Implicit Type Conversions
 
-FEEL performs four kinds of implicit conversion:
+FEEL quietly converts values in four situations. These are helpful once you know they exist, and baffling when you do not:
 
 ### To Singleton List
 
-When a value of type `T` is expected to be `list<T>`, it is automatically wrapped:
+When a single value shows up where a list is expected, FEEL wraps it automatically:
 
 ```
 3[item > 2]    // 3 is converted to [3], filter applies → [3]
@@ -67,7 +67,7 @@ When a value of type `T` is expected to be `list<T>`, it is automatically wrappe
 
 ### From Singleton List
 
-When a `list<T>` with exactly one element is expected to be `T`, it is unwrapped:
+The reverse also works: a one-element list is unwrapped to a scalar when a scalar is expected:
 
 ```
 contains(["foobar"], "of")
@@ -76,7 +76,7 @@ contains(["foobar"], "of")
 
 ### Date to Date-Time
 
-When a `date` is expected to be a `date and time`, it is converted with time of day = UTC midnight:
+When a function expects `date and time` but you hand it a plain `date`, FEEL promotes it by tacking on UTC midnight:
 
 ```
 // If a function expects date and time and receives a date:
@@ -85,7 +85,7 @@ When a `date` is expected to be a `date and time`, it is converted with time of 
 
 ### Decimal to Integer
 
-When a function expects an integer (e.g., `substring` position), a decimal number's fractional part is silently dropped:
+When a function expects an integer (like `substring`'s position argument), FEEL silently truncates the decimal part:
 
 ```
 substring("hello", 2.7)    // position treated as 2
@@ -93,13 +93,13 @@ substring("hello", 2.7)    // position treated as 2
 
 ### Conforms-To Conversion
 
-If the result type does not conform to the target type and no implicit conversion applies, the result is `null`.
+If none of these four conversions apply and the types still do not match, the result is `null`. No exception, no warning -- just `null`.
 
 ---
 
 ## 15.3 Scope and the Context Stack
 
-Every FEEL expression is evaluated in a **scope** — an ordered list of contexts that determines how names (qualified names) are resolved.
+When FEEL sees a name like `Applicant.Age`, it needs to figure out what `Applicant` refers to. The answer lives in the **scope** -- an ordered stack of contexts that FEEL searches from top to bottom.
 
 ### The Context Stack (from first to last)
 
@@ -110,7 +110,7 @@ Every FEEL expression is evaluated in a **scope** — an ordered list of context
 
 ### Special Contexts
 
-Some expressions push a special context onto the front of the stack:
+Certain expressions temporarily push a special context onto the top of the stack, which is why variables like `item` and `partial` seem to appear out of thin air:
 
 - **Filter expressions**: Push `{item: current_element}` (and all context entries of the element if it is a context).
 - **For expressions**: Push `{variable: current_element, partial: accumulated_results}`.
@@ -118,7 +118,7 @@ Some expressions push a special context onto the front of the stack:
 
 ### Name Resolution
 
-Names are resolved by searching the context stack from first to last. The **longest match** wins:
+FEEL resolves names by searching the context stack top-to-bottom. When multiple matches are possible, the **longest match** wins -- and this can surprise you:
 
 ```
 {
@@ -129,15 +129,13 @@ Names are resolved by searching the context stack from first to last. The **long
 }
 ```
 
-The answer depends on the scope: since `a - b` is a key in the same context, the name match wins: `result` = `10`.
+Since `a - b` is a key in the same context, the name match wins: `result` = `10`, not `-1`. This is one of FEEL's most counterintuitive behaviours.
 
 ---
 
 ## 15.4 Name Ambiguity
 
-FEEL allows names to contain characters that are also operators: `-`, `+`, `*`, `/`, `.`, `'`.
-
-This creates ambiguity:
+FEEL lets you name things with characters that double as operators: `-`, `+`, `*`, `/`, `.`, `'`. This is great for readability (`Profit and loss`) and terrible for parsers:
 
 ```
 Profit and loss       // Is this the name "Profit and loss"?
@@ -150,9 +148,9 @@ what if?              // Name "what if?" or... something else?
 
 ### Resolution Rule
 
-Names are matched **left-to-right** against in-scope names, and the **longest match** is preferred.
+FEEL matches names **left-to-right**, preferring the **longest match**.
 
-If `a-b` is an in-scope name, it is treated as a name. If not, it is parsed as `a minus b`.
+If `a-b` is an in-scope name, it wins. If not, the parser falls back to `a minus b`.
 
 ### Disambiguation
 
@@ -162,18 +160,18 @@ Use parentheses to force expression interpretation:
 (a) - (b)      // always subtraction, even if "a-b" is in scope
 ```
 
-### Practical Advice
+### How to Stay Out of Trouble
 
-1. Avoid using operator characters in names when possible.
-2. If you must (because the business domain uses them), be aware of the resolution rules.
-3. When in doubt, use parentheses.
-4. Prefer underscores or spaces: `risk_score` or `risk score` rather than `risk-score`.
+1. Avoid operator characters in names whenever you can.
+2. If the business domain forces your hand (e.g., "Profit and loss"), know the resolution rules cold.
+3. When in doubt, wrap each name in parentheses: `(a) - (b)` is always subtraction.
+4. Prefer underscores or spaces: `risk_score` or `risk score` over `risk-score`.
 
 ---
 
 ## 15.5 XML Data in FEEL
 
-FEEL can consume XML data by mapping it to the FEEL semantic domain.
+If your data arrives as XML (and in enterprise systems, it often does), FEEL can consume it by mapping XML structures to native FEEL values.
 
 ### Mapping Rules (XE Function)
 
@@ -233,7 +231,7 @@ Note: repeated `<Customer>` elements become a list. Single `<Employee>` becomes 
 
 ## 15.6 JSON and FEEL
 
-FEEL also maps to/from JSON:
+JSON is the more common case for modern systems, and the mapping is nearly one-to-one:
 
 | FEEL Type | JSON Type |
 |-----------|-----------|
@@ -256,7 +254,7 @@ When a FEEL `date and time` includes an IANA timezone, the JSON string is suffix
 
 ## 15.7 The Full FEEL Grammar
 
-The FEEL grammar consists of 68 rules in ISO EBNF notation. Key rules:
+If you ever need to build a parser, write a syntax highlighter, or settle an argument about what counts as valid FEEL, here is the grammar. It has 68 rules in ISO EBNF notation. The key ones:
 
 ```
 1. expression = boxed expression | textual expression ;
@@ -297,7 +295,7 @@ Comments are Java-style: `// to end of line` and `/* ... */`.
 
 ## What Comes Next
 
-Chapter 16 covers testing FEEL — how to derive comprehensive test cases from decision tables and expressions, coverage metrics, debugging techniques, and CI/CD integration. After that, the appendices provide reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, an engine compatibility matrix, a glossary, and a guide to using FEEL with machine learning.
+You now know how FEEL works at the deepest level. Chapter 16 puts that knowledge to practical use: deriving comprehensive test cases from decision tables and expressions, measuring coverage, debugging the tricky stuff, and wiring it all into CI/CD. After that, the appendices provide reference material you will reach for daily.
 
 ---
 

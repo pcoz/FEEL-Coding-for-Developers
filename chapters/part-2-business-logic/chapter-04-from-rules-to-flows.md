@@ -6,7 +6,7 @@
 
 ## 4.1 The Entanglement Problem
 
-In most enterprise codebases, business rules and business process flow are tangled together. Consider a typical order fulfilment service:
+Open any enterprise codebase and you will find the same disease: business rules and process flow knotted together so tightly that you cannot change one without risking the other. Here is a typical order fulfilment service -- see if this looks familiar:
 
 ```java
 public OrderResult processOrder(Order order) {
@@ -56,14 +56,14 @@ public OrderResult processOrder(Order order) {
 }
 ```
 
-This method does at least four things:
+This single method does at least four different jobs:
 
 1. **Validates** the order (business rule)
 2. **Calculates** the price (business rule)
 3. **Determines** the shipping method (business rule)
 4. **Orchestrates** the process (send notification, charge payment, dispatch)
 
-The business rules and the process flow are *fused*. This creates several problems:
+The business rules and the process flow are *fused*. And that fusion hurts in ways that compound over time:
 
 | Problem | Consequence |
 |---------|------------|
@@ -77,11 +77,11 @@ The business rules and the process flow are *fused*. This creates several proble
 
 ## 4.2 The Separation: Rules Are Decisions, Flows Are State Machines
 
-The solution is architectural: **separate what to decide from what to do**.
+The fix is architectural, and it fits in one sentence: **separate what to decide from what to do**.
 
-A business process, at its core, is a **state machine**. It moves through states (order received, validated, priced, shipped, completed) based on *transitions*. Each transition is triggered by an event or a condition. The conditions come from *decisions*. The process does not need to know *how* a decision is made — only *what* the decision is and *what to do next* based on its result.
+Strip away the details and every business process is a **state machine**. It moves through states -- order received, validated, priced, shipped, completed -- based on *transitions*. Each transition fires on an event or a condition. The conditions come from *decisions*. And here is the crucial part: the process does not need to know *how* a decision is made. It only needs the answer, so it can pick the next state.
 
-Here is the same order fulfilment logic, separated:
+Here is the same order fulfilment logic, pulled apart into its natural halves:
 
 ### The Decisions (expressed in FEEL / decision tables)
 
@@ -155,7 +155,7 @@ Here is the same order fulfilment logic, separated:
 └───────────┘
 ```
 
-The state machine knows *nothing* about discount percentages, price thresholds, or zone classifications. It only knows:
+Notice what the state machine does *not* know. It has zero awareness of discount percentages, price thresholds, or zone classifications. All it knows is:
 
 1. There is a decision called "Validation" that returns `{valid: true/false}`.
 2. There is a decision called "Pricing" that returns `{subtotal: number}`.
@@ -168,18 +168,18 @@ The state machine knows *nothing* about discount percentages, price thresholds, 
 
 ### 4.3.1 Rules Change Independently of Flows
 
-The discount policy changes from 15% to 20% for Gold customers. In the separated architecture:
+Imagine the discount policy changes from 15% to 20% for Gold customers. In the separated architecture:
 
 - **What changes:** One cell in a decision table.
 - **What does not change:** The state machine. The code. The deployment pipeline.
 - **Who can make the change:** A business analyst, using a DMN modelling tool, without touching code.
 - **How it is tested:** Re-run the decision tests with the new expected outputs.
 
-In the entangled architecture, the same change requires modifying Java code, running the full test suite, code review, and a deployment.
+In the entangled architecture? That same one-number change means modifying Java code, running the full test suite, surviving code review, and rolling a deployment. For a percentage.
 
 ### 4.3.2 Flows Change Independently of Rules
 
-The business adds a "gift wrapping" step between pricing and shipping. In the separated architecture:
+Now flip it around. The business wants to add a "gift wrapping" step between pricing and shipping. In the separated architecture:
 
 - **What changes:** The state machine gains a new state and transition.
 - **What does not change:** The pricing decision. The shipping decision. The validation decision.
@@ -187,7 +187,7 @@ The business adds a "gift wrapping" step between pricing and shipping. In the se
 
 ### 4.3.3 Decisions Are Testable in Isolation
 
-Each decision is a pure function: given inputs, it produces outputs. No mocks. No service dependencies. No database. No network.
+Each decision is a pure function: inputs in, outputs out. No mocks. No service dependencies. No database. No network. Just data.
 
 ```
 Input:  { Customer Tier: "Gold", Item Price: 75 }
@@ -198,11 +198,11 @@ You can write hundreds of test cases as simple input/output pairs. You can gener
 
 ### 4.3.4 Decisions Are Reusable Across Processes
 
-The pricing decision is needed by the order fulfilment process, the invoice generation batch job, and the mobile app's cart preview. In the separated architecture, all three call the same decision service. One source of truth.
+The pricing decision is needed by the order fulfilment process, the invoice generation batch job, *and* the mobile app's cart preview. Without separation, that logic gets copy-pasted three times and drifts three different ways. With separation, all three call the same decision service. One source of truth. Zero drift.
 
 ### 4.3.5 Decisions Are Auditable
 
-When a regulator asks "why was this customer charged $47.50?", you can trace the answer through the decision:
+A regulator asks "why was this customer charged $47.50?" You can trace the answer through the decision in seconds:
 
 1. The pricing decision was invoked with inputs `{Tier: "Silver", Items: [...]}`.
 2. Rule 3 matched (Silver tier, any price, 5% discount).
@@ -216,7 +216,7 @@ The decision table *is* the audit trail. No code reading required.
 
 ### 4.4.1 BPMN + DMN: The Standard Stack
 
-The OMG designed BPMN (Business Process Model and Notation) and DMN (Decision Model and Notation) to work together:
+This separation is not a novel idea -- it is exactly what the OMG designed BPMN and DMN to do. They were built as two halves of a whole:
 
 - **BPMN** models the process flow — the state machine.
 - **DMN** models the decisions — the business rules.
@@ -253,13 +253,13 @@ The DMN model does not contain any process logic. It contains:
 
 ### 4.4.2 Microservices and Decision Services
 
-Even without BPMN, the pattern applies. A decision service is a microservice that:
+Not using BPMN? The pattern still holds. A decision service is simply a microservice that:
 
 1. Accepts a JSON payload with the decision inputs.
 2. Evaluates the DMN model.
 3. Returns a JSON payload with the decision outputs.
 
-The calling service — whether it is an API gateway, a workflow engine, an event handler, or a batch job — treats the decision as a black box. It sends the facts, receives the verdict, and acts accordingly.
+The caller -- whether it is an API gateway, a workflow engine, an event handler, or a batch job -- treats the decision as a black box. Send the facts, get the verdict, act on it.
 
 ```
 ┌──────────────┐     POST /decisions/eligibility     ┌──────────────────┐
@@ -275,7 +275,7 @@ The calling service — whether it is an API gateway, a workflow engine, an even
 
 ### 4.4.3 Event-Driven Architectures
 
-In an event-driven system, the state machine reacts to events. Some events carry data that requires a decision. The pattern is:
+In an event-driven system, the state machine reacts to events. Some of those events carry data that needs a judgment call before the process can continue. The pattern looks like this:
 
 1. Event arrives (e.g., `OrderPlaced`).
 2. State machine transitions to a "deciding" state.
@@ -283,13 +283,13 @@ In an event-driven system, the state machine reacts to events. Some events carry
 4. Decision result triggers the next state transition.
 5. State machine emits a new event (e.g., `OrderApproved` or `OrderRejected`).
 
-The decision service does not know about events, states, or transitions. It only knows about inputs and outputs. FEEL expressions inside the decision service are pure functions of their inputs.
+The decision service remains blissfully ignorant of events, states, and transitions. It only knows about inputs and outputs. FEEL expressions inside it are pure functions -- no side effects, no awareness of the world outside their input data.
 
 ---
 
 ## 4.5 The Process Only Needs to Know About the Decisions
 
-This is the key architectural insight, and it is worth stating plainly:
+If you take only one idea from this chapter, make it this one:
 
 > **A business process flow only needs to know about the business rules.** It does not need to implement them, understand them, or contain them. It needs to know:
 >
@@ -300,7 +300,7 @@ This is the key architectural insight, and it is worth stating plainly:
 >
 > Everything else — the actual logic, the tables, the formulas, the edge cases — is encapsulated in the decision model.
 
-This is exactly analogous to how a well-designed service-oriented architecture works: the consumer knows the interface (inputs, outputs, contract), not the implementation.
+If this sounds familiar, it should -- it is the same principle behind every well-designed service interface. The consumer knows the contract (inputs, outputs, guarantees), not the implementation.
 
 ### The Benefits Compound
 
@@ -312,7 +312,7 @@ When you adopt this separation, each piece becomes simpler:
 | **Decision model** | Moderate: tables, expressions, dependencies | Business analysts + developers |
 | **FEEL expressions** | Focused: pure logic, no side effects, independently testable | Developers (with analyst review) |
 
-And the system as a whole gains properties that no amount of clever coding can achieve when rules and flows are entangled:
+And the system as a whole gains properties that you simply cannot get when rules and flows are tangled together, no matter how clever the code:
 
 - **Rules are visible** — expressed in a standard notation, not buried in code.
 - **Rules are versionable** — a decision table is a document that can be versioned, diff'd, and rolled back.
@@ -324,31 +324,31 @@ And the system as a whole gains properties that no amount of clever coding can a
 
 ## 4.6 From Monolith to State Machine: A Migration Path
 
-You do not need to rewrite your entire system. The migration can be incremental:
+Good news: you do not need to stop the world and rewrite everything. This migration works best when you do it one decision at a time.
 
 ### Step 1: Identify the Decisions
 
-Read through your codebase. Every `if/else` block, every `switch` statement, every lookup table that encodes a business rule is a candidate. Mark them.
+Go on a hunting expedition through your codebase. Every `if/else` block, every `switch` statement, every lookup table that encodes a business rule is a candidate. Tag them. You will be surprised how many there are.
 
 ### Step 2: Extract One Decision
 
-Pick the simplest, most self-contained business rule. Express it as a FEEL expression or decision table. Wrap it in a decision service (even if it is just a function call to a local DMN engine).
+Pick the simplest, most self-contained business rule -- the low-hanging fruit. Express it as a FEEL expression or decision table. Wrap it in a decision service (even if that "service" is just a function call to a local DMN engine). Get a win on the board.
 
 ### Step 3: Replace the Code with a Call
 
-Where the original `if/else` block was, put a call to the decision service. The calling code receives the result and acts on it — but no longer computes it.
+Rip out the original `if/else` block and replace it with a call to your decision service. The calling code still receives the result and acts on it -- but it no longer computes it. That distinction matters more than it seems.
 
 ### Step 4: Test Side-by-Side
 
-Run both the old code path and the new decision service with the same inputs. Verify that the outputs match. Fix any discrepancies (there will be some — this is where you discover that the old code had bugs).
+Run both the old code path and the new decision service with the same inputs. Verify that the outputs match. Fix any discrepancies -- and there *will* be discrepancies. This is the step where you discover that the old code had bugs nobody knew about.
 
 ### Step 5: Repeat
 
-Extract the next decision. And the next. As more decisions are extracted, the remaining code becomes increasingly process-oriented — a state machine emerges naturally.
+Extract the next decision. And the next. With each extraction, the remaining code sheds complexity and becomes increasingly process-oriented. Something interesting happens: a state machine starts to emerge on its own.
 
 ### Step 6: Formalise the State Machine
 
-Once enough decisions are extracted, the remaining code is simple enough to express as a formal state machine — in BPMN, in a workflow engine, or in a state machine library in your language of choice.
+Once enough decisions have been pulled out, what remains is simple enough to express as a formal state machine -- in BPMN, in a workflow engine, or in a state machine library in your language of choice.
 
 ### The Result
 
@@ -368,19 +368,19 @@ Before:                           After:
 └──────────────────────────┘
 ```
 
-The monolith has been split along its natural fault line: rules on one side, flow on the other. Each side is simpler, more testable, and more maintainable than the whole.
+The monolith has been split along its natural fault line: rules on one side, flow on the other. Each half is simpler, more testable, and more maintainable than the tangled whole ever was.
 
 ---
 
 ## 4.7 FEEL Contexts as Business State
 
-A FEEL context is more than a data structure — it is a **business state representation**. When a decision service evaluates a set of business rules, the result is a FEEL context that captures the complete outcome: what was decided, what the computed values are, and what classification was assigned.
+A FEEL context looks like a data structure, but think of it as something more powerful: a **business state representation**. When a decision service finishes evaluating, the result is a context that captures the complete outcome -- what was decided, what the computed values are, and what classification was assigned.
 
-This context *is* the interface between the decision layer and the process layer. The state machine does not need to know how the values were computed — it receives a structured result and routes accordingly.
+This context *is* the contract between the decision layer and the process layer. The state machine does not care how the values were computed. It receives a structured result and routes accordingly.
 
 ### The Pattern: Decision Returns Business State
 
-Consider an insurance claim assessment. The decision model evaluates several rules and returns a single context:
+Take an insurance claim assessment. The decision model evaluates several rules and packs everything into a single context:
 
 ```
 {
@@ -393,7 +393,7 @@ Consider an insurance claim assessment. The decision model evaluates several rul
 }
 ```
 
-This context represents the **business state** of the claim after decision evaluation. The process flow receives this context and uses its fields to determine the next state transition:
+That context *is* the **business state** of the claim after evaluation. The process flow receives it and uses its fields to pick the next state transition:
 
 - If `next action = "auto-approve"` → transition to the Approve state.
 - If `next action = "manual-review"` → transition to the Review state.
@@ -403,7 +403,7 @@ The process never inspects `approved amount` or `reason codes` to make its routi
 
 ### Why Contexts, Not Scalars
 
-A decision could return a single scalar value (e.g., `"approve"`). But returning a rich context provides several advantages:
+Sure, a decision *could* return a single scalar -- just `"approve"`. But a rich context pays for itself immediately:
 
 | Approach | Limitation |
 |----------|-----------|
@@ -411,7 +411,7 @@ A decision could return a single scalar value (e.g., `"approve"`). But returning
 | Return a tuple of values | Position-dependent, fragile, unreadable |
 | Return a FEEL context | Self-documenting, extensible, directly serialisable to JSON |
 
-A FEEL context maps naturally to a JSON object, a Java `Map`, a Python `dict`, or a C# `Dictionary`. This makes it the ideal **boundary type** between the decision engine and the host application.
+A FEEL context maps naturally to a JSON object, a Java `Map`, a Python `dict`, or a C# `Dictionary`. That makes it the ideal **boundary type** between your decision engine and whatever host application calls it.
 
 ### Example: Order Assessment with Business State
 
@@ -442,7 +442,7 @@ A FEEL context maps naturally to a JSON object, a Java `Map`, a Python `dict`, o
 }.order state
 ```
 
-The final `.order state` projection returns only the business-relevant summary — a clean context that the process can consume without knowing anything about how discounts, shipping methods, or totals were calculated.
+The final `.order state` projection strips away the working variables and returns only the business-relevant summary -- a clean context that the process can consume without knowing a thing about how discounts, shipping methods, or totals were calculated.
 
 **The process receives:**
 
@@ -490,13 +490,13 @@ The state machine reads `status` and transitions. The order service reads `total
 }
 ```
 
-If `ready` is `false`, the state machine transitions to "Awaiting Documents" and sends a notification listing `missing_documents`. If `ready` is `true`, it transitions to "Provision Equipment" using `equipment_request` and "Assign Desk" using `assigned_office`. The decision encapsulates *all* the business logic. The process just reads and routes.
+If `ready` is `false`, the state machine transitions to "Awaiting Documents" and fires off a notification listing `missing_documents`. If `ready` is `true`, it transitions to "Provision Equipment" using `equipment_request` and "Assign Desk" using `assigned_office`. The decision encapsulates *all* the business logic. The process just reads and routes -- exactly as it should.
 
 ---
 
 ## 4.8 Real-World Example: Loan Origination (Revisited)
 
-Recall the loan origination process from Chapter 3. The DMN specification models it as:
+Let's bring this full circle with the loan origination process from Chapter 3. The DMN specification models it as:
 
 **The process (BPMN state machine):**
 
@@ -530,9 +530,9 @@ Decide Bureau Strategy  ──▶  [DMN Decision Service: Strategy + Bureau Call
 - Application Risk Score → scorecard decision table (3 inputs, 1 output, C+ hit policy)
 - Routing → decision table (4 inputs, 1 output)
 
-The process has **7 states** and **6 transitions**. The decision model has **10 decisions** with complex interrelated logic. Yet they are completely separate. A change to the risk scoring model does not touch the process. Adding a new process step (e.g., "verify identity") does not touch the decision logic.
+The process has **7 states** and **6 transitions**. The decision model has **10 decisions** with complex interrelated logic. Yet they are completely separate. Change the risk scoring model? The process does not notice. Add a new "verify identity" step to the process? The decision logic does not care.
 
-This is the architecture that FEEL enables. The rest of this book teaches you the language that powers the decisions.
+This is the architecture that FEEL enables. The rest of this book teaches you the language that powers the decision side of that split.
 
 ---
 
@@ -549,7 +549,7 @@ This is the architecture that FEEL enables. The rest of this book teaches you th
 
 ## What Comes Next
 
-Now that you understand *why* FEEL exists (Chapter 1), *what* business rules and business logic are (Chapter 2), *how* to think in decisions (Chapter 3), and *where* FEEL fits in the architecture (this chapter), it is time to learn the language itself. Chapter 5 begins with the atoms of FEEL: values and types.
+You now know *why* FEEL exists (Chapter 1), *what* business rules and business logic are (Chapter 2), *how* to think in decisions (Chapter 3), and *where* FEEL fits in the architecture (this chapter). The stage is set. Chapter 5 begins with the atoms of FEEL itself: values and types.
 
 ---
 

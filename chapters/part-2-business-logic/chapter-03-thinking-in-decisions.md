@@ -8,13 +8,13 @@ Chapter 2 gave you the vocabulary — the ten analytical primitives that every b
 
 The temptation when learning any language — FEEL included — is to dive straight into grammar and built-in functions. Resist that temptation. The hardest part of writing correct FEEL is not the syntax. It is choosing the right structure for the logic: when to use a decision table, when to use a step-by-step computation, and how to connect multiple decisions into a coherent model.
 
-This chapter covers four structures: **decision tables**, **contexts** (step-by-step computations), **Decision Requirements Graphs** (dependency diagrams), and the **mapping table** that connects every primitive from Chapter 2 to its FEEL construct.
+Four structures carry almost all the weight: **decision tables**, **contexts** (step-by-step computations), **Decision Requirements Graphs** (dependency diagrams), and the **mapping table** that connects every primitive from Chapter 2 to its FEEL construct.
 
 ---
 
 ## 3.1 Decision Tables: The Workhorse
 
-In Chapter 2, you met the **Classification** primitive — mapping inputs to categories. You also saw **Threshold Tests**, **Range Membership**, and **Enumeration Matches**. All of these have something in common: they evaluate conditions against inputs and produce a result. A **decision table** is the natural structure for expressing them.
+Classification. Threshold Tests. Range Membership. Enumeration Matches. All the primitives you met in Chapter 2 share a common shape: evaluate conditions against inputs, produce a result. A **decision table** is the natural structure for expressing every one of them.
 
 Use a decision table when:
 
@@ -25,7 +25,7 @@ Use a decision table when:
 
 ### Anatomy of a Decision Table
 
-A decision table has these components:
+Every decision table is built from the same parts:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -49,15 +49,15 @@ A decision table has these components:
 - **Hit policy** (the letter in `[H]`): What happens when multiple rules match.
 - **Rules**: Each row is one rule. Read it as: "If input 1 matches AND input 2 matches, then the output is..."
 
-Notice the connection to Chapter 2: each input entry is a **Threshold Test**, **Range Membership**, or **Enumeration Match**. Each row is a **Conjunction** of those tests. The table as a whole is a **Classification** or **Conditional Mapping**. The decision table is not a new concept — it is a compact notation for combining primitives you already understand.
+Notice what happened: each input entry is a **Threshold Test**, **Range Membership**, or **Enumeration Match**. Each row is a **Conjunction** of those tests. The table as a whole is a **Classification** or **Conditional Mapping**. Nothing new here — a decision table is just a compact notation for combining primitives you already understand.
 
 ### Hit Policies
 
-The hit policy determines what happens when the inputs match zero, one, or more than one rule. This is one of the most important concepts in DMN.
+What happens when the inputs match more than one rule? Or zero rules? The hit policy answers that question — and choosing the right one is one of the most important decisions you will make in DMN.
 
 #### Single-Hit Policies
 
-These policies produce a single output value:
+One input, one answer:
 
 | Policy | Letter | Meaning | When to use |
 |--------|--------|---------|------------|
@@ -68,7 +68,7 @@ These policies produce a single output value:
 
 #### Multiple-Hit Policies
 
-These policies produce a list of output values:
+Sometimes you want *all* the answers, not just one:
 
 | Policy | Letter | Meaning | When to use |
 |--------|--------|---------|------------|
@@ -80,7 +80,7 @@ These policies produce a list of output values:
 | **Rule Order** | R | All matching rules fire. Outputs returned in rule order. | When the order of rules matters for downstream processing. |
 | **Output Order** | O | All matching rules fire. Outputs returned in the order defined by output values. | When you need a canonical ordering. |
 
-The connection to Chapter 2's primitives: **Collect Sum** (C+) is the table-level embodiment of the **Aggregation** primitive. **Priority** (P) and **Output Order** (O) are the table-level embodiment of the **Ordering and Priority** primitive. The hit policy determines *how* the table combines its matched rules — and each combination strategy maps to a primitive.
+See the connection back to Chapter 2? **Collect Sum** (C+) is the table-level version of the **Aggregation** primitive. **Priority** (P) and **Output Order** (O) are the table-level versions of **Ordering and Priority**. The hit policy determines *how* the table combines its matched rules — and each combination strategy maps to a primitive you already know.
 
 ### Worked Example 3.1 — Shipping Cost Table
 
@@ -137,11 +137,11 @@ Now the table writes itself:
 
 ## 3.2 Beyond Tables: Computed Values and Formulas
 
-Decision tables express the **Classification** and **Conditional Mapping** primitives beautifully. But when the output is a *computed value* rather than a *classified label*, you need the **Aggregation** and **Temporal Reasoning** primitives — and these call for a different structure: the **context**.
+Decision tables shine when you are classifying — mapping inputs to one of several predefined outcomes. But what happens when the output is a *computed number* rather than a *classified label*? You need the **Aggregation** and **Temporal Reasoning** primitives, and they call for a different structure: the **context**.
 
 ### The Context: A Step-by-Step Computation
 
-A context is a sequence of named values, where each value can reference the ones before it. Think of it as a spreadsheet column, or as a `let` chain in functional programming.
+A context is a sequence of named values where each value can reference the ones before it. If you have used a spreadsheet column where each cell references the cells above, or a `let` chain in functional programming, you already know how this works.
 
 ### Worked Example 3.2 — Monthly Installment Calculation
 
@@ -153,7 +153,7 @@ A context is a sequence of named values, where each value can reference the ones
 >
 > Where Rate is the annual interest rate (decimal), Term is the number of years, and Amount is the loan principal.
 
-**Identifying the primitives:** This rule is pure **Aggregation** — a mathematical reduction of inputs to a computed value. No classification, no ranges, no enumeration. A decision table would be the wrong structure.
+**Identifying the primitives:** This is pure **Aggregation** — a mathematical reduction of inputs to a single number. No classification, no ranges, no enumeration. Reaching for a decision table here would be a mistake.
 
 **As a step-by-step computation:**
 
@@ -163,7 +163,7 @@ Step 2:  Num Payments    = Term * 12
 Step 3:  PMT             = Amount * Monthly Rate / (1 - (1 + Monthly Rate) ** (- Num Payments))
 ```
 
-This is a context: three named values, each building on the previous ones. In FEEL (preview — we will cover the syntax in Chapter 6):
+Three named values, each building on the previous ones — that is a context. Here is what it looks like in FEEL (preview — full syntax comes in Chapter 6):
 
 ```
 {
@@ -177,17 +177,17 @@ The key insight: **name your intermediate values**. Do not write one massive for
 
 ### The Invocation: Reusable Logic
 
-When the same calculation is used in multiple decisions (e.g., both the pre-bureau and post-bureau affordability checks need the monthly installment), package it as a **Business Knowledge Model (BKM)** — a reusable function that can be invoked with different parameters. This is the FEEL embodiment of the **Ordering/Priority** principle applied to architecture: shared computations are factored out and invoked, not duplicated.
+What if the same calculation shows up in multiple decisions? Both the pre-bureau and post-bureau affordability checks need the monthly installment, for instance. Do not copy-paste the formula. Package it as a **Business Knowledge Model (BKM)** — a reusable function that can be invoked with different parameters. Shared computations get factored out and invoked, not duplicated. DRY applies to decision models just as much as it applies to code.
 
 ---
 
 ## 3.3 The Decision Requirements Graph
 
-Individual decisions do not exist in isolation. They form a dependency graph. This is where the primitives from Chapter 2 become a **system** — the **Aggregation** of one decision feeds the **Threshold Test** of the next, which feeds the **Classification** of the decision above it.
+No decision lives alone. In any real system, decisions form a dependency graph: the **Aggregation** output of one decision feeds the **Threshold Test** of the next, which feeds the **Classification** of the decision above it. The primitives from Chapter 2 stop being isolated building blocks and become a **system**.
 
 ### Worked Example 3.3 — Loan Origination DRG
 
-The DMN specification includes a comprehensive loan origination example. Here is its structure:
+The DMN specification ships with a loan origination example that is worth studying closely. Here is its structure:
 
 ```
                       ┌──────────┐
@@ -223,24 +223,24 @@ Reading this graph from bottom to top:
 2. **Intermediate decisions**: Application Risk Score, Pre-Bureau Risk Category, Required Monthly Installment, Pre-Bureau Affordability.
 3. **Top-level decisions**: Eligibility, Bureau Call Type, Strategy.
 
-Each arrow says: "This decision *requires* that information." The graph must be acyclic — no circular dependencies.
+Each arrow says: "This decision *requires* that information." And like any dependency graph worth its salt, it must be acyclic — no circular dependencies allowed.
 
 **The primitives at work:** Application Risk Score is a **Classification** (via a C+ scorecard table — using the **Aggregation** primitive to sum partial scores). Pre-Bureau Risk Category is another **Classification** that consumes the score via a **Range Membership** test. Pre-Bureau Affordability performs **Aggregation** (the installment formula from Section 3.2) followed by a **Threshold Test** (can the applicant afford it?). Eligibility is a **Conjunction** of multiple conditions. The DRG makes these dependencies explicit — you can see which primitives feed which.
 
 ### Why This Matters
 
-Drawing the DRG *before* writing any FEEL expressions gives you:
+Draw the DRG *before* you write a single FEEL expression. You get four things for free:
 
-1. **Clarity**: You know exactly what each decision needs and produces.
-2. **Testability**: You can test each decision in isolation by providing its direct inputs.
-3. **Reusability**: Shared dependencies (like Application Risk Score) are computed once and used by multiple downstream decisions.
-4. **Communication**: The graph is readable by business stakeholders, testers, and developers alike.
+1. **Clarity** -- you know exactly what each decision needs and produces.
+2. **Testability** -- you can test each decision in isolation by feeding it mock inputs.
+3. **Reusability** -- shared dependencies (like Application Risk Score) are computed once and used by multiple downstream decisions.
+4. **Communication** -- the graph is readable by business stakeholders, testers, and developers alike. Everyone points at the same picture.
 
 ---
 
 ## 3.4 From Analysis to FEEL: The Bridge
 
-We have now established the analytical framework (Chapter 2) and the organisational structures (this chapter). Here is the mapping table that connects every business logic primitive to the FEEL constructs you will learn in Part III:
+You now have the analytical framework (Chapter 2) and the organisational structures (this chapter). Time to connect them. Here is the mapping table that links every business logic primitive to the FEEL constructs you will learn in Part III:
 
 | Analytical Primitive | FEEL Construct | Chapter |
 |---------------------|----------------|---------|
@@ -255,13 +255,13 @@ We have now established the analytical framework (Chapter 2) and the organisatio
 | Ordering / Priority | `sort()`, Priority hit policy, `list[1]` | 9, 10 |
 | Temporal reasoning | Date/time arithmetic, `duration()`, temporal comparisons | 5, 6 |
 
-Keep this table bookmarked. When you encounter a business requirement and are unsure how to express it in FEEL, start here: identify the primitive (Chapter 2), look up the corresponding FEEL construct, and turn to the referenced chapter.
+Bookmark this table. When a business requirement lands on your desk and you are not sure how to express it in FEEL, start here: identify the primitive (Chapter 2), look up the corresponding FEEL construct, and flip to the referenced chapter.
 
 ---
 
 ## 3.5 A Complete Decomposition Walkthrough
 
-Let us work through one more example end-to-end, combining the primitive analysis from Chapter 2 with the structures from this chapter.
+Time to put it all together. One more example, end-to-end: primitive analysis from Chapter 2 meets the structures from this chapter.
 
 ### The Policy: Insurance Premium Calculation
 
@@ -297,7 +297,7 @@ Let us work through one more example end-to-end, combining the primitive analysi
 
 ### Step 2: Choose the Structures (This Chapter)
 
-Now we choose the right structure for each component:
+Each component gets matched to the structure that fits it best:
 
 - **Base Premium**: Pure **Classification** → use a **decision table** (4 values in, 1 value out).
 - **Age Factor, Claims Factor, Multi-Car Factor, Mileage Factor**: Each is a **Conditional Mapping** that produces a numeric multiplier → use a **context** (step-by-step computation), because the factors interact (Claims Factor depends on Claims Count, which is itself computed).
@@ -343,7 +343,7 @@ This table is the **Classification** primitive in its purest form: one input, on
 }
 ```
 
-Even without knowing FEEL syntax, you can read this. Each line maps to a primitive from Chapter 2:
+You can read this even if you have never seen a line of FEEL before. Each line maps straight to a Chapter 2 primitive:
 
 - `Age Factor` → **Disjunction** of **Threshold Tests**, wrapped in a **Conditional Mapping**
 - `Claims Count` → **Iteration with Filter** + **Aggregation**
@@ -351,17 +351,17 @@ Even without knowing FEEL syntax, you can read this. Each line maps to a primiti
 - `Multi Car` → **Aggregation** + **Threshold Test** in a **Conditional Mapping**
 - `Premium` → **Aggregation** (product)
 
-That is the power of decomposing first and coding second.
+Decompose first, code second. That is the pattern, and it works every time.
 
 ---
 
 ## Summary
 
-- **Decision tables** are the natural structure for **Classification**, **Threshold**, **Range**, and **Enumeration** primitives — any rule where conditions map to outcomes.
-- **Contexts** (step-by-step computations) are the natural structure for **Aggregation** and **Conditional Mapping** primitives — any rule where the output is computed, not classified.
-- **Decision Requirements Graphs** show how decisions depend on each other. The primitives from one decision feed the primitives of the next. Draw the graph before writing any expressions.
+- **Decision tables** are the go-to structure for **Classification**, **Threshold**, **Range**, and **Enumeration** primitives — any rule where conditions map to outcomes.
+- **Contexts** (step-by-step computations) are the go-to structure for **Aggregation** and **Conditional Mapping** primitives — any rule where the output is computed, not classified.
+- **Decision Requirements Graphs** make dependencies between decisions explicit. The primitives of one decision feed the primitives of the next. Draw the graph before writing any expressions.
 - Hit policies determine how a decision table handles multiple matching rules. **Unique** (U) is the most common. **Collect Sum** (C+) embodies **Aggregation**. **Priority** (P) embodies **Ordering**.
-- Each analytical primitive from Chapter 2 maps to specific FEEL constructs. The mapping table in Section 3.4 is your bridge from analysis to code.
+- Every analytical primitive from Chapter 2 maps to specific FEEL constructs. The mapping table in Section 3.4 is your bridge from analysis to code.
 
 ---
 
@@ -377,7 +377,7 @@ That is the power of decomposing first and coding second.
 
 ## What Comes Next
 
-Chapter 4 explores a crucial architectural consequence of this analysis: once business rules are separated from process logic, the process becomes a simple state machine. You will see how FEEL contexts serve as the boundary between decisions and the processes that consume them — and why this separation transforms the way systems are built and maintained.
+Once business rules are separated from process logic, something interesting happens: the process collapses into a simple state machine. Chapter 4 shows how FEEL contexts serve as the boundary between decisions and the processes that consume them — and why this separation transforms the way systems are built and maintained.
 
 ---
 

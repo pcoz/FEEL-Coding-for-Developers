@@ -6,7 +6,7 @@
 
 ## 13.1 Camunda 8 (feel-scala)
 
-Camunda 8 is the most widely used open-source platform that embeds FEEL. Its FEEL engine is **feel-scala**, a Scala-based interpreter running on the JVM.
+If you have used FEEL in production, there is a good chance it was through Camunda 8. Its FEEL engine, **feel-scala**, is a Scala-based interpreter running on the JVM and the most widely deployed open-source FEEL implementation.
 
 ### Where FEEL Appears in Camunda 8
 
@@ -60,7 +60,7 @@ The standalone web playground is available at `camunda.github.io/feel-scala/docs
 
 ## 13.2 Apache KIE (Drools)
 
-Apache KIE (formerly Red Hat Drools) provides a full DMN runtime with its own FEEL interpreter, written in Java.
+Apache KIE (formerly Red Hat Drools) takes a different approach: a Java-native FEEL interpreter with the strongest spec conformance of any open-source engine.
 
 ### Key Differences from Camunda
 
@@ -101,7 +101,7 @@ DMNResult result = runtime.evaluateAll(model, ctx);
 
 ### feelin (by Nico Rehwaldt)
 
-Lightweight, browser-ready FEEL parser and interpreter:
+A lightweight, browser-ready FEEL parser and interpreter -- perfect when you need FEEL evaluation without a JVM:
 
 ```javascript
 import { evaluate } from 'feelin';
@@ -130,7 +130,7 @@ const result = decisionTable.evaluateDecision('MyDecision', decisions, context);
 
 ### pySFeel
 
-Implements S-FEEL (the simple subset):
+Covers the S-FEEL subset -- enough for simple arithmetic and comparisons, but not full FEEL:
 
 ```python
 from pySFeel import SFeelParser
@@ -139,7 +139,7 @@ result = parser.sFeelParse("3 + 4")
 # result = (True, 7)
 ```
 
-For full FEEL, use a JVM-based engine via subprocess or REST API.
+If you need the full FEEL spec from Python, your best bet is calling a JVM-based engine via subprocess or REST API.
 
 ### REST API Pattern
 
@@ -167,7 +167,7 @@ result = response.json()
 
 ## 13.5 Returning FEEL Contexts as Business State
 
-When integrating FEEL with a host language, decision results are not limited to simple scalars. The most powerful pattern is to **return a FEEL context** — a structured result that represents the complete business state after evaluation. This context maps directly to the native data structures of every mainstream language.
+A FEEL decision does not have to return a single number or string. The most powerful integration pattern is to **return a FEEL context** -- a structured result that represents the complete business state after evaluation. That context maps directly to native data structures in every mainstream language, no transformation needed.
 
 ### FEEL Context to Host Language Mapping
 
@@ -311,9 +311,9 @@ else:
 
 ### The Key Insight
 
-The FEEL context is the **contract** between the decision layer and the application layer. It serves the same role as a response DTO or an API schema — but it is defined by the business rules, not by the application code. When the business rules change (e.g., a new risk category is added), the context shape may expand, but existing consumers that only read the fields they need are unaffected.
+Think of the FEEL context as the **contract** between your decision layer and your application layer. It plays the same role as a response DTO or an API schema -- but the business rules define its shape, not your application code. When the rules evolve (say, a new risk category appears), the context grows, but consumers that only read the fields they care about keep working untouched.
 
-This is why FEEL contexts are the natural boundary type for decision services: they are structured, self-documenting, and map to native data structures in every mainstream language without transformation.
+That is why FEEL contexts are the natural boundary type for decision services: structured, self-documenting, and zero-transformation in every mainstream language.
 
 ---
 
@@ -321,7 +321,7 @@ This is why FEEL contexts are the natural boundary type for decision services: t
 
 ### Unit Testing Individual Expressions
 
-Treat each FEEL expression as a pure function. Test with input/output pairs:
+Every FEEL expression is a pure function: same inputs, same output, no side effects. That makes unit testing dead simple -- feed in a context, assert the result:
 
 ```java
 @Test
@@ -345,7 +345,7 @@ void testEligibility() {
 
 ### Integration Testing Decision Services
 
-Test the full DMN model end-to-end:
+Unit tests cover individual expressions; integration tests cover the full DMN model end-to-end:
 
 ```java
 @Test
@@ -364,7 +364,7 @@ void testLoanOrigination() {
 
 ### DMN TCK Test Format
 
-The DMN Technology Compatibility Kit provides tests as XML files:
+The DMN Technology Compatibility Kit defines a standard XML format for test cases that works across engines:
 
 ```xml
 <testCases xmlns="http://www.omg.org/spec/DMN/20160901/testcase">
@@ -403,7 +403,7 @@ The DMN Technology Compatibility Kit provides tests as XML files:
 
 ## What Comes Next
 
-Chapter 14 covers the FEEL dialects: S-FEEL (the restricted subset), B-FEEL (the business-friendly variant), and how they relate to full FEEL.
+FEEL is not actually one language -- it is three. Chapter 14 breaks down S-FEEL, B-FEEL, and full FEEL so you know which dialect you are dealing with and which one to choose.
 
 ---
 

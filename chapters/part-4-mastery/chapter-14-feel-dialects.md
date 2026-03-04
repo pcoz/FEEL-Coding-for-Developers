@@ -6,7 +6,7 @@
 
 ## 14.1 Why Dialects?
 
-The DMN specification defines three variants of FEEL to serve different conformance levels and user needs:
+Not everyone who touches a DMN model is a developer. The DMN spec acknowledges this by defining three FEEL dialects, each tuned for a different level of complexity and a different audience:
 
 | Dialect | Introduced | Audience | Null Handling |
 |---------|-----------|----------|---------------|
@@ -18,7 +18,7 @@ The DMN specification defines three variants of FEEL to serve different conforma
 
 ## 14.2 S-FEEL — The Restricted Subset
 
-S-FEEL is FEEL with training wheels. It supports:
+Think of S-FEEL as FEEL with training wheels bolted on so tightly you can barely steer. It supports:
 
 - Arithmetic: `+`, `-`, `*`, `/`, `**`
 - Comparisons: `=`, `!=`, `<`, `<=`, `>`, `>=`
@@ -38,25 +38,25 @@ It does **not** support:
 
 ### When Is S-FEEL Enough?
 
-Almost never. The DMN specification itself notes:
+Almost never. Even the DMN specification admits defeat here:
 
 > "Experience with DMN since its release has shown that few if any complete decision models can be defined using S-FEEL."
 
-Individual decision tables can use S-FEEL for their input and output entries, but any surrounding logic (contexts, function calls, list operations) requires full FEEL.
+Individual decision table cells can get by with S-FEEL, but the moment you need a context, a function call, or a list operation, you are writing full FEEL whether you meant to or not.
 
-**Recommendation:** Always target full FEEL. S-FEEL exists for conformance level documentation, not for practical use.
+**Bottom line:** Always target full FEEL. S-FEEL exists for conformance-level paperwork, not for real-world use.
 
 ---
 
 ## 14.3 B-FEEL — Business-Friendly FEEL (DMN 1.6)
 
-B-FEEL is new in DMN 1.6. It shares the same grammar as FEEL but changes the semantics to eliminate `null` as an error value.
+B-FEEL arrived in DMN 1.6 with a bold promise: same grammar as FEEL, but `null` never leaks into your results. When something goes wrong, you get a safe default instead of a silent null bomb.
 
 ### The Core Difference
 
-In FEEL, when something goes wrong, the result is `null`. `null` then propagates silently through further operations.
+In FEEL, errors produce `null`, and that `null` silently poisons every downstream expression it touches.
 
-In B-FEEL, errors produce **type-appropriate defaults** instead of `null`:
+B-FEEL takes the opposite stance: errors produce **type-appropriate defaults**, so nothing ever "fails":
 
 | Return Type | FEEL error result | B-FEEL error result |
 |------------|-------------------|---------------------|
@@ -72,7 +72,7 @@ In B-FEEL, errors produce **type-appropriate defaults** instead of `null`:
 
 ### Two-Valued Logic
 
-The most significant change: B-FEEL uses **two-valued logic** instead of three-valued logic. Boolean operations never return `null`:
+This is where things get interesting (and potentially dangerous). B-FEEL collapses three-valued logic down to two values. Boolean operations *never* return `null`:
 
 | Expression | FEEL Result | B-FEEL Result |
 |-----------|-------------|---------------|
@@ -86,11 +86,11 @@ The most significant change: B-FEEL uses **two-valued logic** instead of three-v
 | `null between 1 and 100` | `null` | `false` |
 | `"a" != 1` | `null` | **`true`** |
 
-Note the last row: `!=` with incompatible types returns `true` in B-FEEL (they are indeed not equal).
+Spot the last row: `!=` with incompatible types returns `true` in B-FEEL. The reasoning is straightforward -- a string and a number are, in fact, not equal.
 
 ### Numeric Error Handling
 
-Functions that would return `null` in FEEL return `0` in B-FEEL:
+Numeric functions that would blow up with `null` in FEEL quietly return `0` in B-FEEL:
 
 | Expression | FEEL | B-FEEL |
 |-----------|------|--------|
@@ -99,7 +99,7 @@ Functions that would return `null` in FEEL return `0` in B-FEEL:
 | `sum([1, "a", 3])` | `null` | `4` (ignores non-numeric!) |
 | `mean([1, "a", 3])` | `null` | `2` (ignores non-numeric!) |
 
-Notice that B-FEEL list aggregation functions (except `count()`) **ignore non-numeric elements** rather than failing.
+Notice the last two rows: B-FEEL's aggregation functions (except `count()`) **silently skip non-numeric elements** instead of failing. Whether that is helpful or terrifying depends on your use case.
 
 ### String Error Handling
 
@@ -110,13 +110,13 @@ Notice that B-FEEL list aggregation functions (except `count()`) **ignore non-nu
 
 ### When to Use B-FEEL
 
-B-FEEL is designed for decision models authored primarily by **non-IT business users** who find null-propagation confusing and error-prone. It trades correctness for predictability — no expression ever "fails" silently.
+B-FEEL targets decision models built by **non-IT business users** who find three-valued logic and null-propagation baffling. It trades diagnostic precision for predictability -- nothing ever "breaks."
 
-**Trade-off warning:** B-FEEL can mask real errors. When `sum([1, "a", 3])` silently returns `4` instead of flagging that `"a"` is not a number, you lose a valuable signal that something is wrong with the input data. For developer-authored, production-grade logic, full FEEL's explicit `null` is usually preferable.
+**But here is the catch:** B-FEEL can mask real errors. When `sum([1, "a", 3])` silently returns `4` instead of screaming that `"a"` is not a number, you lose a critical signal that your input data is garbage. If you are a developer writing production-grade logic, full FEEL's explicit `null` is almost always the safer choice.
 
 ### Activating B-FEEL
 
-Set the expression language on the DMN definitions element:
+Flip a single attribute on the DMN definitions element:
 
 ```xml
 <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
@@ -155,7 +155,7 @@ Set the expression language on the DMN definitions element:
 | "Fail loud" philosophy | Yes | No |
 | "Never crash" philosophy | No | Yes |
 
-For most production systems where developers write and maintain the FEEL expressions, **full FEEL is the right choice**. B-FEEL is appropriate for self-service decision modelling tools where business users create their own rules.
+If developers write and maintain the FEEL expressions -- which describes most production systems -- **full FEEL is the right choice**. Save B-FEEL for self-service decision modelling tools where business users build their own rules and you would rather show a zero than a stack trace.
 
 ---
 
@@ -169,7 +169,7 @@ For most production systems where developers write and maintain the FEEL express
 
 ## What Comes Next
 
-Chapter 15 covers the advanced corners of FEEL: the type lattice, implicit conversions, scope and context resolution, name ambiguity, and XML data mapping.
+Ready to look under the hood? Chapter 15 digs into the advanced corners of FEEL: the type lattice, implicit conversions, scope resolution, name ambiguity, and how XML data maps into FEEL's world.
 
 ---
 

@@ -4,6 +4,10 @@
 
 ---
 
+No `void`, no side effects, no statements that "just do something." Every piece of FEEL you write evaluates to a result. That single constraint makes FEEL expressions composable, testable, and predictable in ways that imperative code is not.
+
+---
+
 ## 6.1 Arithmetic
 
 ### Operators
@@ -28,13 +32,13 @@
 7. Unary negation (`-`)
 8. Path expression (`.`), filter (`[]`), function invocation (`()`)
 
-All binary operators are **left-associative**: `a - b - c` is `(a - b) - c`.
+All binary operators are **left-associative** -- `a - b - c` means `(a - b) - c`, just like you would expect.
 
 > **GOTCHA — Exponentiation and Negation:** In standard mathematics and most languages, `-4 ** 2` = `-(4**2)` = `-16`. In FEEL, `-4 ** 2` = `(-4) ** 2` = `16`. The unary minus binds *before* exponentiation because negation has higher precedence. Always use parentheses: `-(4 ** 2)` for `-16`, or `(-4) ** 2` for `16`.
 
 ### Arithmetic with Different Types
 
-FEEL defines arithmetic not just for numbers but for temporal types:
+Here is where FEEL starts to feel like a domain-specific superpower. The `+` and `-` operators are not limited to numbers -- they work across temporal types too:
 
 | `type(a)` | `type(b)` | `a + b` | `a - b` |
 |-----------|-----------|---------|---------|
@@ -92,6 +96,8 @@ Result: `Compound Monthly` = `16470.09...`
 
 ### Equality Is by Value
 
+No reference equality headaches here. FEEL compares what things *contain*, not where they live in memory:
+
 ```
 [1, 2, 3] = [1, 2, 3]                // true (same contents)
 {name: "Alice"} = {name: "Alice"}    // true (same entries)
@@ -99,6 +105,8 @@ Result: `Compound Monthly` = `16470.09...`
 ```
 
 ### Cross-Type Comparison Produces Null
+
+Comparing apples and oranges? FEEL will not coerce, will not throw, and will not guess. It gives you `null` -- the honest answer meaning "this comparison is meaningless":
 
 ```
 "1" = 1        // null (not false!)
@@ -118,7 +126,7 @@ is syntactic sugar for `x >= 5 and x <= 10`. Both endpoints are inclusive.
 
 ### The `in` Operator
 
-The `in` operator tests membership. It is versatile:
+The `in` operator is the Swiss Army knife of FEEL comparisons -- it tests membership against values, ranges, and combinations of both:
 
 ```
 // In a list of values
@@ -168,9 +176,9 @@ else null
 if condition then expression1 else expression2
 ```
 
-- The `else` clause is **mandatory**. There is no dangling `if`.
+- The `else` clause is **mandatory**. No dangling `if`, no forgotten branch, no accidental `undefined`. Every `if` must say what happens otherwise.
 - The condition must evaluate to `true` for `expression1`. Both `false` and `null` take `expression2`.
-- Conditionals can be nested (but prefer decision tables for 3+ branches).
+- You can nest conditionals, but once you hit three or more branches, a decision table is almost always clearer.
 
 ### Worked Example 6.4 — Tiered Pricing
 
@@ -185,7 +193,9 @@ else Unit Price
 
 ## 6.4 Unary Tests — The Language Within the Language
 
-Unary tests are a special sub-language of FEEL, used exclusively in decision table input cells. They describe a condition on an implicit value — the value being tested by the column.
+If you have looked at a decision table and wondered how a cell containing just `>= 18` knows *what* to compare against, this section is the answer.
+
+Unary tests are a compact sub-language used exclusively inside decision table input cells. Each test describes a condition against an implicit value -- the value supplied by the column's input expression.
 
 ### How They Work
 
@@ -212,7 +222,7 @@ The unary test `>= 18` is the right-hand side of an implicit `in` expression.
 | `not(< 0)` | Not negative | `? >= 0` |
 | `-` | Any value (wildcard) | `true` |
 
-The `?` symbol is used in FEEL to reference the implicit value in certain contexts. In decision table cells, it is always implicit.
+The `?` symbol represents the implicit value being tested. Inside decision table cells, you never write `?` -- it is always implied. But understanding it helps you read the "Equivalent FEEL" column above.
 
 ### Worked Example 6.5 — Reading a Decision Table
 
@@ -258,7 +268,7 @@ Rule 3: "If Age < 18, regardless of Employment Status (the `-` wildcard), then E
 
 ## What Comes Next
 
-Chapter 7 introduces FEEL's compound data structures: lists (and their powerful filtering syntax), contexts (step-by-step calculations), and ranges (first-class interval values).
+You can do a lot with single values and expressions, but real business data comes in collections. Chapter 7 introduces lists, contexts, and ranges -- the compound structures that let you model anything.
 
 ---
 

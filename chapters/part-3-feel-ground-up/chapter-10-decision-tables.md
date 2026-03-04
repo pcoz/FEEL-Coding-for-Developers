@@ -6,7 +6,7 @@
 
 ## 10.1 Anatomy of a Decision Table
 
-A decision table has these structural components:
+Before you can wield decision tables effectively, you need to know what you're looking at. Here are the structural components:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -51,7 +51,7 @@ A decision table has these structural components:
 | 4 | (80000..150000] | 0.30 |
 | 5 | > 150000 | 0.35 |
 
-Every income falls in exactly one bracket. If two rules could match the same income, the table is incorrectly designed.
+Every income lands in exactly one bracket -- no gaps, no overlaps. If two rules could match the same income, your engine will throw an error, which is exactly what you want. Unique tables are self-checking.
 
 ### Any (A)
 
@@ -68,7 +68,7 @@ Every income falls in exactly one bracket. If two rules could match the same inc
 | 3 | "Explosive" | > 500 | "Danger" |
 | 4 | not("Explosive") | <= 500 | "Safe" |
 
-Rules 1, 2, and 3 can all match for an explosive material at temperature 600. But they all agree: "Danger." If any two overlapping rules disagreed, it would be an error.
+Rules 1, 2, and 3 all match for an explosive material at temperature 600. But they all agree: "Danger." That's fine -- Any doesn't care *how many* rules match, only that they don't *contradict* each other. If any two overlapping rules disagreed, the engine would flag an error.
 
 ### First (F)
 
@@ -85,13 +85,13 @@ Rules 1, 2, and 3 can all match for an explosive material at temperature 600. Bu
 | 3 | "Gold" | - | "Welcome, Gold member!" |
 | 4 | - | - | "Welcome!" |
 
-A Platinum member with 150 purchases matches rules 1, 2, and 4 — but rule 1 is returned because it appears first.
+A Platinum member with 150 purchases matches rules 1, 2, and 4 -- but rule 1 wins because it appears first. Think of it as a `switch` with fallthrough disabled: first match takes it.
 
 ### Priority (P)
 
 **Guarantee:** Multiple rules may match with different outputs. The output with the highest priority (earliest in the output values list) wins.
 
-**Use when:** You want the "most important" result, where importance is defined by a ranking of output values.
+**Use when:** You want the "most important" result regardless of rule order. You define the ranking yourself in the output values list.
 
 **Worked Example 10.4 — Discount Priority:**
 
@@ -106,7 +106,7 @@ Output values (ordered by priority): `0.25, 0.20, 0.15, 0.10, 0.05, 0`
 | 5 | "Silver" | - | 0.10 |
 | 6 | - | - | 0 |
 
-A Gold customer with order amount 250 matches rules 1, 2, 3, and 6. The outputs are 0.25, 0.20, 0.15, 0. Priority selects 0.25 (first in the output values list).
+A Gold customer with order amount 250 matches rules 1, 2, 3, and 6. The outputs are 0.25, 0.20, 0.15, 0. Priority picks 0.25 because it appears first in the output values list. Notice: this is *not* about rule order -- it's about output ranking. You could shuffle the rules and get the same answer.
 
 ### Collect (C)
 
@@ -120,7 +120,7 @@ A Gold customer with order amount 250 matches rules 1, 2, 3, and 6. The outputs 
 | 2 | "Checking" | - | "Monthly Maintenance" |
 | 3 | - | < 0 | "Overdraft Fee" |
 
-A checking account with balance -50 matches all three rules. Result: `["Low Balance Fee", "Monthly Maintenance", "Overdraft Fee"]`.
+A checking account with balance -50 matches all three rules. Result: `["Low Balance Fee", "Monthly Maintenance", "Overdraft Fee"]`. Unlike the single-hit policies above, Collect doesn't pick a winner -- it keeps everything.
 
 ### Collect with Aggregation (C+, C#, C<, C>)
 
@@ -148,7 +148,7 @@ A checking account with balance -50 matches all three rules. Result: `["Low Bala
 | 8 | "Retired" | 30 |
 | 9 | "Unemployed" | 10 |
 
-*Note:* In practice, both dimensions would be columns in a single table. The output (Partial Score) from all matching rules is summed. An employed 30-year-old scores 45 + 50 = 95.
+*Note:* In practice, both dimensions would be columns in a single table. The engine sums the Partial Score from every matching rule. An employed 30-year-old? 45 (age) + 50 (employment) = 95. This is the classic scorecard pattern, and `C+` is tailor-made for it.
 
 ### Rule Order (R) and Output Order (O)
 
@@ -168,22 +168,22 @@ For `Event Type = "Urgent"`: result is `["SMS", "Email"]` (rules 1 and 2 match, 
 
 **Example (O):** If the same table used hit policy O with output values ordered as `"Email", "SMS"`, the result for `"Urgent"` would be `["Email", "SMS"]` — reordered by the output values list, regardless of rule order.
 
-Both produce a list, like Collect, but with a guaranteed ordering. Note: Output Order (O) **requires** output values to be defined — without them, the engine has no ordering to apply.
+Both produce a list, like Collect, but with a guaranteed ordering. The difference matters when downstream logic depends on which item comes first. Note: Output Order (O) **requires** output values to be defined -- without them, the engine has no ordering to apply.
 
 ### When No Rule Matches
 
-For all hit policies, when **zero** rules match:
+What happens when *none* of your rules fire? No exception. No warning. Just a silent default:
 
 - **Single-hit policies** (U, A, F, P): the result is `null`.
 - **Multi-hit policies** (C, C+, C#, C<, C>, R, O): the result is an empty list `[]` (or `0` for C+/C#, `null` for C</C>).
 
-This is why completeness matters (Section 10.4) — an incomplete table silently returns `null` for uncovered inputs.
+This is why completeness matters (Section 10.4). An incomplete table silently returns `null` for uncovered inputs, and that `null` can propagate through your entire decision model before anyone notices.
 
 ---
 
 ## 10.3 Multi-Output Decision Tables
 
-A decision table can have multiple output columns. Each rule then produces a context:
+Sometimes a single output column isn't enough. A decision table can have multiple output columns, and when it does, each matching rule produces a context (think of it as returning an object instead of a scalar):
 
 | U | Vehicle Category | Annual Mileage | Base Premium | Surcharge |
 |---|-----------------|----------------|-------------|-----------|
@@ -202,23 +202,23 @@ Result for a Sedan with 20000 km: `{Base Premium: 600, Surcharge: 120}`.
 
 ### Completeness
 
-A decision table is **complete** if every possible input combination matches at least one rule. Completeness can be checked by tools.
+A decision table is **complete** if every possible input combination matches at least one rule. Most DMN modeling tools can check this for you automatically.
 
-Tips for ensuring completeness:
-- The last rule should often use `-` (wildcard) in all inputs — a catch-all.
-- Use a default output value for tables that should never return `null`.
+Two practical habits that prevent gaps:
+- Add a catch-all rule at the bottom: `-` (wildcard) in every input column. This is your safety net.
+- Set a default output value for tables that should never return `null`.
 
 ### Consistency (for Unique policy)
 
-A decision table with hit policy U is **consistent** if no input combination matches more than one rule. Tools can verify this.
+A decision table with hit policy U is **consistent** if no input combination matches more than one rule. Again, tools can verify this automatically.
 
-Common technique: ensure input ranges do not overlap. Use `[0..10]` and `(10..20]` (not `[0..10]` and `[10..20]` which overlap at 10).
+The most common mistake: overlapping range boundaries. `[0..10]` and `[10..20]` both match 10. Fix it with an exclusive bound on one side: `[0..10]` and `(10..20]`.
 
 ---
 
 ## 10.5 Decision Tables and FEEL Together
 
-Decision tables are often embedded in larger FEEL expressions via contexts:
+Decision tables don't have to live in isolation. In real models, they're often embedded in larger FEEL expressions via contexts -- mixing table-driven rules with procedural logic:
 
 ```
 {
@@ -231,7 +231,7 @@ Decision tables are often embedded in larger FEEL expressions via contexts:
 }
 ```
 
-Here, `Risk Category Table` is a decision table that produces a string. The context wraps it with additional FEEL logic.
+Here, `Risk Category Table` is a decision table that produces a string. The surrounding context adds computed fields and a final eligibility check. This is how real decision models work: tables handle the rule-heavy parts, FEEL handles the glue.
 
 ---
 
@@ -263,7 +263,7 @@ Here, `Risk Category Table` is a decision table that produces a string. The cont
 | A numeric summary (sum, count, min, max) of matching outputs | **C+**, **C#**, **C<**, **C>** |
 | All matching outputs in a predictable order | **R** (Rule Order) or **O** (Output Order) |
 
-When in doubt, start with **U**. It is the safest choice because the engine will flag overlapping rules as an error, catching bugs early. Use **F** when you intentionally want rules to overlap (like a cascading default). Use **C+** for scorecards.
+When in doubt, start with **U**. It's the safest choice because the engine will flag overlapping rules as an error, catching bugs before they reach production. Reach for **F** when you intentionally want rules to overlap (like a cascading default). Reach for **C+** for scorecards.
 
 ---
 
@@ -279,7 +279,7 @@ When in doubt, start with **U**. It is the safest choice because the engine will
 
 ## What Comes Next
 
-Chapter 11 covers boxed expressions — the visual notation that wraps FEEL expressions into composable, graphical building blocks.
+You've now seen everything decision tables can do. But a decision table is just one kind of *boxed expression*. Chapter 11 covers the full set -- the visual notation that wraps FEEL expressions into composable, graphical building blocks that even non-developers can review.
 
 ---
 
