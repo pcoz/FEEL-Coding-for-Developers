@@ -4,9 +4,9 @@
 
 ---
 
-FEEL has a small, carefully chosen set of data types. Unlike general-purpose languages that distinguish between integers, floats, longs, and doubles, FEEL keeps things simple. One number type. One string type. Dates and durations are first-class citizens, not afterthoughts bolted on through libraries.
+What types does FEEL give you, and how do they differ from what you are used to? What happens when a value is missing entirely? FEEL ships a small, deliberately chosen type system — one number type instead of five, dates and durations as first-class citizens, and an unusual approach to `null` that eliminates entire categories of runtime errors.
 
-Master these types and you will know what every FEEL expression can produce.
+This chapter covers every data type in the language. Master them and you will know what any FEEL expression can produce.
 
 ---
 

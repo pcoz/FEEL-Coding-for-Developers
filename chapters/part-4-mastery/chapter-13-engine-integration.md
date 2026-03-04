@@ -4,6 +4,8 @@
 
 ---
 
+FEEL is a standard, but every engine implements it differently. Which engine should you use? How do you embed FEEL in Java, JavaScript, or Python? How do you pass data in and get results out? This chapter covers the major engines and shows you the integration code.
+
 ## 13.1 Camunda 8 (feel-scala)
 
 If you have used FEEL in production, there is a good chance it was through Camunda 8. Its FEEL engine, **feel-scala**, is a Scala-based interpreter running on the JVM and the most widely deployed open-source FEEL implementation.

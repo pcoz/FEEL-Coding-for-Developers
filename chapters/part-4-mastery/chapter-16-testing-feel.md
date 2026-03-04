@@ -4,6 +4,8 @@
 
 ---
 
+FEEL expressions are pure functions of their inputs — no side effects, no hidden state, no mocks required. That makes them unusually testable. But how do you derive test cases systematically? How do you know when you have enough coverage? This chapter shows you how to test FEEL the way it was designed to be tested.
+
 ## 16.1 Why FEEL Is Unusually Testable
 
 Testing business logic in application code is painful. You construct objects, mock services, manage state, and trace control flow just to figure out what a method actually does. FEEL throws all of that away:

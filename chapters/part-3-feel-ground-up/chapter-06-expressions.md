@@ -4,7 +4,9 @@
 
 ---
 
-No `void`, no side effects, no statements that "just do something." Every piece of FEEL you write evaluates to a result. That single constraint makes FEEL expressions composable, testable, and predictable in ways that imperative code is not.
+How do you combine values into computations? What operators does FEEL have, and how do conditionals, comparisons, and logic work when there are no statements — only expressions? FEEL has no `void`, no side effects, no imperative control flow. Every piece of code you write evaluates to a result, which makes expressions composable, testable, and predictable in ways that imperative code is not.
+
+This chapter covers the full expression language — arithmetic, logic, comparisons, conditionals, and the rules that govern how they all fit together.
 
 ---
 

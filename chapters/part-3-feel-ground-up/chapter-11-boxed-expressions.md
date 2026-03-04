@@ -4,6 +4,8 @@
 
 ---
 
+Every FEEL expression you've written so far lives in text. But when a business analyst opens the DMN model, they see boxes -- structured visual frames that make logic reviewable without reading code. This chapter catalogs every boxed expression type in the spec and shows how they compose into the rich visual models that make DMN worth adopting.
+
 ## 11.1 What Are Boxed Expressions?
 
 Every FEEL expression you've written so far has a visual counterpart in DMN called a **boxed expression** -- a graphical frame that wraps your logic so that both developers and business stakeholders can read it.

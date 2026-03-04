@@ -4,6 +4,12 @@
 
 ---
 
+Why does FEEL exist? What was broken before it came along, and what is the ecosystem it belongs to? If you have ever wrestled with business logic buried in code, spreadsheets, or someone's head, you already know the pain — you just may not know there is a standard designed to fix it.
+
+This chapter lays out the problem FEEL was built to solve, the ecosystem of standards it plugs into, and why that matters for every organisation that runs on rules.
+
+---
+
 ## 1.1 The Problem: Business Rules Are Everywhere
 
 Every software system encodes business logic. An e-commerce platform decides which customers qualify for free shipping. A bank determines who gets approved for a mortgage. An insurance company calculates premiums. A hospital routes patients to the correct ward.

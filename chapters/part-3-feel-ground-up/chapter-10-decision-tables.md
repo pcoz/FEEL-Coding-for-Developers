@@ -4,6 +4,8 @@
 
 ---
 
+You saw decision tables briefly in Chapter 3 -- enough to be dangerous. Now it's time to get competent. Hit policies, completeness checks, multi-output tables, annotations -- this chapter covers everything you need to build production-quality tables that reviewers can trust and engines can optimize.
+
 ## 10.1 Anatomy of a Decision Table
 
 Before you can wield decision tables effectively, you need to know what you're looking at. Here are the structural components:

@@ -4,6 +4,12 @@
 
 ---
 
+What happens when you cleanly separate business rules from process flow? The process becomes a state machine that orchestrates work. The rules become a decision service that can be tested, versioned, and reused independently.
+
+This chapter shows you that architecture — why entanglement hurts, how to untangle it, and what the result looks like when decisions and processes each do their own job.
+
+---
+
 ## 4.1 The Entanglement Problem
 
 Open any enterprise codebase and you will find the same disease: business rules and process flow knotted together so tightly that you cannot change one without risking the other. Here is a typical order fulfilment service -- see if this looks familiar:

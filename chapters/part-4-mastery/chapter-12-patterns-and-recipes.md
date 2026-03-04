@@ -4,7 +4,7 @@
 
 ---
 
-Every pattern here solves a real problem you will hit in production. Grab what you need, adapt the code, and move on.
+This is the cookbook chapter. Every pattern here solves a real problem that comes up in production FEEL projects: null-guarding fragile inputs, wrangling dates and durations, reshaping collections, and encoding classification logic cleanly. Grab what you need, adapt the code to your data, and move on -- no theory, just solutions.
 
 ---
 

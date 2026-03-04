@@ -4,6 +4,12 @@
 
 ---
 
+What exactly is a business rule? Where do they come from? Why does every organisation have thousands of them? And why is getting one wrong — even slightly — so expensive?
+
+This chapter answers those questions. It is the foundation for everything that follows: before you can write a FEEL expression, you need to understand what you are expressing and why it matters.
+
+---
+
 ## 2.1 You Already Know What a Business Rule Is
 
 You encounter business rules every single day. You just do not call them that.

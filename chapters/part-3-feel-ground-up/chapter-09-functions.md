@@ -4,6 +4,8 @@
 
 ---
 
+How do you define reusable logic in a language that has no classes, no modules, and no inheritance? What happens when the built-in library isn't enough, and you need to call out to Java or a machine-learning model? This chapter walks through user-defined functions, tours the complete built-in function library, and shows you the escape hatches to Java, PMML, and ONNX when pure FEEL hits its limits.
+
 ## 9.1 User-Defined Functions
 
 ### Anonymous Functions (Lambdas)

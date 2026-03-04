@@ -4,6 +4,8 @@
 
 ---
 
+FEEL is not actually one language — it is three. S-FEEL, full FEEL, and the new B-FEEL each make different trade-offs between simplicity and power. Understanding the differences prevents portability surprises and helps you choose the right dialect for your project.
+
 ## 14.1 Why Dialects?
 
 Not everyone who touches a DMN model is a developer. The DMN spec acknowledges this by defining three FEEL dialects, each tuned for a different level of complexity and a different audience:

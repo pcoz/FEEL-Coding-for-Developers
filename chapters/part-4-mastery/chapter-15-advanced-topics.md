@@ -4,6 +4,8 @@
 
 ---
 
+You can use FEEL productively without reading this chapter. But when something surprising happens — a type coercion you didn't expect, a name resolution that makes no sense, a null that appeared out of nowhere — this is where you'll find the explanation. Type lattice, implicit conversions, scope rules, and the edge cases that trip up even experienced users.
+
 ## 15.1 The Type Lattice
 
 FEEL's types form a **lattice** -- a hierarchy where every type has a well-defined place:
