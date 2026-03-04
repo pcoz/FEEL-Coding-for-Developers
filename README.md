@@ -10,6 +10,14 @@ FEEL (Friendly Enough Expression Language) is the expression language at the hea
 
 This book teaches FEEL progressively, from first principles to production use. It is written for working developers (Java, JavaScript, Python, C#) who want to separate business logic from application code, integrate with DMN engines, and build testable, auditable decision services.
 
+The book is divided into five parts:
+
+- **Part I** explains what FEEL is, why it exists, and the ecosystem of engines and tools around it.
+- **Part II** teaches you to analyse business logic as a set of decision primitives and shows how extracting rules from code enables clean, state-machine-driven process architectures.
+- **Part III** builds FEEL from the ground up — values, types, expressions, collections, iteration, functions, decision tables, and boxed expressions — with worked examples and cross-language comparisons at every step.
+- **Part IV** covers real-world application: reusable patterns, engine integration (Camunda, KIE, JavaScript, Python), FEEL dialects (S-FEEL, B-FEEL), advanced topics, and testing.
+- **Part V** provides reference material: a quick reference card, exercise solutions, a FEEL-to-language Rosetta Stone, an engine compatibility matrix, a glossary, and a guide to using FEEL with machine learning.
+
 No prior DMN experience required. Start with Chapter 1.
 
 ---
