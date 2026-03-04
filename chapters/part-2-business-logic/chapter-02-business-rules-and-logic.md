@@ -1,6 +1,6 @@
 # Chapter 2: Business Rules and Business Logic
 
-> *"The code ran perfectly. It did exactly what it was told to do. It just happened to deny chemotherapy coverage to 1,200 patients who should have been approved."*
+> *"The code did exactly what it was told to do. Unfortunately, what it was told to do was wrong."*
 
 ---
 
