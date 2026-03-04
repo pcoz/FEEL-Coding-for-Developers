@@ -6,6 +6,14 @@ Based on the DMN 1.6 Specification (OMG Document dtc/24-05-18)
 
 ---
 
+FEEL (Friendly Enough Expression Language) is the expression language at the heart of the OMG's Decision Model and Notation (DMN) standard. It lets you express business rules — pricing, eligibility, risk assessment, routing — in a notation that both business analysts can read and developers can execute.
+
+This book teaches FEEL progressively, from first principles to production use. It is written for working developers (Java, JavaScript, Python, C#) who want to separate business logic from application code, integrate with DMN engines, and build testable, auditable decision services.
+
+No prior DMN experience required. Start with Chapter 1.
+
+---
+
 ## Table of Contents
 
 ### Part I: Foundations — What and Why
