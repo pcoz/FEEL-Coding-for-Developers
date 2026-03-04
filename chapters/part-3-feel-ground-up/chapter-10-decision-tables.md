@@ -1,10 +1,10 @@
-# Chapter 9: Decision Tables in Depth
+# Chapter 10: Decision Tables in Depth
 
 > *"A decision table is worth a thousand if-else statements."*
 
 ---
 
-## 9.1 Anatomy of a Decision Table
+## 10.1 Anatomy of a Decision Table
 
 A decision table has these structural components:
 
@@ -33,7 +33,7 @@ A decision table has these structural components:
 
 ---
 
-## 9.2 Hit Policies — Complete Guide
+## 10.2 Hit Policies — Complete Guide
 
 ### Unique (U)
 
@@ -41,7 +41,7 @@ A decision table has these structural components:
 
 **Use when:** Rules are mutually exclusive by design.
 
-**Worked Example 9.1 — Tax Bracket:**
+**Worked Example 10.1 — Tax Bracket:**
 
 | U | Taxable Income | Tax Rate |
 |---|---------------|----------|
@@ -59,7 +59,7 @@ Every income falls in exactly one bracket. If two rules could match the same inc
 
 **Use when:** Redundant rules improve readability.
 
-**Worked Example 9.2 — Safety Classification:**
+**Worked Example 10.2 — Safety Classification:**
 
 | A | Material | Temperature | Classification |
 |---|----------|-------------|----------------|
@@ -76,7 +76,7 @@ Rules 1, 2, and 3 can all match for an explosive material at temperature 600. Bu
 
 **Use when:** Rules are ordered from most specific to most general, like `if/else if/else`.
 
-**Worked Example 9.3 — Customer Greeting:**
+**Worked Example 10.3 — Customer Greeting:**
 
 | F | Customer Tier | Purchase Count | Greeting |
 |---|--------------|----------------|----------|
@@ -93,7 +93,7 @@ A Platinum member with 150 purchases matches rules 1, 2, and 4 — but rule 1 is
 
 **Use when:** You want the "most important" result, where importance is defined by a ranking of output values.
 
-**Worked Example 9.4 — Discount Priority:**
+**Worked Example 10.4 — Discount Priority:**
 
 Output values (ordered by priority): `0.25, 0.20, 0.15, 0.10, 0.05, 0`
 
@@ -112,7 +112,7 @@ A Gold customer with order amount 250 matches rules 1, 2, 3, and 6. The outputs 
 
 **Guarantee:** All matching rules fire. Outputs are collected into a list.
 
-**Worked Example 9.5 — Applicable Fees:**
+**Worked Example 10.5 — Applicable Fees:**
 
 | C | Account Type | Balance | Fee |
 |---|-------------|---------|-----|
@@ -131,7 +131,7 @@ A checking account with balance -50 matches all three rules. Result: `["Low Bala
 | **C<** | Minimum output | "Lowest applicable rate" |
 | **C>** | Maximum output | "Highest applicable fee" |
 
-**Worked Example 9.6 — Application Risk Scorecard (C+):**
+**Worked Example 10.6 — Application Risk Scorecard (C+):**
 
 | C+ | Age | Partial Score |
 |----|-----|---------------|
@@ -177,11 +177,11 @@ For all hit policies, when **zero** rules match:
 - **Single-hit policies** (U, A, F, P): the result is `null`.
 - **Multi-hit policies** (C, C+, C#, C<, C>, R, O): the result is an empty list `[]` (or `0` for C+/C#, `null` for C</C>).
 
-This is why completeness matters (Section 9.4) — an incomplete table silently returns `null` for uncovered inputs.
+This is why completeness matters (Section 10.4) — an incomplete table silently returns `null` for uncovered inputs.
 
 ---
 
-## 9.3 Multi-Output Decision Tables
+## 10.3 Multi-Output Decision Tables
 
 A decision table can have multiple output columns. Each rule then produces a context:
 
@@ -198,7 +198,7 @@ Result for a Sedan with 20000 km: `{Base Premium: 600, Surcharge: 120}`.
 
 ---
 
-## 9.4 Completeness and Consistency
+## 10.4 Completeness and Consistency
 
 ### Completeness
 
@@ -216,7 +216,7 @@ Common technique: ensure input ranges do not overlap. Use `[0..10]` and `(10..20
 
 ---
 
-## 9.5 Decision Tables and FEEL Together
+## 10.5 Decision Tables and FEEL Together
 
 Decision tables are often embedded in larger FEEL expressions via contexts:
 
@@ -269,18 +269,18 @@ When in doubt, start with **U**. It is the safest choice because the engine will
 
 ## Exercises
 
-**Exercise 9.1:** Design a decision table (hit policy U) for determining the shipping speed based on: order priority ("Standard", "Express", "Overnight") and destination distance (<=100km, 100-500km, >500km). The output should be estimated delivery days.
+**Exercise 10.1:** Design a decision table (hit policy U) for determining the shipping speed based on: order priority ("Standard", "Express", "Overnight") and destination distance (<=100km, 100-500km, >500km). The output should be estimated delivery days.
 
-**Exercise 9.2:** Design a scorecard (hit policy C+) for a job application. Inputs: years of experience, highest education level, and number of references. Each factor contributes a partial score.
+**Exercise 10.2:** Design a scorecard (hit policy C+) for a job application. Inputs: years of experience, highest education level, and number of references. Each factor contributes a partial score.
 
-**Exercise 9.3:** A decision table has hit policy U and two overlapping rules. What happens at runtime? How would you fix it?
+**Exercise 10.3:** A decision table has hit policy U and two overlapping rules. What happens at runtime? How would you fix it?
 
 ---
 
 ## What Comes Next
 
-Chapter 10 covers boxed expressions — the visual notation that wraps FEEL expressions into composable, graphical building blocks.
+Chapter 11 covers boxed expressions — the visual notation that wraps FEEL expressions into composable, graphical building blocks.
 
 ---
 
-[Previous: Chapter 8: Functions](chapter-08-functions.md) | [Next: Chapter 10: Boxed Expressions](chapter-10-boxed-expressions.md)
+[Previous: Chapter 9: Functions](chapter-09-functions.md) | [Next: Chapter 11: Boxed Expressions](chapter-11-boxed-expressions.md)

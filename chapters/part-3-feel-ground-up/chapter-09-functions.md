@@ -1,10 +1,10 @@
-# Chapter 8: Functions
+# Chapter 9: Functions
 
 > *"FEEL has no classes, no modules, no packages. It has functions. That is enough."*
 
 ---
 
-## 8.1 User-Defined Functions
+## 9.1 User-Defined Functions
 
 ### Anonymous Functions (Lambdas)
 
@@ -61,7 +61,7 @@ Named functions in a context can call themselves:
 // result = 3628800
 ```
 
-### Worked Example 8.1 — A Reusable Discount Calculator
+### Worked Example 9.1 — A Reusable Discount Calculator
 
 ```
 {
@@ -80,7 +80,7 @@ Named functions in a context can call themselves:
 
 ---
 
-## 8.2 Positional vs Named Parameters
+## 9.2 Positional vs Named Parameters
 
 All FEEL functions (built-in and user-defined) support two calling conventions:
 
@@ -98,11 +98,11 @@ Named parameters are self-documenting and especially useful for functions with m
 
 ---
 
-## 8.3 The Built-in Function Library
+## 9.3 The Built-in Function Library
 
 FEEL includes a comprehensive library of built-in functions. This section provides a complete reference with examples, organised by category.
 
-### 8.3.1 Conversion Functions
+### 9.3.1 Conversion Functions
 
 | Function | Description | Example |
 |----------|------------|---------|
@@ -119,7 +119,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 | `years and months duration(from, to)` | Compute YM duration | `years and months duration(@"2020-01-01", @"2022-06-15")` → `P2Y5M` |
 | `range(from)` | Parse range string | `range("[1..10)")` → range value |
 
-### 8.3.2 Boolean Functions
+### 9.3.2 Boolean Functions
 
 | Function | Description | Example |
 |----------|------------|---------|
@@ -129,7 +129,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 | `assert(value, condition)` | Return value if condition true, else error | `assert(x, x > 0)` |
 | `assert(value, condition, msg)` | With message | `assert(x, x > 0, "Must be positive")` |
 
-### 8.3.3 String Functions
+### 9.3.3 String Functions
 
 | Function | Description | Example |
 |----------|------------|---------|
@@ -149,7 +149,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 
 > **ENGINE NOTE:** The `replace()` and `matches()` functions use XPath-compatible regular expressions, not JavaScript or PCRE regex. The most notable difference: use `\\s` for whitespace, and character class syntax follows XML Schema.
 
-### 8.3.4 List Functions
+### 9.3.4 List Functions
 
 | Function | Description | Example |
 |----------|------------|---------|
@@ -179,7 +179,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 | `list replace(list, match, val)` | Replace by condition | `list replace([1,2,3], function(x) x=2, 9)` → `[1,9,3]` |
 | `sublist(list, start, length?)` | Extract sublist | `sublist([1,2,3,4], 2, 2)` → `[2,3]` |
 
-### 8.3.5 Context Functions
+### 9.3.5 Context Functions
 
 | Function | Description | Example |
 |----------|------------|---------|
@@ -189,7 +189,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 | `context put(ctx, key, val)` | Add/update entry | `context put({a:1}, "b", 2)` → `{a:1, b:2}` |
 | `context merge(list)` | Merge (last wins) | `context merge([{a:1},{a:2}])` → `{a:2}` |
 
-### 8.3.6 Temporal Functions
+### 9.3.6 Temporal Functions
 
 | Function | Description | Example |
 |----------|------------|---------|
@@ -200,7 +200,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 | `week of year(date)` | ISO week number | `week of year(@"2024-03-15")` → `11` |
 | `month of year(date)` | Month name | `month of year(@"2024-03-15")` → `"March"` |
 
-### 8.3.7 Numeric Functions
+### 9.3.7 Numeric Functions
 
 | Function | Description | Example |
 |----------|------------|---------|
@@ -219,7 +219,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 | `odd(n)` | Is odd? | `odd(3)` → `true` |
 | `even(n)` | Is even? | `even(4)` → `true` |
 
-### Worked Example 8.2 — Statistical Analysis
+### Worked Example 9.2 — Statistical Analysis
 
 ```
 {
@@ -238,7 +238,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 
 ---
 
-## 8.4 External Functions
+## 9.4 External Functions
 
 FEEL can invoke functions defined in Java, PMML, and ONNX:
 
@@ -301,20 +301,20 @@ FEEL can invoke functions defined in Java, PMML, and ONNX:
 
 ## Exercises
 
-**Exercise 8.1:** Write a function `clamp(value, low, high)` that returns `low` if value < low, `high` if value > high, and `value` otherwise.
+**Exercise 9.1:** Write a function `clamp(value, low, high)` that returns `low` if value < low, `high` if value > high, and `value` otherwise.
 
-**Exercise 8.2:** Using `sort()`, sort a list of employee contexts by salary descending.
+**Exercise 9.2:** Using `sort()`, sort a list of employee contexts by salary descending.
 
-**Exercise 8.3:** Write a function that takes a date and returns the last day of that month.
+**Exercise 9.3:** Write a function that takes a date and returns the last day of that month.
 
-**Exercise 8.4:** Using `string join()` and `for`, produce the string `"1, 2, 3, 4, 5"` from the range `1..5`.
+**Exercise 9.4:** Using `string join()` and `for`, produce the string `"1, 2, 3, 4, 5"` from the range `1..5`.
 
 ---
 
 ## What Comes Next
 
-Chapter 9 covers decision tables in depth — hit policies, multi-output tables, completeness, and advanced patterns.
+Chapter 10 covers decision tables in depth — hit policies, multi-output tables, completeness, and advanced patterns.
 
 ---
 
-[Previous: Chapter 7: Iteration and Quantification](chapter-07-iteration-and-quantification.md) | [Next: Chapter 9: Decision Tables in Depth](chapter-09-decision-tables.md)
+[Previous: Chapter 8: Iteration and Quantification](chapter-08-iteration-and-quantification.md) | [Next: Chapter 10: Decision Tables in Depth](chapter-10-decision-tables.md)

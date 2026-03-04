@@ -1,10 +1,10 @@
-# Chapter 3: From Rules to Flows
+# Chapter 4: From Rules to Flows
 
 > *"A business process does not need to know how to calculate a credit score. It only needs to know that a credit score exists, and what to do with it."*
 
 ---
 
-## 3.1 The Entanglement Problem
+## 4.1 The Entanglement Problem
 
 In most enterprise codebases, business rules and business process flow are tangled together. Consider a typical order fulfilment service:
 
@@ -75,7 +75,7 @@ The business rules and the process flow are *fused*. This creates several proble
 
 ---
 
-## 3.2 The Separation: Rules Are Decisions, Flows Are State Machines
+## 4.2 The Separation: Rules Are Decisions, Flows Are State Machines
 
 The solution is architectural: **separate what to decide from what to do**.
 
@@ -164,9 +164,9 @@ The state machine knows *nothing* about discount percentages, price thresholds, 
 
 ---
 
-## 3.3 Why This Separation Matters
+## 4.3 Why This Separation Matters
 
-### 3.3.1 Rules Change Independently of Flows
+### 4.3.1 Rules Change Independently of Flows
 
 The discount policy changes from 15% to 20% for Gold customers. In the separated architecture:
 
@@ -177,7 +177,7 @@ The discount policy changes from 15% to 20% for Gold customers. In the separated
 
 In the entangled architecture, the same change requires modifying Java code, running the full test suite, code review, and a deployment.
 
-### 3.3.2 Flows Change Independently of Rules
+### 4.3.2 Flows Change Independently of Rules
 
 The business adds a "gift wrapping" step between pricing and shipping. In the separated architecture:
 
@@ -185,7 +185,7 @@ The business adds a "gift wrapping" step between pricing and shipping. In the se
 - **What does not change:** The pricing decision. The shipping decision. The validation decision.
 - **Who can make the change:** A process engineer, using a BPMN modelling tool.
 
-### 3.3.3 Decisions Are Testable in Isolation
+### 4.3.3 Decisions Are Testable in Isolation
 
 Each decision is a pure function: given inputs, it produces outputs. No mocks. No service dependencies. No database. No network.
 
@@ -196,11 +196,11 @@ Output: { Discount: 0.15 }
 
 You can write hundreds of test cases as simple input/output pairs. You can generate them from the decision table itself. You can run them in milliseconds.
 
-### 3.3.4 Decisions Are Reusable Across Processes
+### 4.3.4 Decisions Are Reusable Across Processes
 
 The pricing decision is needed by the order fulfilment process, the invoice generation batch job, and the mobile app's cart preview. In the separated architecture, all three call the same decision service. One source of truth.
 
-### 3.3.5 Decisions Are Auditable
+### 4.3.5 Decisions Are Auditable
 
 When a regulator asks "why was this customer charged $47.50?", you can trace the answer through the decision:
 
@@ -212,9 +212,9 @@ The decision table *is* the audit trail. No code reading required.
 
 ---
 
-## 3.4 The Architecture in Practice
+## 4.4 The Architecture in Practice
 
-### 3.4.1 BPMN + DMN: The Standard Stack
+### 4.4.1 BPMN + DMN: The Standard Stack
 
 The OMG designed BPMN (Business Process Model and Notation) and DMN (Decision Model and Notation) to work together:
 
@@ -251,7 +251,7 @@ The DMN model does not contain any process logic. It contains:
 - Decision tables and FEEL expressions
 - Dependencies between decisions
 
-### 3.4.2 Microservices and Decision Services
+### 4.4.2 Microservices and Decision Services
 
 Even without BPMN, the pattern applies. A decision service is a microservice that:
 
@@ -273,7 +273,7 @@ The calling service — whether it is an API gateway, a workflow engine, an even
 └──────────────┘                                      └──────────────────┘
 ```
 
-### 3.4.3 Event-Driven Architectures
+### 4.4.3 Event-Driven Architectures
 
 In an event-driven system, the state machine reacts to events. Some events carry data that requires a decision. The pattern is:
 
@@ -287,7 +287,7 @@ The decision service does not know about events, states, or transitions. It only
 
 ---
 
-## 3.5 The Process Only Needs to Know About the Decisions
+## 4.5 The Process Only Needs to Know About the Decisions
 
 This is the key architectural insight, and it is worth stating plainly:
 
@@ -322,7 +322,7 @@ And the system as a whole gains properties that no amount of clever coding can a
 
 ---
 
-## 3.6 From Monolith to State Machine: A Migration Path
+## 4.6 From Monolith to State Machine: A Migration Path
 
 You do not need to rewrite your entire system. The migration can be incremental:
 
@@ -372,7 +372,7 @@ The monolith has been split along its natural fault line: rules on one side, flo
 
 ---
 
-## 3.7 FEEL Contexts as Business State
+## 4.7 FEEL Contexts as Business State
 
 A FEEL context is more than a data structure — it is a **business state representation**. When a decision service evaluates a set of business rules, the result is a FEEL context that captures the complete outcome: what was decided, what the computed values are, and what classification was assigned.
 
@@ -494,9 +494,9 @@ If `ready` is `false`, the state machine transitions to "Awaiting Documents" and
 
 ---
 
-## 3.8 Real-World Example: Loan Origination (Revisited)
+## 4.8 Real-World Example: Loan Origination (Revisited)
 
-Recall the loan origination process from Chapter 2. The DMN specification models it as:
+Recall the loan origination process from Chapter 3. The DMN specification models it as:
 
 **The process (BPMN state machine):**
 
@@ -549,8 +549,8 @@ This is the architecture that FEEL enables. The rest of this book teaches you th
 
 ## What Comes Next
 
-Now that you understand *why* FEEL exists (Chapter 1), *how* to analyse business logic (Chapter 2), and *where* FEEL fits in the architecture (this chapter), it is time to learn the language itself. Chapter 4 begins with the atoms of FEEL: values and types.
+Now that you understand *why* FEEL exists (Chapter 1), *what* business rules and business logic are (Chapter 2), *how* to think in decisions (Chapter 3), and *where* FEEL fits in the architecture (this chapter), it is time to learn the language itself. Chapter 5 begins with the atoms of FEEL: values and types.
 
 ---
 
-[Previous: Chapter 2: Thinking in Decisions](chapter-02-thinking-in-decisions.md) | [Next: Chapter 4: Values and Types](../part-3-feel-ground-up/chapter-04-values-and-types.md)
+[Previous: Chapter 3: Thinking in Decisions](chapter-03-thinking-in-decisions.md) | [Next: Chapter 5: Values and Types](../part-3-feel-ground-up/chapter-05-values-and-types.md)

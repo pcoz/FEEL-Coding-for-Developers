@@ -13,7 +13,7 @@ This book teaches FEEL progressively, from first principles to production use. I
 The book is divided into five parts:
 
 - **Part I** explains what FEEL is, why it exists, and the ecosystem of engines and tools around it.
-- **Part II** teaches you to analyse business logic as a set of decision primitives and shows how extracting rules from code enables clean, state-machine-driven process architectures.
+- **Part II** introduces the nature of business rules and business logic, teaches you to analyse them as a set of decision primitives, and shows how extracting rules from code enables clean, state-machine-driven process architectures.
 - **Part III** builds FEEL from the ground up — values, types, expressions, collections, iteration, functions, decision tables, and boxed expressions — with worked examples and cross-language comparisons at every step.
 - **Part IV** covers real-world application: reusable patterns, engine integration (Camunda, KIE, JavaScript, Python), FEEL dialects (S-FEEL, B-FEEL), advanced topics, and testing.
 - **Part V** provides reference material: a quick reference card, exercise solutions, a FEEL-to-language Rosetta Stone, an engine compatibility matrix, a glossary, and a guide to using FEEL with machine learning.
@@ -28,24 +28,25 @@ No prior DMN experience required. Start with Chapter 1.
 - [Chapter 1: The World Before FEEL](chapters/part-1-foundations/chapter-01-the-world-before-feel.md)
 
 ### Part II: The Anatomy of Business Logic
-- [Chapter 2: Thinking in Decisions](chapters/part-2-business-logic/chapter-02-thinking-in-decisions.md)
-- [Chapter 3: From Rules to Flows](chapters/part-2-business-logic/chapter-03-from-rules-to-flows.md)
+- [Chapter 2: Business Rules and Business Logic](chapters/part-2-business-logic/chapter-02-business-rules-and-logic.md)
+- [Chapter 3: Thinking in Decisions](chapters/part-2-business-logic/chapter-03-thinking-in-decisions.md)
+- [Chapter 4: From Rules to Flows](chapters/part-2-business-logic/chapter-04-from-rules-to-flows.md)
 
 ### Part III: FEEL from the Ground Up
-- [Chapter 4: Values and Types](chapters/part-3-feel-ground-up/chapter-04-values-and-types.md)
-- [Chapter 5: Expressions](chapters/part-3-feel-ground-up/chapter-05-expressions.md)
-- [Chapter 6: Collections](chapters/part-3-feel-ground-up/chapter-06-collections.md)
-- [Chapter 7: Iteration and Quantification](chapters/part-3-feel-ground-up/chapter-07-iteration-and-quantification.md)
-- [Chapter 8: Functions](chapters/part-3-feel-ground-up/chapter-08-functions.md)
-- [Chapter 9: Decision Tables in Depth](chapters/part-3-feel-ground-up/chapter-09-decision-tables.md)
-- [Chapter 10: Boxed Expressions](chapters/part-3-feel-ground-up/chapter-10-boxed-expressions.md)
+- [Chapter 5: Values and Types](chapters/part-3-feel-ground-up/chapter-05-values-and-types.md)
+- [Chapter 6: Expressions](chapters/part-3-feel-ground-up/chapter-06-expressions.md)
+- [Chapter 7: Collections](chapters/part-3-feel-ground-up/chapter-07-collections.md)
+- [Chapter 8: Iteration and Quantification](chapters/part-3-feel-ground-up/chapter-08-iteration-and-quantification.md)
+- [Chapter 9: Functions](chapters/part-3-feel-ground-up/chapter-09-functions.md)
+- [Chapter 10: Decision Tables in Depth](chapters/part-3-feel-ground-up/chapter-10-decision-tables.md)
+- [Chapter 11: Boxed Expressions](chapters/part-3-feel-ground-up/chapter-11-boxed-expressions.md)
 
 ### Part IV: Real-World Mastery
-- [Chapter 11: Patterns and Recipes](chapters/part-4-mastery/chapter-11-patterns-and-recipes.md)
-- [Chapter 12: FEEL in the Wild — Engine Integration](chapters/part-4-mastery/chapter-12-engine-integration.md)
-- [Chapter 13: S-FEEL, B-FEEL, and the Dialects](chapters/part-4-mastery/chapter-13-feel-dialects.md)
-- [Chapter 14: Advanced Topics](chapters/part-4-mastery/chapter-14-advanced-topics.md)
-- [Chapter 15: Testing FEEL](chapters/part-4-mastery/chapter-15-testing-feel.md)
+- [Chapter 12: Patterns and Recipes](chapters/part-4-mastery/chapter-12-patterns-and-recipes.md)
+- [Chapter 13: FEEL in the Wild — Engine Integration](chapters/part-4-mastery/chapter-13-engine-integration.md)
+- [Chapter 14: S-FEEL, B-FEEL, and the Dialects](chapters/part-4-mastery/chapter-14-feel-dialects.md)
+- [Chapter 15: Advanced Topics](chapters/part-4-mastery/chapter-15-advanced-topics.md)
+- [Chapter 16: Testing FEEL](chapters/part-4-mastery/chapter-16-testing-feel.md)
 
 ### Part V: Appendices
 - [Appendix A: FEEL Quick Reference Card](chapters/part-5-appendices/appendix-a-quick-reference.md)

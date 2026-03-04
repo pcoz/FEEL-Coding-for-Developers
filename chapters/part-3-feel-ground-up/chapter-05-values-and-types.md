@@ -1,4 +1,4 @@
-# Chapter 4: Values and Types — The Atoms of FEEL
+# Chapter 5: Values and Types — The Atoms of FEEL
 
 > *"Every expression evaluates to a value. Every value has a type. Understand the types and you understand the language."*
 
@@ -10,7 +10,7 @@ This chapter covers every FEEL data type, its literal syntax, and the operations
 
 ---
 
-## 4.1 Numbers
+## 5.1 Numbers
 
 ### Literal Syntax
 
@@ -58,7 +58,7 @@ round half down(2.5, 0)      // 2
 
 > **GOTCHA:** The `decimal()` function uses **half-even** rounding (banker's rounding), not half-up. `decimal(2.5, 0)` is `2`, not `3`. For financial applications that require half-up, use `round half up()` explicitly.
 
-### Worked Example 4.1 — Financial Rounding
+### Worked Example 5.1 — Financial Rounding
 
 A bank calculates interest daily and rounds to cents:
 
@@ -76,7 +76,7 @@ Result: `daily interest` is `1.2328767123287671...`, `rounded` is `1.23`.
 
 ---
 
-## 4.2 Strings
+## 5.2 Strings
 
 ### Literal Syntax
 
@@ -130,7 +130,7 @@ Strings are enclosed in double quotes. Single quotes are not string delimiters.
 
 Note: `substring()` in FEEL uses **1-based indexing**. `substring("foobar", 3)` returns `"obar"` (starting at the 3rd character), which is equivalent to JavaScript's `"foobar".slice(2)` (0-based).
 
-### Worked Example 4.2 — Building a Notification Message
+### Worked Example 5.2 — Building a Notification Message
 
 ```
 {
@@ -145,7 +145,7 @@ Result: `"Dear Alice Chen, your order #4821 has been shipped."`
 
 ---
 
-## 4.3 Booleans and Ternary Logic
+## 5.3 Booleans and Ternary Logic
 
 ### Literal Syntax
 
@@ -215,7 +215,7 @@ This means null conditions always take the `else` branch. This is a safety featu
 
 > **GOTCHA:** JavaScript's `!null` is `true` — JavaScript treats `null` as falsy. FEEL's `not(null)` is `null`. FEEL never guesses.
 
-### Worked Example 4.3 — Null-Safe Eligibility Check
+### Worked Example 5.3 — Null-Safe Eligibility Check
 
 An eligibility rule that must handle missing data:
 
@@ -237,11 +237,11 @@ Without the null guards, `null >= 18` would produce `null`, which would propagat
 
 ---
 
-## 4.4 Dates, Times, and Durations
+## 5.4 Dates, Times, and Durations
 
 FEEL treats temporal values as first-class citizens. There are five temporal types.
 
-### 4.4.1 Date
+### 5.4.1 Date
 
 A calendar date (year, month, day) without time or timezone.
 
@@ -259,7 +259,7 @@ Properties:
 @"2024-03-15".weekday    // 5 (Friday; 1=Monday, 7=Sunday per ISO 8601)
 ```
 
-### 4.4.2 Time
+### 5.4.2 Time
 
 A time of day, optionally with timezone.
 
@@ -273,7 +273,7 @@ time(14, 30, 0, @"PT2H")            // with offset as duration
 
 Properties: `hour`, `minute`, `second`, `time offset`, `timezone`.
 
-### 4.4.3 Date and Time
+### 5.4.3 Date and Time
 
 A combined date and time.
 
@@ -287,7 +287,7 @@ date and time(date("2024-03-15"), time("14:30:00"))   // from components
 
 Properties: all date properties + all time properties.
 
-### 4.4.4 Days and Time Duration
+### 5.4.4 Days and Time Duration
 
 A duration expressed in days, hours, minutes, and seconds.
 
@@ -301,7 +301,7 @@ duration("P2DT3H")        // function form
 
 Properties: `days`, `hours`, `minutes`, `seconds`.
 
-### 4.4.5 Years and Months Duration
+### 5.4.5 Years and Months Duration
 
 A duration expressed in years and months.
 
@@ -330,7 +330,7 @@ Years and months have variable lengths (28–31 days, 365–366 days). Days and 
 | `now() - @"P1Y"` | date-time one year ago | date and time |
 | `@"P1Y6M" + @"P6M"` | `@"P2Y"` | years and months duration |
 
-### Worked Example 4.4 — Age Calculation
+### Worked Example 5.4 — Age Calculation
 
 ```
 {
@@ -340,7 +340,7 @@ Years and months have variable lengths (28–31 days, 365–366 days). Days and 
 }
 ```
 
-### Worked Example 4.5 — SLA Deadline Check
+### Worked Example 5.5 — SLA Deadline Check
 
 ```
 {
@@ -352,7 +352,7 @@ Years and months have variable lengths (28–31 days, 365–366 days). Days and 
 }
 ```
 
-### Worked Example 4.6 — Contract Renewal Window
+### Worked Example 5.6 — Contract Renewal Window
 
 ```
 {
@@ -366,7 +366,7 @@ Years and months have variable lengths (28–31 days, 365–366 days). Days and 
 
 ---
 
-## 4.5 The null Value
+## 5.5 The null Value
 
 `null` is FEEL's universal sentinel for "no value", "missing data", and "error occurred."
 
@@ -422,7 +422,7 @@ then Order.Customer.Name
 else "Unknown"
 ```
 
-### Worked Example 4.7 — Defensive Null Handling
+### Worked Example 5.7 — Defensive Null Handling
 
 A calculation that must handle missing inputs gracefully:
 
@@ -439,7 +439,7 @@ A calculation that must handle missing inputs gracefully:
 
 ---
 
-## 4.6 Type Checking with `instance of`
+## 5.6 Type Checking with `instance of`
 
 FEEL supports runtime type checking:
 
@@ -487,28 +487,28 @@ else
 
 ## Exercises
 
-**Exercise 4.1:** What is the result of each expression?
+**Exercise 5.1:** What is the result of each expression?
 - `1/3`
 - `decimal(1/3, 4)`
 - `"hello" + 42`
 - `string length("hello" + " " + "world")`
 
-**Exercise 4.2:** Given `birth date = @"1995-12-25"`, write a FEEL expression that computes the person's age in whole years as of today.
+**Exercise 5.2:** Given `birth date = @"1995-12-25"`, write a FEEL expression that computes the person's age in whole years as of today.
 
-**Exercise 4.3:** What is the result of `true and null and false`? Explain step by step.
+**Exercise 5.3:** What is the result of `true and null and false`? Explain step by step.
 
-**Exercise 4.4:** Write a FEEL context that takes an input `Temperature` (which may be `null`) and produces:
+**Exercise 5.4:** Write a FEEL context that takes an input `Temperature` (which may be `null`) and produces:
 - `status`: "Fever" if Temperature > 38.5, "Normal" if Temperature <= 38.5, "Unknown" if Temperature is null.
 - `action`: "Administer treatment" if fever, "Continue monitoring" otherwise.
 
-**Exercise 4.5:** Given `Contract Start = @"2022-01-15"` and `Term = @"P3Y"`, compute the expiry date, the number of days until expiry (as a duration), and whether the contract has expired.
+**Exercise 5.5:** Given `Contract Start = @"2022-01-15"` and `Term = @"P3Y"`, compute the expiry date, the number of days until expiry (as a duration), and whether the contract has expired.
 
 ---
 
 ## What Comes Next
 
-Chapter 5 teaches you to combine these atomic values into expressions: arithmetic, comparisons, conditionals, and the special sub-language of unary tests used inside decision tables.
+Chapter 6 teaches you to combine these atomic values into expressions: arithmetic, comparisons, conditionals, and the special sub-language of unary tests used inside decision tables.
 
 ---
 
-[Previous: Chapter 3: From Rules to Flows](../part-2-business-logic/chapter-03-from-rules-to-flows.md) | [Next: Chapter 5: Expressions](chapter-05-expressions.md)
+[Previous: Chapter 4: From Rules to Flows](../part-2-business-logic/chapter-04-from-rules-to-flows.md) | [Next: Chapter 6: Expressions](chapter-06-expressions.md)

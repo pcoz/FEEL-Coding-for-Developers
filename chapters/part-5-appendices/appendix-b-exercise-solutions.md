@@ -2,27 +2,27 @@
 
 ---
 
-## Chapter 4: Values and Types
+## Chapter 5: Values and Types
 
-**Exercise 4.1:**
+**Exercise 5.1:**
 - `1/3` → `0.3333333333333333333333333333333333` (34-digit precision)
 - `decimal(1/3, 4)` → `0.3333`
 - `"hello" + 42` → `null` (no implicit type coercion)
 - `string length("hello" + " " + "world")` → `11`
 
-**Exercise 4.2:**
+**Exercise 5.2:**
 ```
 years and months duration(birth date, today()).years
 ```
 With `birth date = @"1995-12-25"`: evaluates to the number of whole years elapsed.
 
-**Exercise 4.3:**
+**Exercise 5.3:**
 `true and null and false`:
 - Step 1: `true and null` → `null` (see truth table)
 - Step 2: `null and false` → `false` (see truth table)
 - Result: `false`
 
-**Exercise 4.4:**
+**Exercise 5.4:**
 ```
 {
   status: if Temperature = null then "Unknown"
@@ -33,7 +33,7 @@ With `birth date = @"1995-12-25"`: evaluates to the number of whole years elapse
 }
 ```
 
-**Exercise 4.5:**
+**Exercise 5.5:**
 ```
 {
   Contract Start: @"2022-01-15",
@@ -46,14 +46,14 @@ With `birth date = @"1995-12-25"`: evaluates to the number of whole years elapse
 
 ---
 
-## Chapter 5: Expressions
+## Chapter 6: Expressions
 
-**Exercise 5.1:**
+**Exercise 6.1:**
 - `-3 ** 2` → `9` (interpreted as `(-3) ** 2` because unary negation has higher precedence than exponentiation)
 - `(-3) ** 2` → `9` (same result, explicit)
 - `-(3 ** 2)` → `-9` (negation applied after exponentiation)
 
-**Exercise 5.2:**
+**Exercise 6.2:**
 ```
 {
   bmi: weight / (height ** 2),
@@ -64,10 +64,10 @@ With `birth date = @"1995-12-25"`: evaluates to the number of whole years elapse
 }
 ```
 
-**Exercise 5.3:**
+**Exercise 6.3:**
 `"abc" > 5` → `null`. Cross-type comparison (string vs number) produces `null` in FEEL because the comparison is meaningless.
 
-**Exercise 5.4:**
+**Exercise 6.4:**
 - (a) `37.0`
 - (b) `(37.5..38.5)`
 - (c) `>= 39`
@@ -75,16 +75,16 @@ With `birth date = @"1995-12-25"`: evaluates to the number of whole years elapse
 
 ---
 
-## Chapter 6: Collections
+## Chapter 7: Collections
 
-**Exercise 6.1:**
+**Exercise 7.1:**
 - `L[0]` → `null` (no 0th element in 1-based indexing)
 - `L[1]` → `10`
 - `L[-1]` → `50`
 - `L[6]` → `null` (out of bounds)
 - `L[item > 25]` → `[30, 40, 50]`
 
-**Exercise 6.2:**
+**Exercise 7.2:**
 ```
 {
   total: sum(Items.amount),
@@ -94,7 +94,7 @@ With `birth date = @"1995-12-25"`: evaluates to the number of whole years elapse
 }
 ```
 
-**Exercise 6.3:**
+**Exercise 7.3:**
 ```
 {
   vacation: [@"2024-07-01"..@"2024-07-14"],
@@ -109,14 +109,14 @@ With `birth date = @"1995-12-25"`: evaluates to the number of whole years elapse
 
 ---
 
-## Chapter 7: Iteration and Quantification
+## Chapter 8: Iteration and Quantification
 
-**Exercise 7.1:**
+**Exercise 8.1:**
 ```
 for i in 1..10 return i ** 2
 ```
 
-**Exercise 7.2:**
+**Exercise 8.2:**
 ```
 for tx in Transactions return
   if count(partial) = 0 then tx.amount
@@ -125,36 +125,36 @@ for tx in Transactions return
 ```
 The `partial` variable holds the results of previous iterations (Camunda extension). At each step, the running balance is the previous balance plus the current transaction amount.
 
-**Exercise 7.3:**
+**Exercise 8.3:**
 ```
 some emp in Employees satisfies emp.salary > 200000
 ```
 
-**Exercise 7.4:**
+**Exercise 8.4:**
 ```
 every item in Order.Items satisfies item.quantity > 0 and item.sku != null
 ```
 
-**Exercise 7.5:**
+**Exercise 8.5:**
 ```
 some meeting in Meetings satisfies overlaps(Proposed Slot, meeting)
 ```
 
 ---
 
-## Chapter 8: Functions
+## Chapter 9: Functions
 
-**Exercise 8.1:**
+**Exercise 9.1:**
 ```
 function(value, low, high) max([low, min([high, value])])
 ```
 
-**Exercise 8.2:**
+**Exercise 9.2:**
 ```
 sort(Employees, function(a, b) a.salary > b.salary)
 ```
 
-**Exercise 8.3:**
+**Exercise 9.3:**
 ```
 function(d) {
   y: d.year,
@@ -164,16 +164,16 @@ function(d) {
 }.last day
 ```
 
-**Exercise 8.4:**
+**Exercise 9.4:**
 ```
 string join(for i in 1..5 return string(i), ", ")
 ```
 
 ---
 
-## Chapter 9: Decision Tables
+## Chapter 10: Decision Tables
 
-**Exercise 9.1:**
+**Exercise 10.1:**
 
 | U | Order Priority | Distance | Delivery Days |
 |---|---------------|----------|---------------|
@@ -185,7 +185,7 @@ string join(for i in 1..5 return string(i), ", ")
 | 6 | "Standard" | (100..500] | 5 |
 | 7 | "Standard" | > 500 | 7 |
 
-**Exercise 9.2:**
+**Exercise 10.2:**
 
 | C+ | Years of Experience | Partial Score |
 |----|-------------------|---------------|
@@ -207,7 +207,7 @@ string join(for i in 1..5 return string(i), ", ")
 | 10 | [1..3) | 10 |
 | 11 | 0 | 0 |
 
-**Exercise 9.3:**
+**Exercise 10.3:**
 At runtime with hit policy U, if two rules match, the engine signals an error (implementation-dependent: some return `null`, some throw an exception). Fix by making the rules mutually exclusive — ensure input ranges do not overlap. For example, change `[0..10]` and `[10..20]` to `[0..10]` and `(10..20]`.
 
 ---

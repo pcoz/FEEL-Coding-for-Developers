@@ -1,10 +1,10 @@
-# Chapter 10: Boxed Expressions — Composing Logic Visually
+# Chapter 11: Boxed Expressions — Composing Logic Visually
 
 > *"A boxed expression is a FEEL expression you can draw on a whiteboard."*
 
 ---
 
-## 10.1 What Are Boxed Expressions?
+## 11.1 What Are Boxed Expressions?
 
 In DMN, all decision logic is represented as **boxed expressions** — visual, structured representations of FEEL expressions. The "box" is a graphical frame that:
 
@@ -16,9 +16,9 @@ Boxed expressions are defined recursively: a boxed expression can contain other 
 
 ---
 
-## 10.2 The Complete Catalog
+## 11.2 The Complete Catalog
 
-### 10.2.1 Boxed Literal Expression
+### 11.2.1 Boxed Literal Expression
 
 The simplest form: a named FEEL expression.
 
@@ -32,7 +32,7 @@ The simplest form: a named FEEL expression.
 
 FEEL equivalent: `Amount * Rate / 12`
 
-### 10.2.2 Boxed Context
+### 11.2.2 Boxed Context
 
 A sequence of named entries, evaluated top to bottom.
 
@@ -61,7 +61,7 @@ FEEL equivalent:
 
 The final entry (without a key) is the result of the context.
 
-### 10.2.3 Boxed List
+### 11.2.3 Boxed List
 
 A list of expressions.
 
@@ -77,7 +77,7 @@ A list of expressions.
 
 FEEL equivalent: `[Age Factor, Income Factor, History Factor]`
 
-### 10.2.4 Relation
+### 11.2.4 Relation
 
 A tabular representation of a list of same-shape contexts. Think of it as a table of data (not a decision table — no hit policy, no conditions).
 
@@ -102,7 +102,7 @@ FEEL equivalent:
 ]
 ```
 
-### 10.2.5 Boxed Function Definition
+### 11.2.5 Boxed Function Definition
 
 Defines a reusable function with named parameters and a body.
 
@@ -122,7 +122,7 @@ Defines a reusable function with named parameters and a body.
 └────────────────────────────────┘
 ```
 
-### 10.2.6 Boxed Invocation
+### 11.2.6 Boxed Invocation
 
 Calls a Business Knowledge Model (BKM) with named arguments.
 
@@ -140,11 +140,11 @@ Calls a Business Knowledge Model (BKM) with named arguments.
 
 This calls the `Installment Calculation` BKM with three named arguments.
 
-### 10.2.7 Decision Table
+### 11.2.7 Decision Table
 
-Already covered in depth in Chapter 9. The most common boxed expression type.
+Already covered in depth in Chapter 10. The most common boxed expression type.
 
-### 10.2.8 Boxed Conditional
+### 11.2.8 Boxed Conditional
 
 An if/then/else rendered as a box.
 
@@ -158,7 +158,7 @@ An if/then/else rendered as a box.
 └─────┴──────────────────────────────┘
 ```
 
-### 10.2.9 Boxed Filter
+### 11.2.9 Boxed Filter
 
 ```
 ┌────────────────────────────────────┐
@@ -168,7 +168,7 @@ An if/then/else rendered as a box.
 └────────────────────────────────────┘
 ```
 
-### 10.2.10 Boxed Iterator (for, some, every)
+### 11.2.10 Boxed Iterator (for, some, every)
 
 ```
 ┌────────────────────────────────────┐
@@ -181,11 +181,11 @@ An if/then/else rendered as a box.
 
 ---
 
-## 10.3 Composing Boxed Expressions
+## 11.3 Composing Boxed Expressions
 
 The power of boxed expressions is composition. A context entry can contain a decision table. A decision table cell can contain an invocation. An invocation argument can be a literal expression.
 
-### Worked Example 10.1 — Full Loan Affordability
+### Worked Example 11.1 — Full Loan Affordability
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -217,7 +217,7 @@ Three levels of nesting — each independently testable, each independently revi
 | Relation | Table of data | `[{...}, {...}]` |
 | Function Definition | Reusable logic | `function(p) body` |
 | Invocation | Call a BKM | `BKM(args)` |
-| Decision Table | Rule set | (See Chapter 9) |
+| Decision Table | Rule set | (See Chapter 10) |
 | Conditional | If/then/else | `if c then a else b` |
 | Filter | Subset of list | `list[condition]` |
 | Iterator | Loop construct | `for x in L return e` |
@@ -226,8 +226,8 @@ Three levels of nesting — each independently testable, each independently revi
 
 ## What Comes Next
 
-Part IV begins with Chapter 11: Patterns and Recipes — practical, copy-paste solutions for common business logic scenarios.
+Part IV begins with Chapter 12: Patterns and Recipes — practical, copy-paste solutions for common business logic scenarios.
 
 ---
 
-[Previous: Chapter 9: Decision Tables in Depth](chapter-09-decision-tables.md) | [Next: Chapter 11: Patterns and Recipes](../part-4-mastery/chapter-11-patterns-and-recipes.md)
+[Previous: Chapter 10: Decision Tables in Depth](chapter-10-decision-tables.md) | [Next: Chapter 12: Patterns and Recipes](../part-4-mastery/chapter-12-patterns-and-recipes.md)

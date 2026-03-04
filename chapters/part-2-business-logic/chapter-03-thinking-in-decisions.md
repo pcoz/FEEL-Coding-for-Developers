@@ -1,196 +1,22 @@
-# Chapter 2: Thinking in Decisions
+# Chapter 3: Thinking in Decisions
 
-> *"Before you can write the expression, you must understand the decision. Before you can understand the decision, you must see the logic hiding inside the business rule."*
-
----
-
-This chapter contains no FEEL syntax. It is pure analysis.
-
-The temptation when learning any language — FEEL included — is to dive straight into grammar and built-in functions. Resist that temptation. The hardest part of writing correct FEEL is not the syntax. It is understanding the business logic clearly enough that the expression writes itself.
-
-This chapter gives you a framework for decomposing any business policy into a small set of analytical primitives. Once you can see these primitives in a policy document, an email, or a conversation with a domain expert, translating them into FEEL becomes mechanical.
+> *"A decision table is not a piece of software. It is a piece of organisational truth that happens to be executable."*
 
 ---
 
-## 2.1 The Primitives of Business Logic
+Chapter 2 gave you the vocabulary — the ten analytical primitives that every business rule is built from. This chapter gives you the **structures** for organising those primitives into executable decisions.
 
-Every business rule, in every domain, is composed of combinations of these ten logical building blocks:
+The temptation when learning any language — FEEL included — is to dive straight into grammar and built-in functions. Resist that temptation. The hardest part of writing correct FEEL is not the syntax. It is choosing the right structure for the logic: when to use a decision table, when to use a step-by-step computation, and how to connect multiple decisions into a coherent model.
 
-### Primitive 1: Classification
-
-**What it answers:** "Which category does X belong to?"
-
-A classification maps an input value (or combination of inputs) to one of a finite set of labels.
-
-*Examples:*
-- Credit score 720 → "Good"
-- Customer spending over $10,000/year → "Gold" tier
-- BMI 26.3 → "Overweight"
-
-*Key property:* The categories are mutually exclusive and (ideally) exhaustive — every input maps to exactly one label.
-
-### Primitive 2: Threshold Test
-
-**What it answers:** "Does X exceed / fall below Y?"
-
-A threshold test compares a value against a fixed boundary.
-
-*Examples:*
-- Age >= 18 (legal adult)
-- Account balance < 0 (overdrawn)
-- Temperature > 38.5 (fever)
-
-*Key property:* The result is always true or false (or unknown, if the input is missing).
-
-### Primitive 3: Range Membership
-
-**What it answers:** "Is X within bounds?"
-
-A range test checks whether a value falls within an interval, possibly including or excluding the endpoints.
-
-*Examples:*
-- Credit score between 650 and 749 (inclusive)
-- Delivery date within the next 5 business days
-- Weight in (0 kg, 30 kg] — more than 0, up to and including 30
-
-*Key property:* Ranges have start and end points, and each endpoint is either included or excluded.
-
-### Primitive 4: Enumeration Match
-
-**What it answers:** "Is X one of these specific values?"
-
-An enumeration match checks membership in a finite set of allowed values.
-
-*Examples:*
-- Country in {"US", "CA", "MX"}
-- Status is "Active" or "Pending"
-- Product type is not "Prohibited"
-
-*Key property:* The set of values is finite and known in advance.
-
-### Primitive 5: Conjunction and Disjunction
-
-**What it answers:** "Do conditions A *and* B hold?" / "Does condition A *or* B hold?"
-
-Logical combination of simpler tests.
-
-*Examples:*
-- Applicant is employed AND income > 30,000
-- Customer is Gold tier OR order amount > 500
-- NOT (account is frozen)
-
-*Key property:* Can be nested arbitrarily deep. In practice, more than 3 levels of nesting signals that a decision table would be clearer.
-
-### Primitive 6: Conditional Mapping
-
-**What it answers:** "If A, then X; otherwise Y."
-
-A conditional selects between two (or more) outcomes based on a condition.
-
-*Examples:*
-- If VIP customer, apply 20% discount; otherwise 5%
-- If hazardous material, require special handling; otherwise standard shipping
-- If claim amount < $500, auto-approve; otherwise route to adjuster
-
-*Key property:* Every conditional has an "else" — what happens when the condition is not met. Missing "else" branches are a common source of bugs.
-
-### Primitive 7: Aggregation
-
-**What it answers:** "What is the sum / count / min / max / average of a collection?"
-
-Aggregation reduces a set of values to a single summary value.
-
-*Examples:*
-- Total order amount = sum of line item prices
-- Number of overdue invoices = count of invoices where due date < today
-- Highest claim amount this quarter
-
-*Key property:* Aggregation always operates on a *collection* and produces a *single value*.
-
-### Primitive 8: Iteration with Filter
-
-**What it answers:** "For each item in a set that satisfies a condition, compute something."
-
-Iteration walks through a collection, optionally filtering, and produces a new collection.
-
-*Examples:*
-- For each order line where quantity > 10, compute bulk discount
-- For each employee in the Engineering department, calculate bonus
-- List all invoices older than 90 days
-
-*Key property:* The result is a new collection, not a single value (that would be aggregation applied after iteration).
-
-### Primitive 9: Ordering and Priority
-
-**What it answers:** "Which option ranks highest?"
-
-Ordering sorts a set of values or selects the best according to some criterion.
-
-*Examples:*
-- Select the cheapest shipping method
-- Apply the highest-priority matching discount
-- Rank candidates by interview score
-
-*Key property:* Requires a comparison function or a predefined priority list.
-
-### Primitive 10: Temporal Reasoning
-
-**What it answers:** "Is date/time A before/after/within a period of date/time B?"
-
-Temporal reasoning involves dates, times, durations, and their relationships.
-
-*Examples:*
-- Insurance policy expires within 30 days
-- Employee tenure is at least 2 years
-- Appointment is between 09:00 and 17:00
-
-*Key property:* Requires both point-in-time values (dates, timestamps) and durations (periods of time).
+This chapter covers four structures: **decision tables**, **contexts** (step-by-step computations), **Decision Requirements Graphs** (dependency diagrams), and the **mapping table** that connects every primitive from Chapter 2 to its FEEL construct.
 
 ---
 
-## 2.2 Worked Example: Decomposing Loan Eligibility
+## 3.1 Decision Tables: The Workhorse
 
-Let us take a realistic business policy and identify every primitive lurking inside it.
+In Chapter 2, you met the **Classification** primitive — mapping inputs to categories. You also saw **Threshold Tests**, **Range Membership**, and **Enumeration Matches**. All of these have something in common: they evaluate conditions against inputs and produce a result. A **decision table** is the natural structure for expressing them.
 
-### The Policy (as stated by the business)
-
-> **Loan Eligibility Rules**
->
-> 1. The applicant must be at least 18 years old and no more than 70.
-> 2. The applicant's employment status must be "Employed", "Self-employed", or "Retired with pension".
-> 3. The applicant must not have declared bankruptcy in the last 7 years.
-> 4. The risk category (Low, Medium, High, Decline) is determined by credit score:
->    - 750–850: Low
->    - 650–749: Medium
->    - 550–649: High
->    - Below 550: Decline
-> 5. If the risk category is "Decline", the applicant is ineligible.
-> 6. Monthly repayment must not exceed 30% of monthly income minus monthly expenses.
-> 7. If the applicant is an existing customer with a Low risk category, the bureau check is waived.
-> 8. All required documents must be signed.
-
-### The Decomposition
-
-| Rule | Primitive(s) | Analytical Structure |
-|------|-------------|---------------------|
-| 1. Age 18–70 | **Range membership** | `Age in [18..70]` |
-| 2. Employment status | **Enumeration match** | `Status in {"Employed", "Self-employed", "Retired with pension"}` |
-| 3. No recent bankruptcy | **Temporal reasoning** + **Threshold test** | `today() - Bankruptcy Date > 7 years` (or bankruptcy date is absent) |
-| 4. Risk from credit score | **Classification** (via ranges) | Four range memberships combined into a classification table |
-| 5. Decline = ineligible | **Threshold test** (on a classified value) | `Risk != "Decline"` |
-| 6. Affordability | **Aggregation** + **Threshold test** | Compute: `(Income - Expenses) * 0.30 >= Repayment` |
-| 7. Waive bureau check | **Conjunction** + **Conditional mapping** | `if Existing Customer and Risk = "Low" then waive else require` |
-| 8. All documents signed | **Iteration with filter** (universal quantifier) | `every doc in Documents satisfies doc.Signed = true` |
-
-Notice that even a short policy of 8 rules uses 8 of our 10 primitives. This is typical. Business rules are *combinatorial* — they combine simple building blocks in ways that can become complex quickly.
-
-The value of this decomposition is that each primitive maps directly to a FEEL construct. When you reach Part III, you will learn each construct and be able to trace it back to the analytical primitive it serves.
-
----
-
-## 2.3 Decision Tables: The Workhorse
-
-Many business rules are best expressed as tables. A decision table is the most natural representation when:
+Use a decision table when:
 
 - The decision has a small number of input dimensions (2–5).
 - The output is one of a finite set of values (classification) or a computed value.
@@ -223,6 +49,8 @@ A decision table has these components:
 - **Hit policy** (the letter in `[H]`): What happens when multiple rules match.
 - **Rules**: Each row is one rule. Read it as: "If input 1 matches AND input 2 matches, then the output is..."
 
+Notice the connection to Chapter 2: each input entry is a **Threshold Test**, **Range Membership**, or **Enumeration Match**. Each row is a **Conjunction** of those tests. The table as a whole is a **Classification** or **Conditional Mapping**. The decision table is not a new concept — it is a compact notation for combining primitives you already understand.
+
 ### Hit Policies
 
 The hit policy determines what happens when the inputs match zero, one, or more than one rule. This is one of the most important concepts in DMN.
@@ -252,7 +80,9 @@ These policies produce a list of output values:
 | **Rule Order** | R | All matching rules fire. Outputs returned in rule order. | When the order of rules matters for downstream processing. |
 | **Output Order** | O | All matching rules fire. Outputs returned in the order defined by output values. | When you need a canonical ordering. |
 
-### Worked Example 2.2 — Shipping Cost Table
+The connection to Chapter 2's primitives: **Collect Sum** (C+) is the table-level embodiment of the **Aggregation** primitive. **Priority** (P) and **Output Order** (O) are the table-level embodiment of the **Ordering and Priority** primitive. The hit policy determines *how* the table combines its matched rules — and each combination strategy maps to a primitive.
+
+### Worked Example 3.1 — Shipping Cost Table
 
 **Business policy (prose):**
 
@@ -264,6 +94,20 @@ These policies produce a list of output values:
 > - Packages over 5 kg going to Zone A cost $20 ($16 for members).
 > - Packages over 5 kg going to Zone B cost $25 ($20 for members).
 > - Packages over 5 kg going to Zone C require a quote (regardless of membership).
+
+**Identifying the primitives (from Chapter 2):**
+
+Before writing the table, decompose the policy:
+
+| Component | Primitive |
+|-----------|-----------|
+| Weight brackets (≤1, 1–5, >5) | **Range Membership** |
+| Zone (A, B, C) | **Enumeration Match** |
+| Member true/false | **Threshold Test** (boolean) |
+| Each row combines weight + zone + member → cost | **Classification** via **Conjunction** |
+| Zone C → "quote" | **Conditional Mapping** (special case) |
+
+Now the table writes itself:
 
 **Decision table:**
 
@@ -287,17 +131,19 @@ These policies produce a list of output values:
 
 **Why `null` for rule 13?** Returning `null` signals "no standard price available" — the calling process can then route to a manual quoting workflow.
 
+**Completeness check:** The policy mentions 3 weight ranges × 3 zones × 2 membership states = 18 combinations. But Zone C only appears for >5 kg. Are packages ≤5 kg to Zone C covered? The prose does not say. This is exactly the kind of gap that the table makes visible — you can now go back to the business and ask.
+
 ---
 
-## 2.4 Beyond Tables: Computed Values and Formulas
+## 3.2 Beyond Tables: Computed Values and Formulas
 
-Not all business logic fits in a table. When the output is a *computed value* rather than a *classified label*, you need formulas.
+Decision tables express the **Classification** and **Conditional Mapping** primitives beautifully. But when the output is a *computed value* rather than a *classified label*, you need the **Aggregation** and **Temporal Reasoning** primitives — and these call for a different structure: the **context**.
 
 ### The Context: A Step-by-Step Computation
 
 A context is a sequence of named values, where each value can reference the ones before it. Think of it as a spreadsheet column, or as a `let` chain in functional programming.
 
-### Worked Example 2.3 — Monthly Installment Calculation
+### Worked Example 3.2 — Monthly Installment Calculation
 
 **Business rule (prose):**
 
@@ -307,6 +153,8 @@ A context is a sequence of named values, where each value can reference the ones
 >
 > Where Rate is the annual interest rate (decimal), Term is the number of years, and Amount is the loan principal.
 
+**Identifying the primitives:** This rule is pure **Aggregation** — a mathematical reduction of inputs to a computed value. No classification, no ranges, no enumeration. A decision table would be the wrong structure.
+
 **As a step-by-step computation:**
 
 ```
@@ -315,7 +163,7 @@ Step 2:  Num Payments    = Term * 12
 Step 3:  PMT             = Amount * Monthly Rate / (1 - (1 + Monthly Rate) ** (- Num Payments))
 ```
 
-This is a context: three named values, each building on the previous ones. In FEEL (preview — we will cover the syntax in Chapter 5):
+This is a context: three named values, each building on the previous ones. In FEEL (preview — we will cover the syntax in Chapter 6):
 
 ```
 {
@@ -329,15 +177,15 @@ The key insight: **name your intermediate values**. Do not write one massive for
 
 ### The Invocation: Reusable Logic
 
-When the same calculation is used in multiple decisions (e.g., both the pre-bureau and post-bureau affordability checks need the monthly installment), package it as a **Business Knowledge Model (BKM)** — a reusable function that can be invoked with different parameters.
+When the same calculation is used in multiple decisions (e.g., both the pre-bureau and post-bureau affordability checks need the monthly installment), package it as a **Business Knowledge Model (BKM)** — a reusable function that can be invoked with different parameters. This is the FEEL embodiment of the **Ordering/Priority** principle applied to architecture: shared computations are factored out and invoked, not duplicated.
 
 ---
 
-## 2.5 The Decision Requirements Graph
+## 3.3 The Decision Requirements Graph
 
-Individual decisions do not exist in isolation. They form a dependency graph.
+Individual decisions do not exist in isolation. They form a dependency graph. This is where the primitives from Chapter 2 become a **system** — the **Aggregation** of one decision feeds the **Threshold Test** of the next, which feeds the **Classification** of the decision above it.
 
-### Worked Example 2.4 — Loan Origination DRG
+### Worked Example 3.3 — Loan Origination DRG
 
 The DMN specification includes a comprehensive loan origination example. Here is its structure:
 
@@ -377,6 +225,8 @@ Reading this graph from bottom to top:
 
 Each arrow says: "This decision *requires* that information." The graph must be acyclic — no circular dependencies.
 
+**The primitives at work:** Application Risk Score is a **Classification** (via a C+ scorecard table — using the **Aggregation** primitive to sum partial scores). Pre-Bureau Risk Category is another **Classification** that consumes the score via a **Range Membership** test. Pre-Bureau Affordability performs **Aggregation** (the installment formula from Section 3.2) followed by a **Threshold Test** (can the applicant afford it?). Eligibility is a **Conjunction** of multiple conditions. The DRG makes these dependencies explicit — you can see which primitives feed which.
+
 ### Why This Matters
 
 Drawing the DRG *before* writing any FEEL expressions gives you:
@@ -388,30 +238,30 @@ Drawing the DRG *before* writing any FEEL expressions gives you:
 
 ---
 
-## 2.6 From Analysis to FEEL: The Bridge
+## 3.4 From Analysis to FEEL: The Bridge
 
-We have now established the analytical framework. Here is the mapping table that connects every business logic primitive to the FEEL constructs you will learn in Part III:
+We have now established the analytical framework (Chapter 2) and the organisational structures (this chapter). Here is the mapping table that connects every business logic primitive to the FEEL constructs you will learn in Part III:
 
 | Analytical Primitive | FEEL Construct | Chapter |
 |---------------------|----------------|---------|
-| Classification | Decision table with enumerated output values | 9 |
-| Threshold test | Comparison operators (`>=`, `<`, etc.) or unary tests | 5 |
-| Range membership | `x in [a..b]`, interval expressions, unary tests | 5, 6 |
-| Enumeration match | `x in ("Gold", "Silver", "Bronze")` | 5 |
-| Conjunction / Disjunction | `and` / `or` with ternary logic | 4, 5 |
-| Conditional mapping | `if ... then ... else ...` | 5 |
-| Aggregation | `sum()`, `count()`, `min()`, `max()`, `mean()` | 8 |
-| Iteration with filter | `for ... in ... return ...`, list filters `[condition]` | 6, 7 |
-| Ordering / Priority | `sort()`, Priority hit policy, `list[1]` | 8, 9 |
-| Temporal reasoning | Date/time arithmetic, `duration()`, temporal comparisons | 4, 5 |
+| Classification | Decision table with enumerated output values | 10 |
+| Threshold test | Comparison operators (`>=`, `<`, etc.) or unary tests | 6 |
+| Range membership | `x in [a..b]`, interval expressions, unary tests | 6, 7 |
+| Enumeration match | `x in ("Gold", "Silver", "Bronze")` | 6 |
+| Conjunction / Disjunction | `and` / `or` with ternary logic | 5, 6 |
+| Conditional mapping | `if ... then ... else ...` | 6 |
+| Aggregation | `sum()`, `count()`, `min()`, `max()`, `mean()` | 9 |
+| Iteration with filter | `for ... in ... return ...`, list filters `[condition]` | 7, 8 |
+| Ordering / Priority | `sort()`, Priority hit policy, `list[1]` | 9, 10 |
+| Temporal reasoning | Date/time arithmetic, `duration()`, temporal comparisons | 5, 6 |
 
-Keep this table bookmarked. When you encounter a business requirement and are unsure how to express it in FEEL, start here: identify the primitive, look up the corresponding FEEL construct, and turn to the referenced chapter.
+Keep this table bookmarked. When you encounter a business requirement and are unsure how to express it in FEEL, start here: identify the primitive (Chapter 2), look up the corresponding FEEL construct, and turn to the referenced chapter.
 
 ---
 
-## 2.7 A Complete Decomposition Walkthrough
+## 3.5 A Complete Decomposition Walkthrough
 
-Let us work through one more example end-to-end, combining multiple primitives.
+Let us work through one more example end-to-end, combining the primitive analysis from Chapter 2 with the structures from this chapter.
 
 ### The Policy: Insurance Premium Calculation
 
@@ -432,7 +282,7 @@ Let us work through one more example end-to-end, combining multiple primitives.
 >
 > The final premium is the base premium multiplied by the product of all adjustment factors.
 
-### Step 1: Identify the Primitives
+### Step 1: Identify the Primitives (Chapter 2 Analysis)
 
 | Component | Primitive | Structure |
 |-----------|-----------|-----------|
@@ -445,7 +295,14 @@ Let us work through one more example end-to-end, combining multiple primitives.
 | Mileage surcharge | **Threshold test** | `Annual Mileage > 20000` |
 | Final premium | **Aggregation** (product of factors) | Multiply base by all applicable factors |
 
-### Step 2: Structure as Decisions
+### Step 2: Choose the Structures (This Chapter)
+
+Now we choose the right structure for each component:
+
+- **Base Premium**: Pure **Classification** → use a **decision table** (4 values in, 1 value out).
+- **Age Factor, Claims Factor, Multi-Car Factor, Mileage Factor**: Each is a **Conditional Mapping** that produces a numeric multiplier → use a **context** (step-by-step computation), because the factors interact (Claims Factor depends on Claims Count, which is itself computed).
+- **Final Premium**: **Aggregation** of all factors → the final entry in the context.
+- **The whole thing**: A **DRG** with Base Premium as a separate decision feeding into the Premium Calculation context.
 
 ```
 Final Premium
@@ -457,7 +314,7 @@ Final Premium
   └── Mileage Factor (conditional: Annual Mileage → factor)
 ```
 
-### Step 3: Preview the FEEL (Full Details in Later Chapters)
+### Step 3: Express in FEEL (Preview)
 
 **Base Premium (decision table, hit policy U):**
 
@@ -467,6 +324,8 @@ Final Premium
 | 2 | "SUV" | 800 |
 | 3 | "Sports car" | 1200 |
 | 4 | "Truck" | 700 |
+
+This table is the **Classification** primitive in its purest form: one input, one output, mutually exclusive categories.
 
 **Premium Calculation (context):**
 
@@ -484,34 +343,42 @@ Final Premium
 }
 ```
 
-Even without knowing FEEL syntax, you can read this. That is the power of decomposing first and coding second.
+Even without knowing FEEL syntax, you can read this. Each line maps to a primitive from Chapter 2:
+
+- `Age Factor` → **Disjunction** of **Threshold Tests**, wrapped in a **Conditional Mapping**
+- `Claims Count` → **Iteration with Filter** + **Aggregation**
+- `Claims Factor` → chained **Threshold Tests** in a **Conditional Mapping**
+- `Multi Car` → **Aggregation** + **Threshold Test** in a **Conditional Mapping**
+- `Premium` → **Aggregation** (product)
+
+That is the power of decomposing first and coding second.
 
 ---
 
 ## Summary
 
-- Every business rule is built from a small set of analytical primitives: classification, threshold, range, enumeration, conjunction/disjunction, conditional, aggregation, iteration, ordering, and temporal reasoning.
-- Decision tables are the workhorse for classification-style rules. Hit policies determine what happens when multiple rules match.
-- Computed values and formulas use contexts — step-by-step named calculations.
-- Decision Requirements Graphs show how decisions depend on each other. Draw the graph before writing any expressions.
-- Each analytical primitive maps to specific FEEL constructs. The mapping table in Section 2.6 is your bridge from analysis to code.
+- **Decision tables** are the natural structure for **Classification**, **Threshold**, **Range**, and **Enumeration** primitives — any rule where conditions map to outcomes.
+- **Contexts** (step-by-step computations) are the natural structure for **Aggregation** and **Conditional Mapping** primitives — any rule where the output is computed, not classified.
+- **Decision Requirements Graphs** show how decisions depend on each other. The primitives from one decision feed the primitives of the next. Draw the graph before writing any expressions.
+- Hit policies determine how a decision table handles multiple matching rules. **Unique** (U) is the most common. **Collect Sum** (C+) embodies **Aggregation**. **Priority** (P) embodies **Ordering**.
+- Each analytical primitive from Chapter 2 maps to specific FEEL constructs. The mapping table in Section 3.4 is your bridge from analysis to code.
 
 ---
 
 ## Exercises
 
-**Exercise 2.1:** A hospital triage policy states: "Patients with chest pain are Priority 1. Patients with breathing difficulty are Priority 1. Patients with fractures are Priority 2. All others are Priority 3. If the patient is under 5 or over 80, increase priority by one level (Priority 3 becomes 2, Priority 2 becomes 1, Priority 1 stays 1)." Identify every analytical primitive in this policy.
+**Exercise 3.1:** A ride-sharing app determines surge pricing based on three inputs: time of day (peak/off-peak), weather (clear/rain/snow), and current demand ratio (low/medium/high). Sketch a decision table with hit policy U. How many rules do you need? Are there any combinations that should be excluded?
 
-**Exercise 2.2:** An airline's upgrade policy states: "If a passenger is a Platinum frequent flyer, offer a complimentary upgrade to the next available cabin class. If Gold, offer upgrade at 50% off. If Silver, offer upgrade at 25% off. Upgrades are only available if the higher cabin has at least 3 empty seats." Decompose this into primitives and sketch a decision table.
+**Exercise 3.2:** An e-commerce platform calculates a customer's loyalty score as the sum of: 10 points per order in the last 12 months, 5 bonus points if average order value exceeds $75, and 20 bonus points if the customer has referred at least 2 new customers. Identify the primitives, then decide: should this be a decision table, a context, or both? Write it out as a step-by-step computation.
 
-**Exercise 2.3:** A payroll rule states: "Overtime is paid at 1.5x the hourly rate for hours worked beyond 40 per week, and at 2x for hours beyond 60. Weekend hours always count as overtime." Identify the primitives and sketch the computation as named steps.
+**Exercise 3.3:** Draw a Decision Requirements Graph for the following: a university admissions decision depends on an Academic Score (computed from GPA and test scores), an Extracurricular Score (computed from activities and leadership positions), and a Financial Aid eligibility check (based on household income and family size). The final decision produces both an Admit/Reject verdict and a scholarship amount.
 
 ---
 
 ## What Comes Next
 
-Chapter 3 explores a crucial architectural consequence of this analysis: once business rules are separated from process logic, the process becomes a simple state machine. You will see how FEEL contexts serve as the boundary between decisions and the processes that consume them — and why this separation transforms the way systems are built and maintained.
+Chapter 4 explores a crucial architectural consequence of this analysis: once business rules are separated from process logic, the process becomes a simple state machine. You will see how FEEL contexts serve as the boundary between decisions and the processes that consume them — and why this separation transforms the way systems are built and maintained.
 
 ---
 
-[Previous: Chapter 1: The World Before FEEL](../part-1-foundations/chapter-01-the-world-before-feel.md) | [Next: Chapter 3: From Rules to Flows](chapter-03-from-rules-to-flows.md)
+[Previous: Chapter 2: Business Rules and Business Logic](chapter-02-business-rules-and-logic.md) | [Next: Chapter 4: From Rules to Flows](chapter-04-from-rules-to-flows.md)

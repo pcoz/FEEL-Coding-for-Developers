@@ -1,10 +1,10 @@
-# Chapter 15: Testing FEEL
+# Chapter 16: Testing FEEL
 
 > *"A decision table is its own test specification."*
 
 ---
 
-## 15.1 Why FEEL Is Unusually Testable
+## 16.1 Why FEEL Is Unusually Testable
 
 Most business logic buried in application code is hard to test. You need to construct objects, mock services, manage state, and trace through control flow to understand what a method does. FEEL is fundamentally different:
 
@@ -17,7 +17,7 @@ These properties make FEEL code not just testable, but **analysable** — you ca
 
 ---
 
-## 15.2 Deriving Tests from Decision Tables
+## 16.2 Deriving Tests from Decision Tables
 
 A decision table with hit policy U (Unique) is the simplest case: each rule defines a mutually exclusive partition of the input space. Complete coverage means testing every rule at least once.
 
@@ -77,7 +77,7 @@ This is why FEEL is unusually testable — the structure of the decision *is* th
 
 ---
 
-## 15.3 Deriving Tests from FEEL Expressions
+## 16.3 Deriving Tests from FEEL Expressions
 
 FEEL expressions that are not in a decision table require a different approach. But because FEEL is an expression language with no side effects, you can still derive tests systematically.
 
@@ -136,7 +136,7 @@ This means you can achieve **comprehensive coverage** — every path through the
 
 ---
 
-## 15.4 Completeness and Consistency Analysis
+## 16.4 Completeness and Consistency Analysis
 
 Decision tables can be analysed statically — before running any tests — for two properties:
 
@@ -187,9 +187,9 @@ This is a test that requires **zero test data** — it analyses the structure of
 
 ---
 
-## 15.5 Testing Strategies
+## 16.5 Testing Strategies
 
-### 15.5.1 Unit Testing FEEL Expressions
+### 16.5.1 Unit Testing FEEL Expressions
 
 Treat each FEEL expression as a function. Provide input contexts, assert expected outputs.
 
@@ -227,7 +227,7 @@ testCases.forEach(({ inputs, expected }) => {
 });
 ```
 
-### 15.5.2 Table-Driven Testing
+### 16.5.2 Table-Driven Testing
 
 For decision tables, generate tests directly from the table rows:
 
@@ -250,7 +250,7 @@ void testAllRulesInShippingTable() {
 }
 ```
 
-### 15.5.3 Regression Testing with Golden Files
+### 16.5.3 Regression Testing with Golden Files
 
 Save the expected output of a decision as a JSON file. On each test run, compare the actual output against the golden file.
 
@@ -265,7 +265,7 @@ tests/
 
 When a business rule changes, update the golden files. The diff shows exactly what changed in the decision's behaviour.
 
-### 15.5.4 Property-Based Testing
+### 16.5.4 Property-Based Testing
 
 Instead of testing specific values, test properties that should always hold:
 
@@ -293,7 +293,7 @@ void eligibleApplicantsGetNonZeroLoan(@ForAll @IntRange(min=18, max=100) int age
 
 Property-based testing is especially powerful for FEEL because the pure-function nature guarantees that the test is deterministic — the same inputs always produce the same result.
 
-### 15.5.5 DMN TCK Format
+### 16.5.5 DMN TCK Format
 
 The DMN Technology Compatibility Kit defines a standard XML format for test cases:
 
@@ -319,7 +319,7 @@ Benefits:
 
 ---
 
-## 15.6 Coverage Metrics for FEEL
+## 16.6 Coverage Metrics for FEEL
 
 ### Rule Coverage
 
@@ -356,7 +356,7 @@ Most DMN engines do not provide built-in coverage tools. But because decision ta
 
 ---
 
-## 15.7 Debugging FEEL
+## 16.7 Debugging FEEL
 
 ### Common Errors and Their Causes
 
@@ -409,7 +409,7 @@ If an expression produces unexpected results, test it in a second engine. If the
 
 ---
 
-## 15.8 CI/CD Integration
+## 16.8 CI/CD Integration
 
 ### Pipeline Structure
 
@@ -455,4 +455,4 @@ With testing mastered, you have the tools to write FEEL expressions confidently 
 
 ---
 
-[Previous: Chapter 14: Advanced Topics](chapter-14-advanced-topics.md) | [Next: Appendix A: FEEL Quick Reference Card](../part-5-appendices/appendix-a-quick-reference.md)
+[Previous: Chapter 15: Advanced Topics](chapter-15-advanced-topics.md) | [Next: Appendix A: FEEL Quick Reference Card](../part-5-appendices/appendix-a-quick-reference.md)

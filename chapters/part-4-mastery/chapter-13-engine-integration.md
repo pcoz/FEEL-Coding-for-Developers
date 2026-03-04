@@ -1,10 +1,10 @@
-# Chapter 12: FEEL in the Wild — Engine Integration
+# Chapter 13: FEEL in the Wild — Engine Integration
 
 > *"FEEL is a standard. Your engine is an implementation."*
 
 ---
 
-## 12.1 Camunda 8 (feel-scala)
+## 13.1 Camunda 8 (feel-scala)
 
 Camunda 8 is the most widely used open-source platform that embeds FEEL. Its FEEL engine is **feel-scala**, a Scala-based interpreter running on the JVM.
 
@@ -58,7 +58,7 @@ The standalone web playground is available at `camunda.github.io/feel-scala/docs
 
 ---
 
-## 12.2 Apache KIE (Drools)
+## 13.2 Apache KIE (Drools)
 
 Apache KIE (formerly Red Hat Drools) provides a full DMN runtime with its own FEEL interpreter, written in Java.
 
@@ -97,7 +97,7 @@ DMNResult result = runtime.evaluateAll(model, ctx);
 
 ---
 
-## 12.3 JavaScript Implementations
+## 13.3 JavaScript Implementations
 
 ### feelin (by Nico Rehwaldt)
 
@@ -126,7 +126,7 @@ const result = decisionTable.evaluateDecision('MyDecision', decisions, context);
 
 ---
 
-## 12.4 Python
+## 13.4 Python
 
 ### pySFeel
 
@@ -165,7 +165,7 @@ result = response.json()
 
 ---
 
-## 12.5 Returning FEEL Contexts as Business State
+## 13.5 Returning FEEL Contexts as Business State
 
 When integrating FEEL with a host language, decision results are not limited to simple scalars. The most powerful pattern is to **return a FEEL context** — a structured result that represents the complete business state after evaluation. This context maps directly to the native data structures of every mainstream language.
 
@@ -317,7 +317,7 @@ This is why FEEL contexts are the natural boundary type for decision services: t
 
 ---
 
-## 12.6 Testing FEEL Expressions
+## 13.6 Testing FEEL Expressions
 
 ### Unit Testing Individual Expressions
 
@@ -403,8 +403,8 @@ The DMN Technology Compatibility Kit provides tests as XML files:
 
 ## What Comes Next
 
-Chapter 13 covers the FEEL dialects: S-FEEL (the restricted subset), B-FEEL (the business-friendly variant), and how they relate to full FEEL.
+Chapter 14 covers the FEEL dialects: S-FEEL (the restricted subset), B-FEEL (the business-friendly variant), and how they relate to full FEEL.
 
 ---
 
-[Previous: Chapter 11: Patterns and Recipes](chapter-11-patterns-and-recipes.md) | [Next: Chapter 13: S-FEEL, B-FEEL, and the Dialects](chapter-13-feel-dialects.md)
+[Previous: Chapter 12: Patterns and Recipes](chapter-12-patterns-and-recipes.md) | [Next: Chapter 14: S-FEEL, B-FEEL, and the Dialects](chapter-14-feel-dialects.md)

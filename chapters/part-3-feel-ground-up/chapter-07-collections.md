@@ -1,10 +1,10 @@
-# Chapter 6: Collections — Lists, Contexts, and Ranges
+# Chapter 7: Collections — Lists, Contexts, and Ranges
 
 > *"Lists hold things. Contexts name things. Ranges bound things. Together they model any business data structure."*
 
 ---
 
-## 6.1 Lists
+## 7.1 Lists
 
 ### Creating Lists
 
@@ -19,7 +19,7 @@
 
 Lists are **ordered**, **immutable**, and **1-based**.
 
-> **Singleton coercion:** FEEL automatically wraps a single value into a one-element list when a list is expected: `42[item > 40]` returns `[42]`. Conversely, a one-element list may be unwrapped to a scalar when a scalar is expected. This implicit conversion is convenient but can be surprising — see Chapter 14 for the full rules.
+> **Singleton coercion:** FEEL automatically wraps a single value into a one-element list when a list is expected: `42[item > 40]` returns `[42]`. Conversely, a one-element list may be unwrapped to a scalar when a scalar is expected. This implicit conversion is convenient but can be surprising — see Chapter 15 for the full rules.
 
 ### Accessing Elements
 
@@ -86,7 +86,7 @@ Employees[dept = "Engineering"].salary
 // [90000, 95000]
 ```
 
-### Worked Example 6.1 — Filtering and Selecting
+### Worked Example 7.1 — Filtering and Selecting
 
 Given input data:
 
@@ -126,7 +126,7 @@ count(Employees[years >= 5])
 
 ---
 
-## 6.2 Contexts
+## 7.2 Contexts
 
 A context is an ordered collection of key-value pairs. It is FEEL's equivalent of a JavaScript object, a Python dictionary, or a JSON object — but with one critical difference: **entries are evaluated sequentially and can reference earlier entries.**
 
@@ -202,7 +202,7 @@ Access nested values with chained dots: `data.customer.tier` → `"Gold"`.
 | `context put(ctx, key, value)` | Add/update an entry | `context put({a: 1}, "b", 2)` → `{a: 1, b: 2}` |
 | `context merge(list)` | Merge contexts (last wins) | `context merge([{a: 1}, {a: 2, b: 3}])` → `{a: 2, b: 3}` |
 
-### Worked Example 6.2 — Step-by-Step Affordability Calculation
+### Worked Example 7.2 — Step-by-Step Affordability Calculation
 
 From the DMN spec's loan origination example:
 
@@ -225,7 +225,7 @@ Each step is named. A business analyst can read each line and verify it against 
 
 ---
 
-## 6.3 Ranges
+## 7.3 Ranges
 
 Ranges (intervals) are first-class values in FEEL. They represent a bounded or unbounded set of values.
 
@@ -277,7 +277,7 @@ FEEL provides a complete set of interval relation functions:
 | `finishes(a, b)` | a ends at the same point as b |
 | `coincides(a, b)` | a and b are identical |
 
-### Worked Example 6.3 — Age Band Classification
+### Worked Example 7.3 — Age Band Classification
 
 ```
 if Age in [0..12] then "Child"
@@ -287,7 +287,7 @@ else if Age in [65..120] then "Senior"
 else null
 ```
 
-### Worked Example 6.4 — Schedule Overlap Detection
+### Worked Example 7.4 — Schedule Overlap Detection
 
 ```
 {
@@ -315,18 +315,18 @@ Result: `conflicts with meeting` = `true` (10:00–10:30 overlaps), `conflicts w
 
 ## Exercises
 
-**Exercise 6.1:** Given `L = [10, 20, 30, 40, 50]`, what is the result of: `L[0]`, `L[1]`, `L[-1]`, `L[6]`, `L[item > 25]`?
+**Exercise 7.1:** Given `L = [10, 20, 30, 40, 50]`, what is the result of: `L[0]`, `L[1]`, `L[-1]`, `L[6]`, `L[item > 25]`?
 
-**Exercise 6.2:** Write a FEEL context that takes `Items` (a list of `{description, amount}` contexts) and computes: `total` (sum of all amounts), `count` (number of items), `average` (mean amount), `max item` (description of the highest-amount item).
+**Exercise 7.2:** Write a FEEL context that takes `Items` (a list of `{description, amount}` contexts) and computes: `total` (sum of all amounts), `count` (number of items), `average` (mean amount), `max item` (description of the highest-amount item).
 
-**Exercise 6.3:** Given two date ranges, `vacation = [@"2024-07-01"..@"2024-07-14"]` and `project = [@"2024-07-10"..@"2024-07-20"]`, write FEEL expressions to determine if they overlap and for how long.
+**Exercise 7.3:** Given two date ranges, `vacation = [@"2024-07-01"..@"2024-07-14"]` and `project = [@"2024-07-10"..@"2024-07-20"]`, write FEEL expressions to determine if they overlap and for how long.
 
 ---
 
 ## What Comes Next
 
-Chapter 7 introduces iteration (`for ... return`) and quantification (`some ... satisfies`, `every ... satisfies`) — FEEL's tools for looping over collections.
+Chapter 8 introduces iteration (`for ... return`) and quantification (`some ... satisfies`, `every ... satisfies`) — FEEL's tools for looping over collections.
 
 ---
 
-[Previous: Chapter 5: Expressions](chapter-05-expressions.md) | [Next: Chapter 7: Iteration and Quantification](chapter-07-iteration-and-quantification.md)
+[Previous: Chapter 6: Expressions](chapter-06-expressions.md) | [Next: Chapter 8: Iteration and Quantification](chapter-08-iteration-and-quantification.md)

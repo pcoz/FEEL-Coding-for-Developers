@@ -1,10 +1,10 @@
-# Chapter 13: S-FEEL, B-FEEL, and the Dialects
+# Chapter 14: S-FEEL, B-FEEL, and the Dialects
 
 > *"Three dialects of the same language, each tuned for a different audience."*
 
 ---
 
-## 13.1 Why Dialects?
+## 14.1 Why Dialects?
 
 The DMN specification defines three variants of FEEL to serve different conformance levels and user needs:
 
@@ -16,7 +16,7 @@ The DMN specification defines three variants of FEEL to serve different conforma
 
 ---
 
-## 13.2 S-FEEL — The Restricted Subset
+## 14.2 S-FEEL — The Restricted Subset
 
 S-FEEL is FEEL with training wheels. It supports:
 
@@ -48,7 +48,7 @@ Individual decision tables can use S-FEEL for their input and output entries, bu
 
 ---
 
-## 13.3 B-FEEL — Business-Friendly FEEL (DMN 1.6)
+## 14.3 B-FEEL — Business-Friendly FEEL (DMN 1.6)
 
 B-FEEL is new in DMN 1.6. It shares the same grammar as FEEL but changes the semantics to eliminate `null` as an error value.
 
@@ -127,7 +127,7 @@ Set the expression language on the DMN definitions element:
 
 > **ENGINE NOTE:** As of DMN 1.6's publication, B-FEEL support has not shipped in any major open-source engine. Camunda and Trisotech have it on their roadmaps; Apache KIE has not announced plans. Check your engine's release notes for current status before relying on B-FEEL in production.
 
-### Worked Example 13.1 — FEEL vs B-FEEL Side by Side
+### Worked Example 14.1 — FEEL vs B-FEEL Side by Side
 
 | # | Expression | FEEL | B-FEEL |
 |---|-----------|------|--------|
@@ -144,7 +144,7 @@ Set the expression language on the DMN definitions element:
 
 ---
 
-## 13.4 Choosing the Right Dialect
+## 14.4 Choosing the Right Dialect
 
 | Criterion | Use Full FEEL | Use B-FEEL |
 |-----------|--------------|-----------|
@@ -169,8 +169,8 @@ For most production systems where developers write and maintain the FEEL express
 
 ## What Comes Next
 
-Chapter 14 covers the advanced corners of FEEL: the type lattice, implicit conversions, scope and context resolution, name ambiguity, and XML data mapping.
+Chapter 15 covers the advanced corners of FEEL: the type lattice, implicit conversions, scope and context resolution, name ambiguity, and XML data mapping.
 
 ---
 
-[Previous: Chapter 12: FEEL in the Wild](chapter-12-engine-integration.md) | [Next: Chapter 14: Advanced Topics](chapter-14-advanced-topics.md)
+[Previous: Chapter 13: FEEL in the Wild](chapter-13-engine-integration.md) | [Next: Chapter 15: Advanced Topics](chapter-15-advanced-topics.md)

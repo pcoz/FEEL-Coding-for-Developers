@@ -1,10 +1,10 @@
-# Chapter 14: Advanced Topics
+# Chapter 15: Advanced Topics
 
 > *"You can use FEEL productively without reading this chapter. But when something surprising happens, this is where you will find the explanation."*
 
 ---
 
-## 14.1 The Type Lattice
+## 15.1 The Type Lattice
 
 FEEL types are organised as a **lattice** — a partially ordered structure with:
 
@@ -53,7 +53,7 @@ Type conformance determines:
 
 ---
 
-## 14.2 Implicit Type Conversions
+## 15.2 Implicit Type Conversions
 
 FEEL performs four kinds of implicit conversion:
 
@@ -97,7 +97,7 @@ If the result type does not conform to the target type and no implicit conversio
 
 ---
 
-## 14.3 Scope and the Context Stack
+## 15.3 Scope and the Context Stack
 
 Every FEEL expression is evaluated in a **scope** — an ordered list of contexts that determines how names (qualified names) are resolved.
 
@@ -133,7 +133,7 @@ The answer depends on the scope: since `a - b` is a key in the same context, the
 
 ---
 
-## 14.4 Name Ambiguity
+## 15.4 Name Ambiguity
 
 FEEL allows names to contain characters that are also operators: `-`, `+`, `*`, `/`, `.`, `'`.
 
@@ -171,7 +171,7 @@ Use parentheses to force expression interpretation:
 
 ---
 
-## 14.5 XML Data in FEEL
+## 15.5 XML Data in FEEL
 
 FEEL can consume XML data by mapping it to the FEEL semantic domain.
 
@@ -231,7 +231,7 @@ Note: repeated `<Customer>` elements become a list. Single `<Employee>` becomes 
 
 ---
 
-## 14.6 JSON and FEEL
+## 15.6 JSON and FEEL
 
 FEEL also maps to/from JSON:
 
@@ -254,7 +254,7 @@ When a FEEL `date and time` includes an IANA timezone, the JSON string is suffix
 
 ---
 
-## 14.7 The Full FEEL Grammar
+## 15.7 The Full FEEL Grammar
 
 The FEEL grammar consists of 68 rules in ISO EBNF notation. Key rules:
 
@@ -297,8 +297,8 @@ Comments are Java-style: `// to end of line` and `/* ... */`.
 
 ## What Comes Next
 
-Chapter 15 covers testing FEEL — how to derive comprehensive test cases from decision tables and expressions, coverage metrics, debugging techniques, and CI/CD integration. After that, the appendices provide reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, an engine compatibility matrix, a glossary, and a guide to using FEEL with machine learning.
+Chapter 16 covers testing FEEL — how to derive comprehensive test cases from decision tables and expressions, coverage metrics, debugging techniques, and CI/CD integration. After that, the appendices provide reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, an engine compatibility matrix, a glossary, and a guide to using FEEL with machine learning.
 
 ---
 
-[Previous: Chapter 13: S-FEEL, B-FEEL, and the Dialects](chapter-13-feel-dialects.md) | [Next: Chapter 15: Testing FEEL](chapter-15-testing-feel.md)
+[Previous: Chapter 14: S-FEEL, B-FEEL, and the Dialects](chapter-14-feel-dialects.md) | [Next: Chapter 16: Testing FEEL](chapter-16-testing-feel.md)

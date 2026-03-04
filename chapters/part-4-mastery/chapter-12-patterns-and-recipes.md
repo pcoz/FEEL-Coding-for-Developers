@@ -1,4 +1,4 @@
-# Chapter 11: Patterns and Recipes
+# Chapter 12: Patterns and Recipes
 
 > *"You do not need to reinvent the wheel. The wheel is as follows..."*
 
@@ -8,7 +8,7 @@ This chapter provides ready-to-use patterns for common business logic tasks. Eac
 
 ---
 
-## 11.1 Null-Guarding Patterns
+## 12.1 Null-Guarding Patterns
 
 ### Pattern: Default Value
 
@@ -71,7 +71,7 @@ If `Age` is negative, `assert` halts evaluation with the error message rather th
 
 ---
 
-## 11.2 String Processing Patterns
+## 12.2 String Processing Patterns
 
 ### Pattern: Case-Insensitive Comparison
 
@@ -114,7 +114,7 @@ string(Order.Total) + " has been " + Order.Status + ".\n\n" +
 
 ---
 
-## 11.3 Date and Time Patterns
+## 12.3 Date and Time Patterns
 
 ### Pattern: Age in Years
 
@@ -179,7 +179,7 @@ Count weekdays between two dates (excluding weekends, not holidays):
 
 ---
 
-## 11.4 List Processing Patterns
+## 12.4 List Processing Patterns
 
 ### Pattern: Group By (Simulated)
 
@@ -252,7 +252,7 @@ for i in 1..count(Keys) return {
 
 ---
 
-## 11.5 Decision Table Patterns
+## 12.5 Decision Table Patterns
 
 ### Pattern: Classification with Fallback
 
@@ -285,7 +285,7 @@ For large lookup tables, use a relation instead of a decision table:
 
 ---
 
-## 11.6 Recursive Patterns
+## 12.6 Recursive Patterns
 
 ### Pattern: Factorial
 
@@ -336,8 +336,8 @@ This chapter is a reference you will return to. When you encounter a business lo
 
 ## What Comes Next
 
-Chapter 12 covers FEEL in real systems — how to embed FEEL in Camunda, Apache KIE, and other engines, and how to test FEEL expressions in CI/CD pipelines.
+Chapter 13 covers FEEL in real systems — how to embed FEEL in Camunda, Apache KIE, and other engines, and how to test FEEL expressions in CI/CD pipelines.
 
 ---
 
-[Previous: Chapter 10: Boxed Expressions](../part-3-feel-ground-up/chapter-10-boxed-expressions.md) | [Next: Chapter 12: FEEL in the Wild](chapter-12-engine-integration.md)
+[Previous: Chapter 11: Boxed Expressions](../part-3-feel-ground-up/chapter-11-boxed-expressions.md) | [Next: Chapter 13: FEEL in the Wild](chapter-13-engine-integration.md)

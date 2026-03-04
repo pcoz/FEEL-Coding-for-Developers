@@ -1,10 +1,10 @@
-# Chapter 5: Expressions — Combining Atoms
+# Chapter 6: Expressions — Combining Atoms
 
 > *"FEEL has no statements. Everything is an expression. Every expression produces a value."*
 
 ---
 
-## 5.1 Arithmetic
+## 6.1 Arithmetic
 
 ### Operators
 
@@ -50,7 +50,7 @@ For multiplication and division, FEEL also supports:
 - `duration / number` → scaled duration
 - `duration / duration` → number (ratio)
 
-### Worked Example 5.1 — Compound Interest
+### Worked Example 6.1 — Compound Interest
 
 ```
 {
@@ -63,7 +63,7 @@ For multiplication and division, FEEL also supports:
 
 Result: `Compound Monthly` = `16470.09...`
 
-### Worked Example 5.2 — Duration Arithmetic
+### Worked Example 6.2 — Duration Arithmetic
 
 ```
 {
@@ -77,7 +77,7 @@ Result: `Compound Monthly` = `16470.09...`
 
 ---
 
-## 5.2 Comparisons
+## 6.2 Comparisons
 
 ### Comparison Operators
 
@@ -138,7 +138,7 @@ The `in` operator tests membership. It is versatile:
 5 in (not(1, 2, 3))                       // true — 5 is not 1, 2, or 3
 ```
 
-### Worked Example 5.3 — Risk Classification
+### Worked Example 6.3 — Risk Classification
 
 ```
 if Credit Score between 750 and 850 then "Excellent"
@@ -160,7 +160,7 @@ else null
 
 ---
 
-## 5.3 Conditional Expressions
+## 6.3 Conditional Expressions
 
 ### Syntax
 
@@ -172,7 +172,7 @@ if condition then expression1 else expression2
 - The condition must evaluate to `true` for `expression1`. Both `false` and `null` take `expression2`.
 - Conditionals can be nested (but prefer decision tables for 3+ branches).
 
-### Worked Example 5.4 — Tiered Pricing
+### Worked Example 6.4 — Tiered Pricing
 
 ```
 if Quantity >= 100 then Unit Price * 0.80
@@ -183,7 +183,7 @@ else Unit Price
 
 ---
 
-## 5.4 Unary Tests — The Language Within the Language
+## 6.4 Unary Tests — The Language Within the Language
 
 Unary tests are a special sub-language of FEEL, used exclusively in decision table input cells. They describe a condition on an implicit value — the value being tested by the column.
 
@@ -214,7 +214,7 @@ The unary test `>= 18` is the right-hand side of an implicit `in` expression.
 
 The `?` symbol is used in FEEL to reference the implicit value in certain contexts. In decision table cells, it is always implicit.
 
-### Worked Example 5.5 — Reading a Decision Table
+### Worked Example 6.5 — Reading a Decision Table
 
 Given this decision table:
 
@@ -246,20 +246,20 @@ Rule 3: "If Age < 18, regardless of Employment Status (the `-` wildcard), then E
 
 ## Exercises
 
-**Exercise 5.1:** What is the result of `- 3 ** 2`? What about `(-3) ** 2`? What about `-(3 ** 2)`?
+**Exercise 6.1:** What is the result of `- 3 ** 2`? What about `(-3) ** 2`? What about `-(3 ** 2)`?
 
-**Exercise 5.2:** Write a FEEL expression that computes the Body Mass Index: `weight / (height ** 2)`, where weight is in kg and height is in meters. Then classify it: "Underweight" (<18.5), "Normal" (18.5–24.9), "Overweight" (25–29.9), "Obese" (>=30).
+**Exercise 6.2:** Write a FEEL expression that computes the Body Mass Index: `weight / (height ** 2)`, where weight is in kg and height is in meters. Then classify it: "Underweight" (<18.5), "Normal" (18.5–24.9), "Overweight" (25–29.9), "Obese" (>=30).
 
-**Exercise 5.3:** What is the result of `"abc" > 5`? Why?
+**Exercise 6.3:** What is the result of `"abc" > 5`? Why?
 
-**Exercise 5.4:** Write the unary tests for a decision table input column called `Temperature` that should match: (a) exactly 37.0, (b) between 37.5 and 38.5 exclusive, (c) 39 or above, (d) any value.
+**Exercise 6.4:** Write the unary tests for a decision table input column called `Temperature` that should match: (a) exactly 37.0, (b) between 37.5 and 38.5 exclusive, (c) 39 or above, (d) any value.
 
 ---
 
 ## What Comes Next
 
-Chapter 6 introduces FEEL's compound data structures: lists (and their powerful filtering syntax), contexts (step-by-step calculations), and ranges (first-class interval values).
+Chapter 7 introduces FEEL's compound data structures: lists (and their powerful filtering syntax), contexts (step-by-step calculations), and ranges (first-class interval values).
 
 ---
 
-[Previous: Chapter 4: Values and Types](chapter-04-values-and-types.md) | [Next: Chapter 6: Collections](chapter-06-collections.md)
+[Previous: Chapter 5: Values and Types](chapter-05-values-and-types.md) | [Next: Chapter 7: Collections](chapter-07-collections.md)

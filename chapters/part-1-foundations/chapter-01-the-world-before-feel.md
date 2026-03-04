@@ -273,7 +273,7 @@ You will **not** benefit from this book if you are looking for a general introdu
 This book is organised in five parts, progressing from easy to hard:
 
 1. **Part I** (this chapter) explains *why* FEEL exists and what the ecosystem looks like.
-2. **Part II** teaches you to *think in decisions* — how to decompose business logic into analytical primitives, and how separating rules from process flow enables clean state-machine architectures.
+2. **Part II** introduces the nature of business rules and business logic, teaches you to *think in decisions* — how to decompose business logic into analytical primitives, and how separating rules from process flow enables clean state-machine architectures.
 3. **Part III** teaches FEEL itself, from atomic values to complex expressions, layer by layer.
 4. **Part IV** covers real-world application: patterns, engine integration, dialect variants, and advanced topics.
 5. **Part V** provides reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, and a glossary.
@@ -308,7 +308,7 @@ The examples in this book are tested against **Camunda 8** (feel-scala) as the p
 
 ### Exercises
 
-Every chapter (from Chapter 3 onward) ends with exercises. Solutions are in Appendix B. The exercises follow the same progressive structure as the chapters — start with the first few, and attempt the later ones only after you are comfortable with the material.
+Every chapter (from Chapter 4 onward) ends with exercises. Solutions are in Appendix B. The exercises follow the same progressive structure as the chapters — start with the first few, and attempt the later ones only after you are comfortable with the material.
 
 ---
 
@@ -326,8 +326,8 @@ Every chapter (from Chapter 3 onward) ends with exercises. Solutions are in Appe
 
 ## What Comes Next
 
-In Chapter 2, we will step back from syntax entirely and learn to *think in decisions*. Before writing a single FEEL expression, you will learn to decompose any business policy into a small set of analytical building blocks — and then see how each building block maps to FEEL.
+In Chapter 2, we will explore the nature of business rules and business logic — what they are, why they matter, and how they fit into the broader landscape of decision management. This foundation will prepare you for the analytical techniques and FEEL expressions that follow.
 
 ---
 
-[Next: Chapter 2: Thinking in Decisions](../part-2-business-logic/chapter-02-thinking-in-decisions.md)
+[Next: Chapter 2: Business Rules and Business Logic](../part-2-business-logic/chapter-02-business-rules-and-logic.md)

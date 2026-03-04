@@ -1,10 +1,10 @@
-# Chapter 7: Iteration and Quantification
+# Chapter 8: Iteration and Quantification
 
 > *"FEEL does not have `while` loops or `for` statements. It has `for` expressions — they always produce a value, and they always terminate."*
 
 ---
 
-## 7.1 The `for` Expression
+## 8.1 The `for` Expression
 
 ### Basic Syntax
 
@@ -88,7 +88,7 @@ for i in [100, 200, 50, 300] return
 // [100, 300, 350, 650]
 ```
 
-### Worked Example 7.1 — Fibonacci Sequence
+### Worked Example 8.1 — Fibonacci Sequence
 
 ```
 for i in 1..10 return
@@ -97,7 +97,7 @@ for i in 1..10 return
 // [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 ```
 
-### Worked Example 7.2 — Line Item Processing
+### Worked Example 8.2 — Line Item Processing
 
 ```
 {
@@ -115,7 +115,7 @@ Result: `line totals` = `[50.00, 50.00, 50.00]`, `subtotal` = `150.00`
 
 ---
 
-## 7.2 Quantified Expressions
+## 8.2 Quantified Expressions
 
 Quantifiers ask "does any/every element satisfy a condition?"
 
@@ -168,7 +168,7 @@ every x in [] satisfies false    // true  (vacuously true)
 
 This follows standard logic: "some" over an empty set is false; "every" over an empty set is true.
 
-### Worked Example 7.3 — Validation Checks
+### Worked Example 8.3 — Validation Checks
 
 ```
 {
@@ -192,11 +192,11 @@ This follows standard logic: "some" over an empty set is false; "every" over an 
 
 ---
 
-## 7.3 Combining Iteration, Filtering, and Aggregation
+## 8.3 Combining Iteration, Filtering, and Aggregation
 
 The real power of FEEL emerges when you combine `for`, filters, quantifiers, and aggregate functions.
 
-### Worked Example 7.4 — Order Summary with Tax
+### Worked Example 8.4 — Order Summary with Tax
 
 ```
 {
@@ -212,7 +212,7 @@ The real power of FEEL emerges when you combine `for`, filters, quantifiers, and
 }
 ```
 
-### Worked Example 7.5 — Employee Bonus Calculation
+### Worked Example 8.5 — Employee Bonus Calculation
 
 ```
 {
@@ -226,7 +226,7 @@ The real power of FEEL emerges when you combine `for`, filters, quantifiers, and
 }
 ```
 
-### Worked Example 7.6 — Date Sequence Generation
+### Worked Example 8.6 — Date Sequence Generation
 
 Generate all Mondays in a given month:
 
@@ -259,22 +259,22 @@ Generate all Mondays in a given month:
 
 ## Exercises
 
-**Exercise 7.1:** Write a `for` expression that produces the first 10 square numbers: `[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]`.
+**Exercise 8.1:** Write a `for` expression that produces the first 10 square numbers: `[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]`.
 
-**Exercise 7.2:** Given `Transactions = [{amount: 50}, {amount: -20}, {amount: 100}, {amount: -10}]`, write a `for` expression that produces a running balance starting from 0.
+**Exercise 8.2:** Given `Transactions = [{amount: 50}, {amount: -20}, {amount: 100}, {amount: -10}]`, write a `for` expression that produces a running balance starting from 0.
 
-**Exercise 7.3:** Write a `some` expression that checks whether any employee in a list has a salary above 200000.
+**Exercise 8.3:** Write a `some` expression that checks whether any employee in a list has a salary above 200000.
 
-**Exercise 7.4:** Write an `every` expression that verifies all items in an order have a positive quantity and a non-null SKU.
+**Exercise 8.4:** Write an `every` expression that verifies all items in an order have a positive quantity and a non-null SKU.
 
-**Exercise 7.5:** Given a list of date ranges representing scheduled meetings, write an expression that checks whether a proposed time slot conflicts with any existing meeting.
+**Exercise 8.5:** Given a list of date ranges representing scheduled meetings, write an expression that checks whether a proposed time slot conflicts with any existing meeting.
 
 ---
 
 ## What Comes Next
 
-Chapter 8 covers functions — both user-defined functions and the complete FEEL built-in function library.
+Chapter 9 covers functions — both user-defined functions and the complete FEEL built-in function library.
 
 ---
 
-[Previous: Chapter 6: Collections](chapter-06-collections.md) | [Next: Chapter 8: Functions](chapter-08-functions.md)
+[Previous: Chapter 7: Collections](chapter-07-collections.md) | [Next: Chapter 9: Functions](chapter-09-functions.md)
