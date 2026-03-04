@@ -380,6 +380,8 @@ null = null      // true
 null != null     // false
 ```
 
+> **GOTCHA — null equality vs SQL:** Unlike SQL, where `NULL = NULL` evaluates to `NULL` (unknown), FEEL's `null = null` evaluates to `true`. FEEL treats null equality as a definite answer. This is a deliberate design choice — it makes null checks simpler (`x = null` works), but it will surprise anyone with SQL habits.
+
 ### Null Propagation
 
 Almost every operation on `null` produces `null`:
@@ -411,7 +413,7 @@ x instance of Null  // true if x is null (type check form)
 // Pattern 1: Default value via if/else
 if x != null then x else 0
 
-// Pattern 2: get or else (built-in)
+// Pattern 2: get or else (built-in; returns x if non-null, otherwise the default)
 get or else(x, 0)
 
 // Pattern 3: Null-safe chain

@@ -394,16 +394,16 @@ We have now established the analytical framework. Here is the mapping table that
 
 | Analytical Primitive | FEEL Construct | Chapter |
 |---------------------|----------------|---------|
-| Classification | Decision table with enumerated output values | 8 |
-| Threshold test | Comparison operators (`>=`, `<`, etc.) or unary tests | 4 |
-| Range membership | `x in [a..b]`, interval expressions, unary tests | 4, 5 |
-| Enumeration match | `x in ("Gold", "Silver", "Bronze")` | 4 |
-| Conjunction / Disjunction | `and` / `or` with ternary logic | 3, 4 |
-| Conditional mapping | `if ... then ... else ...` | 4 |
-| Aggregation | `sum()`, `count()`, `min()`, `max()`, `mean()` | 7 |
-| Iteration with filter | `for ... in ... return ...`, list filters `[condition]` | 5, 6 |
-| Ordering / Priority | `sort()`, Priority hit policy, `list[1]` | 7, 8 |
-| Temporal reasoning | Date/time arithmetic, `duration()`, temporal comparisons | 3, 4 |
+| Classification | Decision table with enumerated output values | 9 |
+| Threshold test | Comparison operators (`>=`, `<`, etc.) or unary tests | 5 |
+| Range membership | `x in [a..b]`, interval expressions, unary tests | 5, 6 |
+| Enumeration match | `x in ("Gold", "Silver", "Bronze")` | 5 |
+| Conjunction / Disjunction | `and` / `or` with ternary logic | 4, 5 |
+| Conditional mapping | `if ... then ... else ...` | 5 |
+| Aggregation | `sum()`, `count()`, `min()`, `max()`, `mean()` | 8 |
+| Iteration with filter | `for ... in ... return ...`, list filters `[condition]` | 6, 7 |
+| Ordering / Priority | `sort()`, Priority hit policy, `list[1]` | 8, 9 |
+| Temporal reasoning | Date/time arithmetic, `duration()`, temporal comparisons | 4, 5 |
 
 Keep this table bookmarked. When you encounter a business requirement and are unsure how to express it in FEEL, start here: identify the primitive, look up the corresponding FEEL construct, and turn to the referenced chapter.
 
@@ -510,4 +510,4 @@ Even without knowing FEEL syntax, you can read this. That is the power of decomp
 
 ## What Comes Next
 
-In Chapter 3, we begin learning FEEL itself — starting with the atoms: numbers, strings, booleans, dates, times, durations, and the ever-present `null`.
+Chapter 3 explores a crucial architectural consequence of this analysis: once business rules are separated from process logic, the process becomes a simple state machine. You will see how FEEL contexts serve as the boundary between decisions and the processes that consume them — and why this separation transforms the way systems are built and maintained.

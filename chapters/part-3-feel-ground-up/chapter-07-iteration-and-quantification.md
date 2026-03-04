@@ -64,6 +64,8 @@ Iteration 4: x=2, y=20 → 22
 
 ### The `partial` Variable
 
+> **ENGINE NOTE:** The `partial` variable is a **Camunda feel-scala extension**, not part of the DMN specification. Apache KIE and other engines may not support it. If portability is a concern, use explicit accumulation patterns instead.
+
 Inside a `for` expression, the implicit variable `partial` contains the results of all *previous* iterations. This enables running computations:
 
 ```
@@ -80,7 +82,9 @@ Explanation:
 
 **Running total:**
 ```
-for i in [100, 200, 50, 300] return sum(append(partial, i))
+for i in [100, 200, 50, 300] return
+  if count(partial) = 0 then i
+  else partial[-1] + i
 // [100, 300, 350, 650]
 ```
 
@@ -231,7 +235,8 @@ Generate all Mondays in a given month:
   year: 2024,
   month: 3,
   start: date(year, month, 1),
-  end: date(year, month + 1, 1) - @"P1D",
+  end: if month = 12 then date(year + 1, 1, 1) - @"P1D"
+       else date(year, month + 1, 1) - @"P1D",
   all days: for d in start..end return d,
   mondays: all days[day of week(item) = "Monday"]
 }

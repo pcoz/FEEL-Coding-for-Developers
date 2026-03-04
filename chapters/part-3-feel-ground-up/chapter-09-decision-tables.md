@@ -154,9 +154,30 @@ A checking account with balance -50 matches all three rules. Result: `["Low Bala
 
 **R** returns matching outputs in the order the rules appear in the table.
 
+**Example (R):** A notification routing table:
+
+| R | Event Type | Channel |
+|---|-----------|---------|
+| 1 | "Urgent" | "SMS" |
+| 2 | "Urgent" | "Email" |
+| 3 | - | "Email" |
+
+For `Event Type = "Urgent"`: result is `["SMS", "Email"]` (rules 1 and 2 match, returned in rule order). The SMS goes out first because it is rule 1.
+
 **O** returns matching outputs in the order defined by the output values list.
 
-Both produce a list, like Collect, but with a guaranteed ordering.
+**Example (O):** If the same table used hit policy O with output values ordered as `"Email", "SMS"`, the result for `"Urgent"` would be `["Email", "SMS"]` — reordered by the output values list, regardless of rule order.
+
+Both produce a list, like Collect, but with a guaranteed ordering. Note: Output Order (O) **requires** output values to be defined — without them, the engine has no ordering to apply.
+
+### When No Rule Matches
+
+For all hit policies, when **zero** rules match:
+
+- **Single-hit policies** (U, A, F, P): the result is `null`.
+- **Multi-hit policies** (C, C+, C#, C<, C>, R, O): the result is an empty list `[]` (or `0` for C+/C#, `null` for C</C>).
+
+This is why completeness matters (Section 9.4) — an incomplete table silently returns `null` for uncovered inputs.
 
 ---
 
@@ -229,6 +250,20 @@ Here, `Risk Category Table` is a decision table that produces a string. The cont
 | Collect Max | C> | Value | Maximum match |
 | Rule Order | R | List | In rule order |
 | Output Order | O | List | In output value order |
+
+### Choosing the Right Hit Policy
+
+| If you need... | Use |
+|---------------|-----|
+| Exactly one rule to match (and you want the engine to enforce this) | **U** (Unique) |
+| Multiple rules may match but they all produce the same output | **A** (Any) |
+| Rules overlap and the first match should win (order-dependent) | **F** (First) |
+| Rules overlap and the "best" output should win (output-priority-dependent) | **P** (Priority) |
+| All matching outputs collected into a list | **C** (Collect) |
+| A numeric summary (sum, count, min, max) of matching outputs | **C+**, **C#**, **C<**, **C>** |
+| All matching outputs in a predictable order | **R** (Rule Order) or **O** (Output Order) |
+
+When in doubt, start with **U**. It is the safest choice because the engine will flag overlapping rules as an error, catching bugs early. Use **F** when you intentionally want rules to overlap (like a cascading default). Use **C+** for scorecards.
 
 ---
 

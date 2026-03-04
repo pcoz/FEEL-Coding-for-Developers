@@ -70,4 +70,24 @@
 
 **Type Equivalence** — The relation `T ≡ S` meaning "types T and S are interchangeable in all contexts".
 
-**Unary Test** — A special FEEL expression used in decision table input cells. Tests a condition against an implicit value. Examples: `>= 18`, `[1..10]`, `"Gold","Silver"`, `-`.
+**Decimal128 (IEEE 754-2008)** — The precision model for FEEL numbers. Provides 34 significant digits, avoiding the floating-point surprises common in languages that use binary floats.
+
+**External Function** — A FEEL function whose body is implemented outside the DMN model — in Java, PMML, or ONNX. Declared with `external` in the function definition.
+
+**Implicit Type Conversion** — FEEL's four automatic conversions: singleton list wrapping (`x` → `[x]`), singleton list unwrapping (`[x]` → `x`), date to date-time (`@"2024-03-15"` → `@"2024-03-15T00:00:00"`), and decimal to integer truncation.
+
+**Item** — The implicit variable name for the current element inside a filter expression. In `[1,2,3][item > 1]`, `item` refers to each element in turn.
+
+**Lexical Closure** — A function that captures variables from its enclosing scope. FEEL functions are closures: `{rate: 0.1, calc: function(x) x * rate}.calc(100)` works because `calc` closes over `rate`.
+
+**Null Propagation** — The mechanism by which `null` flows through FEEL operations. Almost every operation on `null` returns `null`, with exceptions for equality (`null = null` → `true`) and short-circuit logic (`false and null` → `false`).
+
+**ONNX (Open Neural Network Exchange)** — A format for serialising machine learning models (neural networks, etc.). Supported as an external function type in DMN 1.5+.
+
+**Partial** — An implicit variable available inside `for` expressions (Camunda feel-scala extension) containing the results of all previous iterations. Enables running totals, Fibonacci sequences, and other accumulation patterns.
+
+**PMML (Predictive Model Markup Language)** — An XML-based format for serialising machine learning models (regression, decision trees, etc.). Supported as an external function type in DMN.
+
+**Singleton Coercion** — FEEL's implicit conversion between a scalar value and a one-element list. A single value is wrapped into `[value]` when a list is expected, and `[value]` is unwrapped to `value` when a scalar is expected.
+
+**Unary Test** — A special FEEL expression used in decision table input cells. Tests a condition against an implicit value (referenced by `?`). Examples: `>= 18`, `[1..10]`, `"Gold","Silver"`, `-`. Valid only in decision table cells and as the right operand of `in`.

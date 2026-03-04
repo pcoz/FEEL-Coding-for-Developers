@@ -16,6 +16,8 @@ This chapter provides ready-to-use patterns for common business logic tasks. Eac
 get or else(Customer.Email, "no-reply@example.com")
 ```
 
+> **ENGINE NOTE:** `get or else()` is a Camunda feel-scala extension, not part of the DMN specification. For portable code, use the `if/then/else` equivalent below.
+
 Or equivalently:
 ```
 if Customer.Email != null then Customer.Email else "no-reply@example.com"

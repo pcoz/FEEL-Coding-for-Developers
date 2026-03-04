@@ -116,7 +116,7 @@ The DRD does not contain any logic — it just shows the structure.
 
 ### Layer 2: Decision Logic
 
-Each decision in the DRD has associated logic, expressed as a **boxed expression**. The most common form is a **decision table**: a grid of conditions and conclusions. But boxed expressions also include contexts (step-by-step calculations), invocations (function calls), lists, conditionals, and more.
+Each decision in the DRD has associated logic, expressed as a **boxed expression** (so called because each expression is rendered inside a rectangular box in the DMN visual notation). The most common form is a **decision table**: a grid of conditions and conclusions. But boxed expressions also include contexts (step-by-step calculations), invocations (function calls), lists, conditionals, and more.
 
 ### Layer 3: Expression Language
 
@@ -273,7 +273,7 @@ You will **not** benefit from this book if you are looking for a general introdu
 This book is organised in five parts, progressing from easy to hard:
 
 1. **Part I** (this chapter) explains *why* FEEL exists and what the ecosystem looks like.
-2. **Part II** teaches you to *think in decisions* — how to decompose business logic into its analytical primitives before writing any FEEL.
+2. **Part II** teaches you to *think in decisions* — how to decompose business logic into analytical primitives, and how separating rules from process flow enables clean state-machine architectures.
 3. **Part III** teaches FEEL itself, from atomic values to complex expressions, layer by layer.
 4. **Part IV** covers real-world application: patterns, engine integration, dialect variants, and advanced topics.
 5. **Part V** provides reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, and a glossary.

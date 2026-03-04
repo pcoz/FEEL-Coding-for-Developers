@@ -19,6 +19,8 @@
 
 Lists are **ordered**, **immutable**, and **1-based**.
 
+> **Singleton coercion:** FEEL automatically wraps a single value into a one-element list when a list is expected: `42[item > 40]` returns `[42]`. Conversely, a one-element list may be unwrapped to a scalar when a scalar is expected. This implicit conversion is convenient but can be surprising — see Chapter 14 for the full rules.
+
 ### Accessing Elements
 
 ```

@@ -297,4 +297,4 @@ Comments are Java-style: `// to end of line` and `/* ... */`.
 
 ## What Comes Next
 
-The appendices provide reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, an engine compatibility matrix, and a glossary.
+Chapter 15 covers testing FEEL — how to derive comprehensive test cases from decision tables and expressions, coverage metrics, debugging techniques, and CI/CD integration. After that, the appendices provide reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, an engine compatibility matrix, a glossary, and a guide to using FEEL with machine learning.

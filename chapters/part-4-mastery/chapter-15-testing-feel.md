@@ -362,7 +362,7 @@ Most DMN engines do not provide built-in coverage tools. But because decision ta
 
 | Symptom | Likely Cause | How to Diagnose |
 |---------|-------------|-----------------|
-| Expression returns `null` unexpectedly | A sub-expression evaluated to null and propagated | Check each input; use `is defined()` or `get or else()` to find the null source |
+| Expression returns `null` unexpectedly | A sub-expression evaluated to null and propagated | Check each input; use `x != null` to find the null source (or `is defined(x)` / `get or else(x, default)` on Camunda) |
 | Decision table returns no result | No rule matched the input | Check completeness; test with the specific input against each rule's conditions |
 | Decision table returns wrong result | Wrong rule matched | Check rule conditions for overlaps; trace which rule fired |
 | Type error (null from operation) | Operands are wrong types (e.g., `"5" + 3`) | Check types with `instance of`; FEEL does not coerce types |
@@ -392,8 +392,8 @@ Now you can inspect `line totals` and `subtotal` independently.
 
 ```
 {
-  age: assert(Applicant.Age, age != null, "Age must not be null"),
-  score: assert(Credit Score, score >= 300, "Invalid credit score")
+  age: assert(Applicant.Age, Applicant.Age != null, "Age must not be null"),
+  score: assert(Credit Score, Credit Score >= 300, "Invalid credit score")
 }
 ```
 

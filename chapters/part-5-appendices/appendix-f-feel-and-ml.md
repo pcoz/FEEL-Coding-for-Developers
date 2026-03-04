@@ -222,7 +222,7 @@ The ML model provides the prediction. FEEL provides the business interpretation.
 
 | Engine | PMML Support |
 |--------|-------------|
-| Apache KIE (Drools) | Yes — built-in PMML evaluator (JPMML) |
+| Apache KIE (Drools) | Yes — built-in PMML evaluator (kie-pmml) |
 | Trisotech | Yes — cloud-based PMML execution |
 | Camunda 8 | No — invoke via external task worker |
 | feelin / pySFeel | No |

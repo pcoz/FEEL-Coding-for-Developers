@@ -85,3 +85,26 @@
 | Difference | `d1 - d2` | `d1 - d2` (ms) | `d1 - d2` (timedelta) |
 | Year extract | `d.year` | `d.getFullYear()` | `d.year` |
 | Day of week | `day of week(d)` | `d.getDay()` (0=Sun) | `d.strftime("%A")` |
+
+## Type Checking
+
+| Operation | FEEL | JavaScript | Python | Java |
+|-----------|------|-----------|--------|------|
+| Type test | `x instance of number` | `typeof x === 'number'` | `isinstance(x, (int, float))` | `x instanceof Number` |
+| Null check | `x = null` | `x === null` | `x is None` | `x == null` |
+
+## Functions
+
+| Operation | FEEL | JavaScript | Python | Java |
+|-----------|------|-----------|--------|------|
+| Lambda | `function(x, y) x + y` | `(x, y) => x + y` | `lambda x, y: x + y` | `(x, y) -> x + y` |
+| Named function | Context entry: `{add: function(x,y) x+y}` | `const add = (x,y) => x+y` | `def add(x,y): return x+y` | Method definition |
+| Named parameters | `f(a: 1, b: 2)` | (not supported) | `f(a=1, b=2)` | (not supported) |
+
+## Ranges and Membership
+
+| Operation | FEEL | JavaScript | Python | SQL |
+|-----------|------|-----------|--------|-----|
+| Range check | `x in [1..10]` | `x >= 1 && x <= 10` | `1 <= x <= 10` | `x BETWEEN 1 AND 10` |
+| Between | `x between 5 and 10` | `x >= 5 && x <= 10` | `5 <= x <= 10` | `x BETWEEN 5 AND 10` |
+| Set membership | `x in ("A","B","C")` | `["A","B","C"].includes(x)` | `x in ("A","B","C")` | `x IN ('A','B','C')` |

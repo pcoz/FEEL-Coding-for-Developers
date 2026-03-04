@@ -49,6 +49,8 @@ The function "closes over" `tax rate` — it remembers the value even if evaluat
 
 ### Recursive Functions
 
+> **ENGINE NOTE:** Whether a context entry name is in scope within its own definition body is engine-dependent. Camunda's feel-scala supports self-referencing context entries; other engines may not. The DMN specification supports recursion via BKMs (Business Knowledge Models) but the scoping of context entry self-references is ambiguous. Test in your target engine.
+
 Named functions in a context can call themselves:
 
 ```
@@ -198,7 +200,7 @@ FEEL includes a comprehensive library of built-in functions. This section provid
 | `week of year(date)` | ISO week number | `week of year(@"2024-03-15")` → `11` |
 | `month of year(date)` | Month name | `month of year(@"2024-03-15")` → `"March"` |
 
-### 8.3.7 Rounding Functions
+### 8.3.7 Numeric Functions
 
 | Function | Description | Example |
 |----------|------------|---------|

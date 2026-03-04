@@ -125,6 +125,8 @@ Set the expression language on the DMN definitions element:
 </definitions>
 ```
 
+> **ENGINE NOTE:** As of DMN 1.6's publication, B-FEEL support has not shipped in any major open-source engine. Camunda and Trisotech have it on their roadmaps; Apache KIE has not announced plans. Check your engine's release notes for current status before relying on B-FEEL in production.
+
 ### Worked Example 13.1 — FEEL vs B-FEEL Side by Side
 
 | # | Expression | FEEL | B-FEEL |

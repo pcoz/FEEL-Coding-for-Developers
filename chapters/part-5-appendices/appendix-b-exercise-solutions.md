@@ -118,9 +118,12 @@ for i in 1..10 return i ** 2
 
 **Exercise 7.2:**
 ```
-for tx in Transactions return sum(append(partial, tx.amount))
+for tx in Transactions return
+  if count(partial) = 0 then tx.amount
+  else partial[-1] + tx.amount
 // [50, 30, 130, 120]
 ```
+The `partial` variable holds the results of previous iterations (Camunda extension). At each step, the running balance is the previous balance plus the current transaction amount.
 
 **Exercise 7.3:**
 ```

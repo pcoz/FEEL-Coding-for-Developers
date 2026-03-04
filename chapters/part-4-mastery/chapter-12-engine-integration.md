@@ -40,6 +40,8 @@ var engine = new FeelEngine();
 var context = Map.of("x", 10, "y", 20);
 var result = engine.evaluateExpression("x + y", context);
 // result = Right(30)
+// feel-scala uses Scala's Either type: Right means success, Left means failure.
+// In Java, extract the value with: result.right().get()
 ```
 
 ### Debugging with the FEEL Playground
@@ -334,8 +336,9 @@ void testEligibility() {
     var ctx2 = Map.of("Age", 16, "Income", 50000, "CreditScore", 720);
     assertEquals("Not Eligible", engine.evaluate("eligibility.feel", ctx2));
 
-    // Null input
-    var ctx3 = Map.of("Age", null, "Income", 50000, "CreditScore", 720);
+    // Null input (Map.of() does not allow null values; use HashMap)
+    var ctx3 = new java.util.HashMap<>(Map.of("Income", 50000, "CreditScore", 720));
+    ctx3.put("Age", null);
     assertNull(engine.evaluate("eligibility.feel", ctx3));
 }
 ```
