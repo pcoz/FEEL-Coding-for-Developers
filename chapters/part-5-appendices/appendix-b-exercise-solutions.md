@@ -209,3 +209,7 @@ string join(for i in 1..5 return string(i), ", ")
 
 **Exercise 9.3:**
 At runtime with hit policy U, if two rules match, the engine signals an error (implementation-dependent: some return `null`, some throw an exception). Fix by making the rules mutually exclusive — ensure input ranges do not overlap. For example, change `[0..10]` and `[10..20]` to `[0..10]` and `(10..20]`.
+
+---
+
+[Previous: Appendix A: FEEL Quick Reference Card](appendix-a-quick-reference.md) | [Next: Appendix C: FEEL-to-Language Rosetta Stone](appendix-c-rosetta-stone.md)

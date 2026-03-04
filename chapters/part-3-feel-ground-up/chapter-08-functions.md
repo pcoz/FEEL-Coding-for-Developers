@@ -314,3 +314,7 @@ FEEL can invoke functions defined in Java, PMML, and ONNX:
 ## What Comes Next
 
 Chapter 9 covers decision tables in depth — hit policies, multi-output tables, completeness, and advanced patterns.
+
+---
+
+[Previous: Chapter 7: Iteration and Quantification](chapter-07-iteration-and-quantification.md) | [Next: Chapter 9: Decision Tables in Depth](chapter-09-decision-tables.md)

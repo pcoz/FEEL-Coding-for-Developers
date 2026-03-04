@@ -404,3 +404,7 @@ The DMN Technology Compatibility Kit provides tests as XML files:
 ## What Comes Next
 
 Chapter 13 covers the FEEL dialects: S-FEEL (the restricted subset), B-FEEL (the business-friendly variant), and how they relate to full FEEL.
+
+---
+
+[Previous: Chapter 11: Patterns and Recipes](chapter-11-patterns-and-recipes.md) | [Next: Chapter 13: S-FEEL, B-FEEL, and the Dialects](chapter-13-feel-dialects.md)

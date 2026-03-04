@@ -298,3 +298,7 @@ Comments are Java-style: `// to end of line` and `/* ... */`.
 ## What Comes Next
 
 Chapter 15 covers testing FEEL — how to derive comprehensive test cases from decision tables and expressions, coverage metrics, debugging techniques, and CI/CD integration. After that, the appendices provide reference material: a quick reference card, exercise solutions, a cross-language Rosetta Stone, an engine compatibility matrix, a glossary, and a guide to using FEEL with machine learning.
+
+---
+
+[Previous: Chapter 13: S-FEEL, B-FEEL, and the Dialects](chapter-13-feel-dialects.md) | [Next: Chapter 15: Testing FEEL](chapter-15-testing-feel.md)

@@ -327,3 +327,7 @@ Every chapter (from Chapter 3 onward) ends with exercises. Solutions are in Appe
 ## What Comes Next
 
 In Chapter 2, we will step back from syntax entirely and learn to *think in decisions*. Before writing a single FEEL expression, you will learn to decompose any business policy into a small set of analytical building blocks — and then see how each building block maps to FEEL.
+
+---
+
+[Next: Chapter 2: Thinking in Decisions](../part-2-business-logic/chapter-02-thinking-in-decisions.md)

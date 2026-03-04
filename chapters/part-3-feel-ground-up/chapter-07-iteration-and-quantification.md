@@ -274,3 +274,7 @@ Generate all Mondays in a given month:
 ## What Comes Next
 
 Chapter 8 covers functions — both user-defined functions and the complete FEEL built-in function library.
+
+---
+
+[Previous: Chapter 6: Collections](chapter-06-collections.md) | [Next: Chapter 8: Functions](chapter-08-functions.md)

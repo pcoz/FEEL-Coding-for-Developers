@@ -511,3 +511,7 @@ Even without knowing FEEL syntax, you can read this. That is the power of decomp
 ## What Comes Next
 
 Chapter 3 explores a crucial architectural consequence of this analysis: once business rules are separated from process logic, the process becomes a simple state machine. You will see how FEEL contexts serve as the boundary between decisions and the processes that consume them — and why this separation transforms the way systems are built and maintained.
+
+---
+
+[Previous: Chapter 1: The World Before FEEL](../part-1-foundations/chapter-01-the-world-before-feel.md) | [Next: Chapter 3: From Rules to Flows](chapter-03-from-rules-to-flows.md)

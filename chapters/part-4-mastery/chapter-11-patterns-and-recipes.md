@@ -337,3 +337,7 @@ This chapter is a reference you will return to. When you encounter a business lo
 ## What Comes Next
 
 Chapter 12 covers FEEL in real systems — how to embed FEEL in Camunda, Apache KIE, and other engines, and how to test FEEL expressions in CI/CD pipelines.
+
+---
+
+[Previous: Chapter 10: Boxed Expressions](../part-3-feel-ground-up/chapter-10-boxed-expressions.md) | [Next: Chapter 12: FEEL in the Wild](chapter-12-engine-integration.md)

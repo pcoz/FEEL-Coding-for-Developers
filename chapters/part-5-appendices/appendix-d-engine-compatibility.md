@@ -88,3 +88,7 @@ cd tck
 | Browser-side FEEL evaluation | feelin |
 | Python integration | REST API to JVM engine, or pySFeel for simple cases |
 | Embedded library in Java/Scala | feel-scala or kie-dmn-core |
+
+---
+
+[Previous: Appendix C: FEEL-to-Language Rosetta Stone](appendix-c-rosetta-stone.md) | [Next: Appendix E: Glossary](appendix-e-glossary.md)

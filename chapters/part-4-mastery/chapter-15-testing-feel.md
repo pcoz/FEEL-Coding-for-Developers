@@ -452,3 +452,7 @@ If an expression produces unexpected results, test it in a second engine. If the
 ## What Comes Next
 
 With testing mastered, you have the tools to write FEEL expressions confidently in production. Return to the appendices for quick reference material, cross-language comparisons, and engine compatibility details.
+
+---
+
+[Previous: Chapter 14: Advanced Topics](chapter-14-advanced-topics.md) | [Next: Appendix A: FEEL Quick Reference Card](../part-5-appendices/appendix-a-quick-reference.md)

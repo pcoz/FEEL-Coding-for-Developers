@@ -501,3 +501,7 @@ The model never sees applicants under 18 or below the income floor — those are
 | Model selection and hyperparameter tuning | Use MLOps tools (MLflow, Kubeflow). |
 
 FEEL's sweet spot in the ML pipeline is the **last mile**: taking a model's output and applying the business rules that turn a prediction into a decision. That last mile is where transparency, auditability, and business ownership matter most — and where FEEL excels.
+
+---
+
+[Previous: Appendix E: Glossary](appendix-e-glossary.md)

@@ -550,3 +550,7 @@ This is the architecture that FEEL enables. The rest of this book teaches you th
 ## What Comes Next
 
 Now that you understand *why* FEEL exists (Chapter 1), *how* to analyse business logic (Chapter 2), and *where* FEEL fits in the architecture (this chapter), it is time to learn the language itself. Chapter 4 begins with the atoms of FEEL: values and types.
+
+---
+
+[Previous: Chapter 2: Thinking in Decisions](chapter-02-thinking-in-decisions.md) | [Next: Chapter 4: Values and Types](../part-3-feel-ground-up/chapter-04-values-and-types.md)

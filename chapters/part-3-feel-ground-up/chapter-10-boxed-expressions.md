@@ -227,3 +227,7 @@ Three levels of nesting — each independently testable, each independently revi
 ## What Comes Next
 
 Part IV begins with Chapter 11: Patterns and Recipes — practical, copy-paste solutions for common business logic scenarios.
+
+---
+
+[Previous: Chapter 9: Decision Tables in Depth](chapter-09-decision-tables.md) | [Next: Chapter 11: Patterns and Recipes](../part-4-mastery/chapter-11-patterns-and-recipes.md)

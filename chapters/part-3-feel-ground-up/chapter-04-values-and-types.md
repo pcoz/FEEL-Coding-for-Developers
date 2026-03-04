@@ -508,3 +508,7 @@ else
 ## What Comes Next
 
 Chapter 5 teaches you to combine these atomic values into expressions: arithmetic, comparisons, conditionals, and the special sub-language of unary tests used inside decision tables.
+
+---
+
+[Previous: Chapter 3: From Rules to Flows](../part-2-business-logic/chapter-03-from-rules-to-flows.md) | [Next: Chapter 5: Expressions](chapter-05-expressions.md)

@@ -170,3 +170,7 @@ For most production systems where developers write and maintain the FEEL express
 ## What Comes Next
 
 Chapter 14 covers the advanced corners of FEEL: the type lattice, implicit conversions, scope and context resolution, name ambiguity, and XML data mapping.
+
+---
+
+[Previous: Chapter 12: FEEL in the Wild](chapter-12-engine-integration.md) | [Next: Chapter 14: Advanced Topics](chapter-14-advanced-topics.md)

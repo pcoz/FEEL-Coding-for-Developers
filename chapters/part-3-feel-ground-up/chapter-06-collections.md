@@ -326,3 +326,7 @@ Result: `conflicts with meeting` = `true` (10:00–10:30 overlaps), `conflicts w
 ## What Comes Next
 
 Chapter 7 introduces iteration (`for ... return`) and quantification (`some ... satisfies`, `every ... satisfies`) — FEEL's tools for looping over collections.
+
+---
+
+[Previous: Chapter 5: Expressions](chapter-05-expressions.md) | [Next: Chapter 7: Iteration and Quantification](chapter-07-iteration-and-quantification.md)

@@ -122,3 +122,7 @@
 | `not("X")` | Not X |
 | `not(< 0)` | Not negative |
 | `-` | Any value (wildcard) |
+
+---
+
+[Previous: Chapter 15: Testing FEEL](../part-4-mastery/chapter-15-testing-feel.md) | [Next: Appendix B: Exercise Solutions](appendix-b-exercise-solutions.md)

@@ -108,3 +108,7 @@
 | Range check | `x in [1..10]` | `x >= 1 && x <= 10` | `1 <= x <= 10` | `x BETWEEN 1 AND 10` |
 | Between | `x between 5 and 10` | `x >= 5 && x <= 10` | `5 <= x <= 10` | `x BETWEEN 5 AND 10` |
 | Set membership | `x in ("A","B","C")` | `["A","B","C"].includes(x)` | `x in ("A","B","C")` | `x IN ('A','B','C')` |
+
+---
+
+[Previous: Appendix B: Exercise Solutions](appendix-b-exercise-solutions.md) | [Next: Appendix D: Engine Compatibility Matrix](appendix-d-engine-compatibility.md)

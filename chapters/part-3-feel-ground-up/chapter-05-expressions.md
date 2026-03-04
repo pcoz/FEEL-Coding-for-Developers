@@ -259,3 +259,7 @@ Rule 3: "If Age < 18, regardless of Employment Status (the `-` wildcard), then E
 ## What Comes Next
 
 Chapter 6 introduces FEEL's compound data structures: lists (and their powerful filtering syntax), contexts (step-by-step calculations), and ranges (first-class interval values).
+
+---
+
+[Previous: Chapter 4: Values and Types](chapter-04-values-and-types.md) | [Next: Chapter 6: Collections](chapter-06-collections.md)

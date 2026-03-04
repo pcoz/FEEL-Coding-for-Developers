@@ -91,3 +91,7 @@
 **Singleton Coercion** — FEEL's implicit conversion between a scalar value and a one-element list. A single value is wrapped into `[value]` when a list is expected, and `[value]` is unwrapped to `value` when a scalar is expected.
 
 **Unary Test** — A special FEEL expression used in decision table input cells. Tests a condition against an implicit value (referenced by `?`). Examples: `>= 18`, `[1..10]`, `"Gold","Silver"`, `-`. Valid only in decision table cells and as the right operand of `in`.
+
+---
+
+[Previous: Appendix D: Engine Compatibility Matrix](appendix-d-engine-compatibility.md) | [Next: Appendix F: FEEL and Machine Learning](appendix-f-feel-and-ml.md)

@@ -280,3 +280,7 @@ When in doubt, start with **U**. It is the safest choice because the engine will
 ## What Comes Next
 
 Chapter 10 covers boxed expressions — the visual notation that wraps FEEL expressions into composable, graphical building blocks.
+
+---
+
+[Previous: Chapter 8: Functions](chapter-08-functions.md) | [Next: Chapter 10: Boxed Expressions](chapter-10-boxed-expressions.md)
